@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,9 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,12 +31,15 @@ import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ui.theme.BlackColor
 import com.example.disabledtoilet_android.ui.theme.DisabledToilet_AndroidTheme
 import com.example.disabledtoilet_android.ui.theme.GreyColor
+import com.example.disabledtoilet_android.ui.theme.MainColor
 import com.example.disabledtoilet_android.ui.theme.WhiteColor
 import kotlinx.coroutines.launch
 
@@ -48,10 +54,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun IconToggleButton(isSaved: Boolean, iconSize: Dp, onIconClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .clickable { onIconClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painterResource(id = if (isSaved) R.drawable.saved_star_icon else R.drawable.save_icon),
+            contentDescription = "저장 아이콘",
+            modifier = Modifier.size(iconSize)
+        )
+    }
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
+    var isSaved by remember { mutableStateOf(false) }
+
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Hidden,
         skipHiddenState = false
@@ -70,12 +93,269 @@ fun MainScreen() {
                     .fillMaxWidth()
                     .height(200.dp)
                     .background(Color.White)
-                    .border(2.dp, GreyColor, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // 테두리를 빨간색으로 설정
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                    .padding(horizontal = 10.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "This is a Bottom Sheet", style = TextStyle(fontSize = 16.sp))
+                Box(
+                    modifier = Modifier
+                        .weight(1.3f)
+                        .fillMaxWidth()
+                ){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ){
+                        Box(
+                            modifier = Modifier
+                                .weight(1.5f)
+                                .fillMaxWidth()
+                        )
+                        {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp)
+                            ){
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .wrapContentHeight(Alignment.CenterVertically),
+
+                                    text = "세진공원",
+                                    style = TextStyle(
+                                        color = MainColor,
+                                        fontSize = 20.sp,
+                                        fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+                                    ),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .weight(1f),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ){
+                                    IconToggleButton(isSaved, 15.dp) {
+                                        isSaved = !isSaved
+                                    }
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .padding(start = 3.dp)
+                                            .wrapContentHeight(Alignment.CenterVertically),
+
+                                        text = "저장 (10) ",
+                                        style = TextStyle(
+                                            color = Color.Black,
+                                            fontSize = 14.sp,
+                                            fontFamily = FontFamily(Font(R.font.notosanskr_medium))
+                                        )
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.weight(1f)) // 나머지 공간을 채워 "더보기"를 끝으로 밀기
+
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .wrapContentWidth(Alignment.End)
+                                        .wrapContentHeight(Alignment.CenterVertically),
+
+                                    text = "더보기",
+                                    style = TextStyle(
+                                        color = MainColor,
+                                        fontSize = 16.sp,
+                                        fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+                                    )
+                                )
+
+
+                            }
+                        }
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp)
+                                .height(1.dp)
+                                .fillMaxWidth(),
+                            color = GreyColor
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .padding(end = 10.dp)
+                        )
+                        {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ){
+
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(horizontal = 16.dp)
+                                        .wrapContentHeight(Alignment.CenterVertically),
+
+
+                                    text = "영업 중",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 15.sp,
+                                        fontFamily = FontFamily(Font(R.font.notosanskr_semibold))
+                                    ),
+                                )
+
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .wrapContentHeight(Alignment.CenterVertically),
+
+                                    text = "08 : 00 - 22 : 00 ",
+                                    style = TextStyle(
+                                        color = Color.Black,
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.notosanskr_medium))
+                                    )
+                                )
+                            }
+                        }
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                        )
+                        {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp)
+                            ){
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .padding(end = 15.dp)
+                                        .wrapContentHeight(Alignment.CenterVertically),
+
+
+                                    text = "864 m",
+                                    style = TextStyle(
+                                        color = BlackColor,
+                                        fontSize = 15.sp,
+                                        fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+                                    ),
+                                )
+
+                                Text(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                        .wrapContentHeight(Alignment.CenterVertically),
+
+                                    text = "서울특별시 세진구",
+                                    style = TextStyle(
+                                        color = GreyColor,
+                                        fontSize = 14.sp,
+                                        fontFamily = FontFamily(Font(R.font.notosanskr_medium))
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .height(1.dp)
+                        .fillMaxWidth(),
+                    color = GreyColor
+                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f) // 1:1 비율로 나누기 위해 weight 사용
+                        .fillMaxWidth()
+                ){
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ){
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clickable { },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ){
+                            //id = save_icon
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.save_icon),
+//                                contentDescription = "저장 아이콘",
+//                                modifier = Modifier.size(40.dp)
+//                            )
+                            IconToggleButton(isSaved, 40.dp) {
+                                isSaved = !isSaved
+                            }
+                            Text(
+                                text = "저장",
+                                style = TextStyle(fontSize = 15.sp),
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+
+                            )
+
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clickable { },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ){
+                            Icon(
+                                painter = painterResource(id = R.drawable.car_icon),
+                                contentDescription = "네비게이션 아이콘",
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = "네비게이션",
+                                style = TextStyle(fontSize = 15.sp),
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clickable { },
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ){
+                            Icon(
+                                painter = painterResource(id = R.drawable.share_icon),
+                                contentDescription = "공유 아이콘",
+                                modifier = Modifier.size(40.dp)
+                            )
+                            Text(
+                                text = "공유",
+                                style = TextStyle(fontSize = 15.sp),
+                                modifier = Modifier.align(Alignment.CenterHorizontally),
+                                fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+
+                            )
+                        }
+                    }
+                }
             }
         },
         sheetPeekHeight = 0.dp,
@@ -122,6 +402,12 @@ fun MainScreen() {
                        contentDescription = "Search",
                        modifier = Modifier.size(24.dp)
                    )
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        modifier = Modifier.size(24.dp)
+                    )
+                    
                     Spacer(modifier = Modifier.weight(1f))
                     Row(
                         modifier =  Modifier
@@ -130,19 +416,27 @@ fun MainScreen() {
                             },
                         verticalAlignment = Alignment.CenterVertically
                     ){
-                        Text(
-                            text = "필터적용",
-                            style = TextStyle(
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                                fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+                        OutlinedButton(
+                            onClick = { /* TODO: Handle button click */ },
+                            colors = ButtonDefaults.outlinedButtonColors(containerColor = MainColor), // 배경색을 설정
+                            modifier = Modifier
+                                .height(40.dp) // 버튼 높이를 설정
+                                .wrapContentWidth(), // 너비를 원하는 대로 설정
+                            shape = RoundedCornerShape(12.dp), // 버튼 모양을 둥글게 설정
+                            border = BorderStroke(2.dp, Color.Red), // 빨간색 테두리를 추가
+                            contentPadding = PaddingValues(horizontal = 16.dp) // 내부 패딩 조정
+                        ) {
+                            Text(
+                                text = "조건 검색",
+                                style = TextStyle(
+                                    color = Color.White, // 텍스트 색상을 흰색으로 설정하여 버튼 배경과 대비되도록 함
+                                    fontSize = 14.sp,
+                                    fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+                                )
                             )
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.rightarrow_icon),
-                            contentDescription = "필터 열기",
-                            modifier = Modifier.size(24.dp)
-                        )
+                        }
+
+
                     }
                 }
                 Spacer(modifier = Modifier.height(5.dp))
