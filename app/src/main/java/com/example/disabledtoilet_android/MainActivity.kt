@@ -54,20 +54,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun IconToggleButton(isSaved: Boolean, iconSize: Dp, onIconClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .clickable { onIconClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = if (isSaved) R.drawable.saved_star_icon else R.drawable.save_icon),
-            contentDescription = "저장 아이콘",
-            modifier = Modifier.size(iconSize)
-        )
-    }
-}
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
