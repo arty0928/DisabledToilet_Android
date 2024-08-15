@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ui.theme.BlackColor
 import com.example.disabledtoilet_android.ui.theme.DisabledToilet_AndroidTheme
+import com.example.disabledtoilet_android.ui.theme.GreyColor
 import com.example.disabledtoilet_android.ui.theme.WhiteColor
 import kotlinx.coroutines.launch
 
@@ -61,13 +63,14 @@ fun MainScreen() {
         scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState
         ),
-        sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        sheetShape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
         sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
                     .background(Color.White)
+                    .border(2.dp, GreyColor, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // 테두리를 빨간색으로 설정
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -77,7 +80,9 @@ fun MainScreen() {
         },
         sheetPeekHeight = 0.dp,
         topBar = { SearchBar() },
-        containerColor = Color.White
+        containerColor = WhiteColor,
+        sheetContainerColor = WhiteColor
+
     ) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
