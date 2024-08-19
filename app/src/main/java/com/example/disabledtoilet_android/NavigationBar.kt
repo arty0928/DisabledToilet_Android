@@ -100,6 +100,48 @@ fun NavigationBar() {
 
                 )
             }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clickable { },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.mypage_icon),
+                    contentDescription = "마이페이지 아이콘",
+                    modifier = Modifier.size(40.dp)
+                )
+                Text(
+                    text = "MY",
+                    style = TextStyle(fontSize = 12.sp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clickable { },
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+                Icon(
+                    painter = painterResource(id = R.drawable.mypage_icon),
+                    contentDescription = "마이페이지 아이콘",
+                    modifier = Modifier.size(40.dp)
+                )
+                Text(
+                    text = "MY",
+                    style = TextStyle(fontSize = 12.sp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    fontFamily = FontFamily(Font(R.font.notosanskr_bold))
+
+                )
+            }
         }
     }
 }
