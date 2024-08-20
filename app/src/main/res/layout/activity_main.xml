@@ -34,6 +34,7 @@
         >
 
         <LinearLayout
+            android:id="@+id/near_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -57,13 +58,14 @@
                 android:gravity="center"
                 android:text="내 주변"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blackColor"
                 android:fontFamily="@font/notosanskr_bold"
                 />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/search_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -85,9 +87,9 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="내 주변"
+                android:text="장소 검색"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blackColor"
                 android:fontFamily="@font/notosanskr_bold"
                 />
 
@@ -107,6 +109,7 @@
         >
 
         <LinearLayout
+            android:id="@+id/plustoilet_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -128,15 +131,16 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="내 주변"
+                android:text="화장실 등록"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blackColor"
                 android:fontFamily="@font/notosanskr_bold"
                 />
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/myplace_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -158,9 +162,9 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="내 주변"
+                android:text="내 장소"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blackColor"
                 android:fontFamily="@font/notosanskr_bold"
                 />
 
@@ -181,6 +185,7 @@
         >
 
         <LinearLayout
+            android:id="@+id/mypage_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -202,9 +207,9 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="내 주변"
+                android:text="마이페이지"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blackColor"
                 android:fontFamily="@font/notosanskr_bold"
                 />
 
@@ -234,7 +239,7 @@
                 android:gravity="center"
                 android:text="내 주변"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/blackColor"
                 android:fontFamily="@font/notosanskr_bold"
                 />
 

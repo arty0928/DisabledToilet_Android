@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Top Layout with overlay -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        >
+
+        <!-- Text centered in the FrameLayout -->
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="내 주변"
+            android:fontFamily="@font/notosanskr_bold"
+            android:textColor="@color/blackColor"
+            android:textSize="25dp" />
+
+
+
+        <!-- Back button positioned on top of the text -->
+        <ImageButton
+            android:layout_marginLeft="10dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="start|center_vertical"
+            android:background="@android:color/transparent"
+            android:src="@drawable/back_button"
+            android:scaleType="fitCenter"
+            android:contentDescription="Back Button"
+            android:onClick="onBackPressed" /> <!-- Calls onBackPressed() when clicked -->
+
+    </FrameLayout>
+
+    <!-- Main Layout below the top section -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        >
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+            <!-- Add your map or other UI components here -->
+
+        <Button
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="10dp"
+            android:text="조건 적용"
+            android:textColor="@color/whiteColor"
+            android:fontFamily="@font/notosanskr_bold"
+            android:textSize="18dp"
+            android:background="@drawable/filter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:layout_gravity="end|top"
+            android:contentDescription="Back Button"
+            android:onClick="onBackPressed" />
+
+        <ImageButton
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+            android:padding="10dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="end|bottom"
+            android:elevation="10dp"
+            android:background="@drawable/custom_button_round"
+            android:src="@drawable/aim_icon"
+            android:scaleType="fitCenter"
+            android:contentDescription="Back Button"
+            android:onClick="onBackPressed" />
+
+
+    </FrameLayout>
+
+</LinearLayout>
