@@ -17,6 +17,13 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NearActivity::class.java)
             startActivity(intent)
         }
+
+        val searchButton : LinearLayout = findViewById(R.id.search_button)
+
+        searchButton.setOnClickListener{
+            val intent = Intent(this, NearActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
 

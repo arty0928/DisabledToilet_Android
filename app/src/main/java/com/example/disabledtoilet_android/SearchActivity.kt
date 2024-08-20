@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 
-class NearActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_near)
+        setContentView(R.layout.activity_search)
 
         // Find the ImageButton by its ID
         val backButton: ImageButton = findViewById(R.id.back_button)
