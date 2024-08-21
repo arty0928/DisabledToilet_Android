@@ -1,6 +1,7 @@
 package com.example.disabledtoilet_android
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,14 @@ class NearActivity : AppCompatActivity() {
         // Set an OnClickListener to call onBackPressed() when the button is clicked
         backButton.setOnClickListener {
             onBackPressed()
+        }
+
+        val mapButton: ImageButton = findViewById(R.id.map_icon)
+
+        // Set an OnClickListener to call onBackPressed() when the button is clicked
+        backButton.setOnClickListener {
+            val intent = Intent(this, NearActivity::class.java)
+            startActivity(intent)
         }
     }
 }

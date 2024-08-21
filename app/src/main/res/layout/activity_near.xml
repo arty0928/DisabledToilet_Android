@@ -46,6 +46,7 @@
         >
 
         <ImageButton
+            android:id="@+id/map_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
             <!-- Add your map or other UI components here -->
