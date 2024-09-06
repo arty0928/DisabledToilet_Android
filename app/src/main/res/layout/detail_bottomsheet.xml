@@ -40,7 +40,6 @@
                 android:textColor="@color/mainColor"
                 android:textSize="20sp"
                 android:maxLines="1"
-                android:ellipsize="end"
                 android:fontFamily="@font/notosanskr_bold"/>
 
             <LinearLayout
@@ -80,7 +79,7 @@
                 android:gravity="center_vertical|end"
                 android:text="더보기"
                 android:textColor="@color/mainColor"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:fontFamily="@font/notosanskr_bold"/>
         </LinearLayout>
 
@@ -94,7 +93,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:orientation="horizontal"
             android:paddingEnd="10dp">
 
@@ -125,7 +124,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_weight="0.8"
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
@@ -195,33 +194,6 @@
                 android:fontFamily="@font/notosanskr_bold"/>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:clickable="true">
-
-            <ImageView
-                android:padding="10dp"
-
-                android:id="@+id/naviation_icon"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="2"
-                android:src="@drawable/car_icon"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="bottom|center_horizontal"
-                android:text="네비게이션"
-                android:textSize="15dp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/notosanskr_bold"/>
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -250,5 +222,45 @@
                 android:textColor="@color/black"
                 android:fontFamily="@font/notosanskr_bold"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="15dp"
+            >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/corner_up_right"
+                android:gravity="center"
+                android:clickable="true">
+
+                <ImageView
+                    android:padding="10dp"
+
+                    android:id="@+id/naviation_icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"
+                    android:src="@drawable/corner_up_right_icon"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="bottom|center_horizontal"
+                    android:text="네비게이션"
+                    android:textSize="15dp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/notosanskr_bold"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

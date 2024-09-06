@@ -1,3 +1,7 @@
+
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -18,6 +22,12 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+    }
+
+    // 여기에 buildFeatures 블록 추가
+    buildFeatures {
+        buildConfig = true // BuildConfig 기능 활성화
     }
 
     buildTypes {
@@ -29,19 +39,24 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -61,6 +76,21 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    implementation ("com.kakao.sdk:v2-all:2.20.1") // 전체 모듈 설치, 2.11.0 버전부터 지원
+    implementation ("com.kakao.sdk:v2-user:2.20.1") // 카카오 로그인 API 모듈
+    implementation ("com.kakao.sdk:v2-share:2.20.1") // 카카오톡 공유 API 모듈
+    implementation ("com.kakao.sdk:v2-talk:2.20.1") // 카카오톡 채널, 카카오톡 소셜, 카카오톡 메시지 API 모듈
+    implementation ("com.kakao.sdk:v2-friend:2.20.1") // 피커 API 모듈
+    implementation ("com.kakao.sdk:v2-navi:2.20.1") // 카카오내비 API 모듈
+    implementation ("com.kakao.sdk:v2-cert:2.20.1") // 카카오톡 인증 서비스 API 모듈
+    implementation("com.google.android.material:material:1.9.0")
+
+    implementation ("com.kakao.maps.open:android:2.11.9")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+
+    implementation(libs.play.services.maps)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,4 +98,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+
 }

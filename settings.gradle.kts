@@ -9,13 +9,20 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // Kakao Maven repository 추가
+        maven { url = uri("https://devrepo.kakao.com/nexus/content/groups/public/") }
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        // Kakao Maven repository 추가
+        maven { url = java.net.URI("https://devrepo.kakao.com/nexus/content/groups/public/") }
+        maven { url = java.net.URI("https://devrepo.kakao.com/nexus/repository/kakaomap-releases/") }
+
     }
 }
 
