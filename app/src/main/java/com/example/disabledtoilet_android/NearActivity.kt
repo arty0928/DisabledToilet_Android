@@ -3,6 +3,7 @@ package com.example.disabledtoilet_android
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -15,8 +16,13 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.MarkerOptions
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
 
 class NearActivity : AppCompatActivity() {
 
@@ -94,11 +100,16 @@ class NearActivity : AppCompatActivity() {
                         val startPosition = LatLng.from(it.latitude, it.longitude)
 
                         // 지도 중심 설정 및 줌 레벨 설정
-                        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(startPosition, 15))
+                        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(startPosition, 16))
+
+                        addMarkerToMap(startPosition)
+
                     } ?: run {
                         // 위치를 가져오지 못한 경우 기본 위치로 설정 (예: 서울시청)
                         val defaultLocation = LatLng.from(37.5665, 126.9780)
                         kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(defaultLocation, 15))
+
+                        addMarkerToMap(defaultLocation)
                     }
                 }
                 .addOnFailureListener {
@@ -107,6 +118,27 @@ class NearActivity : AppCompatActivity() {
                 }
         }
     }
+
+    private fun addMarkerToMap(position: LatLng) {
+        // 1. LabelStyles 생성하기 - Icon 이미지 하나만 있는 스타일
+        val styles = kakaoMap.labelManager
+            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.pos_icon))
+            )
+
+        // 2. LabelOptions 생성하기
+        val options = LabelOptions.from(position)
+            .setStyles(styles)
+
+        // 3. LabelLayer 가져오기 (또는 커스텀 Layer 생성)
+        val layer = kakaoMap.labelManager?.layer
+
+        // 4. LabelLayer에 LabelOptions을 넣어 Label 생성하기
+        val label = layer?.addLabel(options)
+    }
+
+
+
+
 
 
     override fun onResume() {
