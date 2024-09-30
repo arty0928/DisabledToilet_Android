@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Layer 1: 메인 모양 (물방울 상단 둥근 부분) -->
+    <!-- 위치 점 아이콘 -->
     <item>
-        <shape android:shape="rectangle">
-            <solid android:color="@color/mainColor"/> <!-- 메인 색상 -->
-            <corners android:topLeftRadius="100dp"
-                android:topRightRadius="100dp"
-                android:bottomLeftRadius="20dp"
-                android:bottomRightRadius="20dp"/> <!-- 상단 둥글게, 하단 날카롭게 -->
-        </shape>
+        <bitmap
+            android:src="@drawable/blue_marker_icon"
+        android:gravity="center"/>
     </item>
 
-    <!-- Layer 2: 흰색 내부 원 -->
-    <item android:top="25dp" android:bottom="25dp" android:left="25dp" android:right="25dp">
-        <shape android:shape="oval">
-            <solid android:color="@android:color/white"/> <!-- 흰색 내부 원 -->
+    <!-- 라벨 배경 (타원형) -->
+    <item android:top="50dp" android:left="10dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF"/> <!-- 라벨 배경 색상 -->
+            <corners android:radius="8dp"/> <!-- 모서리 둥글기 -->
+            <stroke
+                android:width="1dp"
+                android:color="#000000"/> <!-- 테두리 색상 -->
         </shape>
     </item>
 

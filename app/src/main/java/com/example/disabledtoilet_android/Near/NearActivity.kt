@@ -1,4 +1,4 @@
-package com.example.disabledtoilet_android
+package com.example.disabledtoilet_android.Near
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.api.RetrofitInstance
 import com.example.disabledtoilet_android.api.ToiletDataResponse
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -21,9 +22,6 @@ import com.kakao.vectormap.label.LabelStyles
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import org.json.JSONObject
 
 class NearActivity : AppCompatActivity() {
 

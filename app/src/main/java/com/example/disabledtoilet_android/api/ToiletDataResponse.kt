@@ -1,7 +1,4 @@
-package com.example.disabledtoilet_android.data
-
-import ToiletData
-import com.google.gson.annotations.SerializedName
+package com.example.disabledtoilet_android.api
 
 data class ToiletDataResponse(
     val success: Boolean,
