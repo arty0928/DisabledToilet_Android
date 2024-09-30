@@ -1,28 +1,29 @@
 package com.example.disabledtoilet_android
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
-import android.renderscript.RenderScript
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.disabledtoilet_android.api.RetrofitInstance
+import com.example.disabledtoilet_android.api.ToiletDataResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.MarkerOptions
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import org.json.JSONObject
 
 class NearActivity : AppCompatActivity() {
 
@@ -47,7 +48,34 @@ class NearActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             onBackPressed()
         }
+
+
+        //서버 데이터 가져오기
+        //RetrofitInstancce 초기화, Context 전달
+        RetrofitInstance.initRetrofit(this)
+
+       getPublicToiletById(35)
     }
+
+    private fun getPublicToiletById(toiletId: Int) {
+        val call: Call<ToiletDataResponse> = RetrofitInstance.api.getPublicToiletById(toiletId)
+        call.enqueue(object : Callback<ToiletDataResponse> {
+            override fun onResponse(call: Call<ToiletDataResponse>, response: Response<ToiletDataResponse>) {
+                if (response.isSuccessful) {
+                    val toiletData = response.body()?.data?.firstOrNull()
+                    Log.d("GET Response", "Data retrieved: $toiletData")
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("GET Error", "Failed to retrieve data: $errorBody")
+                }
+            }
+
+            override fun onFailure(call: Call<ToiletDataResponse>, t: Throwable) {
+                Log.e("GET Failure", "Error: ${t.message}")
+            }
+        })
+    }
+
 
     private fun checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -95,7 +123,7 @@ class NearActivity : AppCompatActivity() {
             // 현재 위치 가져오기
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location ->
-                    location?.let {
+                    location!!.let {
                         // 현재 위치를 기반으로 지도의 중심을 설정
                         val startPosition = LatLng.from(it.latitude, it.longitude)
 
@@ -104,12 +132,6 @@ class NearActivity : AppCompatActivity() {
 
                         addMarkerToMap(startPosition)
 
-                    } ?: run {
-                        // 위치를 가져오지 못한 경우 기본 위치로 설정 (예: 서울시청)
-                        val defaultLocation = LatLng.from(37.5665, 126.9780)
-                        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(defaultLocation, 15))
-
-                        addMarkerToMap(defaultLocation)
                     }
                 }
                 .addOnFailureListener {
@@ -122,7 +144,7 @@ class NearActivity : AppCompatActivity() {
     private fun addMarkerToMap(position: LatLng) {
         // 1. LabelStyles 생성하기 - Icon 이미지 하나만 있는 스타일
         val styles = kakaoMap.labelManager
-            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.pos_icon))
+            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.saved_star_icon))
             )
 
         // 2. LabelOptions 생성하기
@@ -135,11 +157,6 @@ class NearActivity : AppCompatActivity() {
         // 4. LabelLayer에 LabelOptions을 넣어 Label 생성하기
         val label = layer?.addLabel(options)
     }
-
-
-
-
-
 
     override fun onResume() {
         super.onResume()

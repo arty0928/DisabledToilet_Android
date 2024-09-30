@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "113683662684",
+    "project_id": "dreamhyoja-44009",
+    "storage_bucket": "dreamhyoja-44009.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113683662684:android:b02386fef3ceb9f9822399",
+        "android_client_info": {
+          "package_name": "com.example.disabledtoilet_android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqaXnarQvpAHyhSRwEiWcGqLo9bhxPVoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
