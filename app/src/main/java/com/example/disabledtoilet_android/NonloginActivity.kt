@@ -58,7 +58,7 @@ class NonloginActivity : AppCompatActivity() {
 
     private fun startLoginGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com") // 이 부분을 확인
+            .requestIdToken(getString(R.string.web_client_id)) // 이 부분을 확인
             .requestEmail()
             .build()
 
@@ -86,6 +86,12 @@ class NonloginActivity : AppCompatActivity() {
     private fun onLoginCompleted(userId: String?, accessToken: String?) {
         Toast.makeText(this, "구글 로그인 성공", Toast.LENGTH_SHORT).show()
         Log.e(TAG, "userId: $userId / accessToken: $accessToken")
+
+        // MainActivity로 이동
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) // 이전 액티비티 제거
+        startActivity(intent)
+        finish() // 현재 액티비티 종료
     }
 
     private fun onError(error: Error?) {
