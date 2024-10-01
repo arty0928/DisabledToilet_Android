@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
-import com.google.android.material.snackbar.Snackbar
+import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
@@ -14,16 +16,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
 class NonloginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNonloginBinding
-    private lateinit var googleSignInClient  :GoogleSignInClient
-    private lateinit var firebaseAuth : FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private val RC_SIGN_IN = 9001
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,65 +33,84 @@ class NonloginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //내 주변
-        val nearButton : LinearLayout = findViewById(R.id.near_button)
-
-        nearButton.setOnClickListener{
+        val nearButton: LinearLayout = findViewById(R.id.near_button)
+        nearButton.setOnClickListener {
             val intent = Intent(this, NearActivity::class.java)
             startActivity(intent)
         }
 
         //장소 검색
-        val searchButton : LinearLayout = findViewById(R.id.search_button)
-
-        searchButton.setOnClickListener{
+        val searchButton: LinearLayout = findViewById(R.id.search_button)
+        searchButton.setOnClickListener {
             val intent = Intent(this, NearActivity::class.java)
             startActivity(intent)
         }
 
-        //구글 로그인
-
-        //FirebaseAuth 인스턴스 초기화
+        // 구글 로그인 초기화
         firebaseAuth = FirebaseAuth.getInstance()
 
-        //GoogleSignInOptions 설정
+        // 로그인 버튼 클릭 시 동작
+        val googleLoginButton: Button = findViewById(R.id.google_login_button)
+        googleLoginButton.setOnClickListener {
+            startLoginGoogle()
+        }
+    }
+
+    private fun startLoginGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.login_id)) // ID Token 요청
-            .requestEmail() // 이메일 요청
+            .requestIdToken("737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com") // 이 부분을 확인
+            .requestEmail()
             .build()
 
-        // GoogleSignInClient 초기화
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        googleSignInClient = GoogleSignIn.getClient(applicationContext, gso)
+        googleLoginResult.launch(googleSignInClient.signInIntent)
+    }
 
-        // 로그인 버튼 클릭 시 동작
-        val googleLoginButton : Button = findViewById(R.id.google_login_button)
+    private val googleLoginResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val data = result.data
 
-        googleLoginButton.setOnClickListener {
-            signIn()
+            try {
+                val completedTask = GoogleSignIn.getSignedInAccountFromIntent(data)
+                val account = completedTask.getResult(ApiException::class.java)
+                onLoginCompleted("${account?.id}", "${account?.idToken}")
+            } catch (e: ApiException) {
+                // 상세한 에러 로그 추가
+                Log.e(TAG, "Google sign in failed with status code: ${e.statusCode}")
+                Log.e(TAG, "Detailed message: ${e.message}")
+                Log.e(TAG, "Exception stacktrace:", e)
+                onError(Error(e))
+            }
         }
 
+    private fun onLoginCompleted(userId: String?, accessToken: String?) {
+        Toast.makeText(this, "구글 로그인 성공", Toast.LENGTH_SHORT).show()
+        Log.e(TAG, "userId: $userId / accessToken: $accessToken")
     }
 
-    private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+    private fun onError(error: Error?) {
+        Toast.makeText(this, "구글 로그인 실패", Toast.LENGTH_SHORT).show()
+        Log.e(TAG, "구글 로그인 실패 onError / error: ${error} / error.msg: ${error?.message}")
     }
 
-    //로그인 결과 처리
+    // 로그인 결과 처리
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
+                // 로그인 성공
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // 로그인 실패 처리
-                Log.w("GoogleLogin", "Google sign in failed", e)
+                Log.e(TAG, "Google sign in failed with status code: ${e.statusCode}")
+                Log.e(TAG, "Google sign in failed with message: ${e.message}")
+                Log.e(TAG, "Exception stacktrace:", e)
+                Toast.makeText(this, "로그인 실패: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 
     // Firebase로 Google 로그인 인증
@@ -101,11 +122,23 @@ class NonloginActivity : AppCompatActivity() {
                     // 로그인 성공 처리
                     val user = firebaseAuth.currentUser
                     Log.d(TAG, "signInWithCredential:success")
+                    updateUI(user)
                 } else {
                     // 로그인 실패 처리
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    Log.e(TAG, "signInWithCredential:failure", task.exception)
+                    Log.e(TAG, "Firebase sign-in failed with message: ${task.exception?.message}")
                 }
             }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            // 로그인 성공 시 UI 업데이트
+            Toast.makeText(this, "로그인 성공: ${user.displayName}", Toast.LENGTH_SHORT).show()
+        } else {
+            // 로그인 실패 시 UI 업데이트
+            Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
@@ -125,5 +158,4 @@ class NonloginActivity : AppCompatActivity() {
             // 로그아웃 완료 후 처리
         }
     }
-
 }
