@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.disabledtoilet_android.Near.NearActivity
+import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.common.KakaoSdk
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         val searchButton : LinearLayout = findViewById(R.id.search_button)
 
         searchButton.setOnClickListener{
-            val intent = Intent(this, NearActivity::class.java)
+            val intent = Intent(this, ToiletFilterSearchActivity::class.java)
             startActivity(intent)
         }
 

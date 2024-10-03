@@ -118,6 +118,15 @@
 
 
     </LinearLayout>
+    <Button
+        android:id="@+id/tempButton"
+        android:background="@color/subColor"
+        android:text="임시버튼"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"/>
 
 
 </LinearLayout>

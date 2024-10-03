@@ -1,6 +1,0 @@
-<!-- res/values/styles.xml -->
-<resources>
-    <style name="Theme.DisabledToilet_Android" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here -->
-    </style>
-</resources>

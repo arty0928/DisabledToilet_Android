@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.disabledtoilet_android.Near.NearActivity
+import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -32,6 +33,15 @@ class NonloginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //임시 버튼
+        binding.tempButton.setOnClickListener {
+            // MainActivity로 이동
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) // 이전 액티비티 제거
+            startActivity(intent)
+            finish() // 현재 액티비티 종료
+        }
 
         //내 주변
         val nearButton: LinearLayout = findViewById(R.id.near_button)
