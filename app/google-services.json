@@ -1,7 +1,6 @@
 {
   "project_info": {
     "project_number": "737108612220",
-    "firebase_url": "https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "dreamhyoja",
     "storage_bucket": "dreamhyoja.appspot.com"
   },
@@ -22,6 +21,12 @@
             "certificate_hash": "622ffdb03a913e98d035d8991b2b26b969c97ada"
           }
         },
+        {
+          "client_id": "737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "oauth_client": [
         {
           "client_id": "737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com",
           "client_type": 3

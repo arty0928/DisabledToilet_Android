@@ -14,6 +14,12 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="login_id">113683662684-28a42nck9gi0ijis6806i2v5v8ilum77.apps.googleusercontent.com</string>
+
+    <string name="web_client_id">737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com</string>
+
+    <string name="sha1_release">62:2F:FD:B0:3A:91:3E:98:D0:35:D8:99:1B:2B:26:B9:69:C9:7A:DA</string>
+    <string name="sha1_debug">BF:32:C9:99:30:F2:3B:16:7E:B6:B9:27:7D:23:20:85:A6:91:B1:1D</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>

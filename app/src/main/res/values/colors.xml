@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="background">#FFF2F4F6</color>
+    <color name="background">#F2F4F6</color>
 
-    <color name="mainColor">#FF790BBC</color>
+    <color name="mainColor">#790BBC</color>
     <color name="subColor">#FFE2B5FD</color>
     <color name="greenColor">#00D53C</color>
 

@@ -17,7 +17,6 @@ class ToiletRepository {
                 Log.d(tag, toiletList.get(i).restroom_name)
             }
         }
-
     }
 
     fun getToiletByRoadAddress(roadAddress: String): MutableList<ToiletModel>{
