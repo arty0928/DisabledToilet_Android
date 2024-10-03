@@ -1,4 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/nav_item1"
+        android:title="내 주변" />
+    <item
+        android:id="@+id/nav_item2"
+        android:title="장소 검색" />
+    <item
+        android:id="@+id/nav_item3"
+        android:title="화장실 등록" />
+    <item
+        android:id="@+id/nav_item4"
+        android:title="내 장소" />
+    <!-- 추가 메뉴 항목 -->
 </menu>
