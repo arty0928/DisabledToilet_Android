@@ -1,26 +1,45 @@
 {
   "project_info": {
-    "project_number": "113683662684",
-    "project_id": "dreamhyoja-44009",
-    "storage_bucket": "dreamhyoja-44009.appspot.com"
+    "project_number": "737108612220",
+    "firebase_url": "https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "dreamhyoja",
+    "storage_bucket": "dreamhyoja.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:113683662684:android:b02386fef3ceb9f9822399",
+        "mobilesdk_app_id": "1:737108612220:android:345e4690707e88866ea5f9",
         "android_client_info": {
           "package_name": "com.example.disabledtoilet_android"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "737108612220-p44a96i1rhlevgagded27pv74bars2li.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.disabledtoilet_android",
+            "certificate_hash": "622ffdb03a913e98d035d8991b2b26b969c97ada"
+          }
+        },
+        {
+          "client_id": "737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAqaXnarQvpAHyhSRwEiWcGqLo9bhxPVoQ"
+          "current_key": "AIzaSyDFERK5h0uH2ENlnJJIFMB39SjwDnF28W0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "737108612220-jc5mbnmtcqhlp9aprd5spjeutksret9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

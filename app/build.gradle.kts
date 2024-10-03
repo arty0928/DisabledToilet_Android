@@ -74,6 +74,18 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.activity)
+    // Required -- JUnit 4 framework
+    testImplementation("junit:junit:4.13.2")
+// Optional -- Robolectric environment
+    testImplementation("androidx.test:core:1.5.0")
+// Optional -- Mockito framework
+    testImplementation("org.mockito:mockito-core:5.4.0")
+// Optional -- mockito-kotlin
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
+// Optional -- Mockk framework
+    testImplementation("io.mockk:mockk:1.13.5")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -127,5 +139,16 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
 
     implementation("com.google.firebase:firebase-firestore")
+
+    // Import the BoM for the Firebase platform
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-firestore")
+
+    // Add the dependency for the Realtime Database library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-database-ktx")
 
 }

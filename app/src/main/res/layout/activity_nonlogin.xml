@@ -5,55 +5,50 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NonloginActivity"
-    android:orientation="vertical"
     android:background="@color/background"
-    >
+    android:orientation="vertical"
+    tools:context=".NonloginActivity">
 
     <ImageView
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
         android:layout_width="70dp"
         android:layout_height="50dp"
-        android:src="@drawable/menu_icon"
-        android:scaleType="centerInside"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/menu_icon" />
 
     <LinearLayout
-        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        >
+        android:paddingTop="20dp">
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/logo"
             android:scaleType="centerInside"
-            />
+            android:src="@drawable/logo" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        android:paddingBottom="15dp"
+        android:orientation="horizontal"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
-        >
+        android:paddingBottom="15dp">
 
         <LinearLayout
             android:id="@+id/near_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             android:background="@drawable/custom_button"
-            >
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -66,12 +61,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/notosanskr_bold"
                 android:gravity="center"
                 android:text="내 주변"
-                android:textSize="20sp"
                 android:textColor="@color/black"
-                android:fontFamily="@font/notosanskr_bold"
-                />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -79,12 +73,11 @@
             android:id="@+id/search_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_margin="8dp"
+            android:layout_weight="1"
             android:background="@drawable/custom_button"
-            >
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -97,38 +90,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/notosanskr_bold"
                 android:gravity="center"
                 android:text="장소 검색"
-                android:textSize="20sp"
                 android:textColor="@color/black"
-                android:fontFamily="@font/notosanskr_bold"
-                />
+                android:textSize="20sp" />
 
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginTop="60dp">
 
         <Button
-            android:layout_marginHorizontal="20dp"
             android:id="@+id/google_login_button"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:text="구글 로그인"
-            android:gravity="center"
-            android:textColor="@color/white"
+            android:layout_marginHorizontal="20dp"
+            android:autoSizeTextType="uniform"
             android:background="@drawable/google_login_button"
             android:fontFamily="@font/notosanskr_semibold"
-            android:autoSizeTextType="uniform"
-            />
+            android:gravity="center"
+            android:text="구글 로그인"
+            android:textColor="@color/white" />
 
 
     </LinearLayout>
-
 
 
 </LinearLayout>

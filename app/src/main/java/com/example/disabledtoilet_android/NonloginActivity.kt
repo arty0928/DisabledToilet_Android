@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.disabledtoilet_android.Near.NearActivity
+import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -15,15 +16,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 class NonloginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNonloginBinding
-    private lateinit var googleSignInClient  :GoogleSignInClient
-    private lateinit var firebaseAuth : FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var firebaseAuth: FirebaseAuth
 
     private val RC_SIGN_IN = 9001
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,17 +38,17 @@ class NonloginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //내 주변
-        val nearButton : LinearLayout = findViewById(R.id.near_button)
+        val nearButton: LinearLayout = findViewById(R.id.near_button)
 
-        nearButton.setOnClickListener{
+        nearButton.setOnClickListener {
             val intent = Intent(this, NearActivity::class.java)
             startActivity(intent)
         }
 
         //장소 검색
-        val searchButton : LinearLayout = findViewById(R.id.search_button)
+        val searchButton: LinearLayout = findViewById(R.id.search_button)
 
-        searchButton.setOnClickListener{
+        searchButton.setOnClickListener {
             val intent = Intent(this, NearActivity::class.java)
             startActivity(intent)
         }
@@ -61,7 +68,7 @@ class NonloginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         // 로그인 버튼 클릭 시 동작
-        val googleLoginButton : Button = findViewById(R.id.google_login_button)
+        val googleLoginButton: Button = findViewById(R.id.google_login_button)
 
         googleLoginButton.setOnClickListener {
             signIn()
@@ -125,5 +132,4 @@ class NonloginActivity : AppCompatActivity() {
             // 로그아웃 완료 후 처리
         }
     }
-
 }

@@ -21,19 +21,19 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ToiletSearch.ToiletFilterSearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".NonloginActivity"
             android:exported="true"
-            android:theme="@style/Theme.DisabledToilet_Android">
+            android:theme="@style/Theme.AppCompat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".User.UI.ui.login.LoginActivity"
-            android:exported="false"
-            android:label="@string/title_activity_login" /> <!-- Kakao API 키를 설정합니다. -->
+
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="ce27585c8cc7c468ac7c46901d87199d" />
