@@ -9,23 +9,26 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 object ToiletData {
-    var toilets = mutableListOf<ToiletModel>()
-
-    val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+    val Tag = "[ToiletData]"
+    val database: FirebaseDatabase = FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
     val toiletsRef: DatabaseReference = database.getReference("public_toilet")
+    var toilets = mutableListOf<ToiletModel>()
+    var toiletListInit = false
 
     fun getToiletData(callback: (List<ToiletModel>?) -> Unit){
+        Log.d(Tag, "getToiletData called")
         toiletsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (childSnapshot in snapshot.children) {
                     val toilet = childSnapshot.getValue(ToiletModel::class.java)
                     toilet?.let { toilets.add(it) }
                 }
+                toiletListInit = true
                 callback(toilets)
             }
 
             override fun onCancelled(error: DatabaseError) {
-                println("Error: ${error.message}")
+                Log.d(Tag, "getToiletData failed")
                 callback(emptyList())
             }
         })

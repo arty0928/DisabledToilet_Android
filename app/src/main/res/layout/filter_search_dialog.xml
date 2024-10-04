@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="40dp"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginLeft="10dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/cancel_x" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/notosanskr_bold"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="조건 검색"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/white_round_box"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp">
+
+        <TextView
+            android:id="@+id/recentCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="화장실 최근 점검"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/text1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/circle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:background="@color/white"
+            android:src="@drawable/check_circle"
+            app:flow_verticalBias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="없음"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/circle1"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <ImageButton
+            android:id="@+id/circle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="19dp"
+            android:background="@color/white"
+            android:src="@drawable/check_circle"
+            app:flow_verticalBias="0.5"
+            app:layout_constraintStart_toEndOf="@id/text1"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <TextView
+            android:id="@+id/text2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="1년 이내"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/circle2"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <ImageButton
+            android:id="@+id/circle3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="19dp"
+            android:background="@color/white"
+            android:src="@drawable/check_circle"
+            app:flow_verticalBias="0.5"
+            app:layout_constraintStart_toEndOf="@id/text2"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <TextView
+            android:id="@+id/text3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="6개월 이내"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/circle3"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <ImageButton
+            android:id="@+id/circle4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="19dp"
+            android:background="@color/white"
+            android:src="@drawable/check_circle"
+            app:flow_verticalBias="0.5"
+            app:layout_constraintStart_toEndOf="@id/text3"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+        <TextView
+            android:id="@+id/text4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="한달 이내"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/circle4"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/white_round_box"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp">
+
+        <TextView
+            android:id="@+id/operating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="화장실 최근 점검"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/operatingCircle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="19dp"
+            android:background="@color/white"
+            android:src="@drawable/check_circle"
+            app:flow_verticalBias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/operating" />
+
+        <TextView
+            android:id="@+id/operatingText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="15dp"
+            android:text="없음"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@id/operatingCircle1"
+            app:layout_constraintTop_toBottomOf="@id/operating" />
+
+        <ImageButton
+            android:id="@+id/operatingCircle2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/white"
+            android:src="@drawable/check_circle"
+            app:layout_constraintEnd_toStartOf="@id/operatingText2"
+            app:layout_constraintTop_toBottomOf="@id/operating" />
+
+        <TextView
+            android:id="@+id/operatingText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="70dp"
+            android:text="한달 이내"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/operating" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/white_round_box"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp">
+
+        <TextView
+            android:id="@+id/filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="조건 적용"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alignmentMode="alignBounds"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:rowCount="4"
+            android:useDefaultMargins="true">
+
+            <TextView
+                android:id="@+id/filter1"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="남녀구분"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/filter2"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="손잡이"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/filter3"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="자동문"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/filter4"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="다목적 화장실"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/filter5"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="미닫이"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/filter6"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="점자블록"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/filter7"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="접이문"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+            <TextView
+                android:id="@+id/filter8"
+                android:layout_gravity="center"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/filter_button_around"
+                android:gravity="center"
+                android:text="접이문"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+        </GridLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/clearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/white"
+            android:text="초기화"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/searchToilet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/corner_up_right"
+            android:text="화장실 보기"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

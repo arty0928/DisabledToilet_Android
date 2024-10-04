@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 배경 색상 -->
+    <item android:drawable="@android:color/darker_gray" /> <!-- 원하는 배경 색상으로 변경 -->
+
+    <!-- 수평선 -->
+    <item android:top="0dp" android:bottom="0.6dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/background" /> <!-- 선 색상 -->
+            <size android:height="2dp" /> <!-- 선 두께 -->
+        </shape>
+    </item>
+</layer-list>
