@@ -7,6 +7,7 @@ class ToiletRepository {
     val Tag = "[ToiletRepository]"
     var toiletList = ToiletData.toilets
 
+    //toilets 리스트 화장실 이름 출력
     fun initToiletData(){
         val tag = Tag + "[initToiletData]"
         ToiletData.getToiletData { toilets: List<ToiletModel>? ->
