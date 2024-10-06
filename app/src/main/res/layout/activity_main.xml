@@ -10,7 +10,7 @@
     android:background="@color/background"
     >
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_width="70dp"
@@ -24,7 +24,7 @@
         android:layout_height="150dp"
         >
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/logo"
@@ -55,7 +55,7 @@
             android:background="@drawable/custom_button"
             >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -86,7 +86,7 @@
             android:background="@drawable/custom_button"
             >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -129,7 +129,7 @@
             android:background="@drawable/custom_button"
             >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -160,7 +160,7 @@
             android:background="@drawable/custom_button"
             >
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -181,5 +181,12 @@
         </LinearLayout>
     </LinearLayout>
 
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
 
 </LinearLayout>

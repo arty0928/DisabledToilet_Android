@@ -15,8 +15,6 @@ import com.google.firebase.ktx.Firebase
 import com.kakao.sdk.common.KakaoSdk
 
 class MainActivity : AppCompatActivity() {
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         KakaoSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
@@ -48,9 +46,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d("KeyHash", "${Utility.getKeyHash(this)}")
-
-
-
 
     }
 }
