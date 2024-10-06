@@ -10,7 +10,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.disabledtoilet_android.Near.NearActivity
-import com.example.disabledtoilet_android.api.ToiletData
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -19,19 +18,12 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class NonloginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNonloginBinding
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseAuth: FirebaseAuth
-
-    private lateinit var database: DatabaseReference
 
     private val RC_SIGN_IN = 9001
 
@@ -62,34 +54,6 @@ class NonloginActivity : AppCompatActivity() {
         googleLoginButton.setOnClickListener {
             startLoginGoogle()
         }
-
-        //Firebase Database 참조 설정
-        // Firebase Database 참조 설정 (새 URL로 변경)
-        database = FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("public_toilet")
-
-        // 앱이 시작되자마자 데이터 가져오기
-        fetchPublicToiletData()
-    }
-
-    // public_toilet 데이터를 가져오는 함수
-    private fun fetchPublicToiletData() {
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    for (toiletSnapshot in snapshot.children) {
-                        val toiletData = toiletSnapshot.getValue(ToiletData::class.java)
-
-
-                    }
-                } else {
-                    Log.d("FirebaseData", "No data found")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("FirebaseData", "DatabaseError: ${error.message}")
-            }
-        })
     }
 
     private fun startLoginGoogle() {

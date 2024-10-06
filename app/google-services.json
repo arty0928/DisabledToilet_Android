@@ -14,6 +14,20 @@
       },
       "oauth_client": [
         {
+          "client_id": "737108612220-p44a96i1rhlevgagded27pv74bars2li.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.disabledtoilet_android",
+            "certificate_hash": "622ffdb03a913e98d035d8991b2b26b969c97ada"
+          }
+        },
+        {
+          "client_id": "737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "oauth_client": [
+        {
           "client_id": "737108612220-rltq5l4spgtfiqu91njo0ct9ssh75dmd.apps.googleusercontent.com",
           "client_type": 3
         }
