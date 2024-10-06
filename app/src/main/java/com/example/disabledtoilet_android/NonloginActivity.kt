@@ -66,7 +66,7 @@ class NonloginActivity : AppCompatActivity() {
         }
 
         //Navigation DrawerLayout
-        drawerLayout = findViewById(R.id.drawer_layout_login)
+        drawerLayout = findViewById(R.id.drawer_layout_nonlogin)
         //NaviationView 설정
         val navigationView : NavigationView = findViewById(R.id.nav_view)
 
