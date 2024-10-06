@@ -9,8 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.R
-import com.example.disabledtoilet_android.api.RetrofitInstance
-import com.example.disabledtoilet_android.api.ToiletDataResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -46,34 +44,7 @@ class NearActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             onBackPressed()
         }
-
-
-        //서버 데이터 가져오기
-        //RetrofitInstancce 초기화, Context 전달
-        RetrofitInstance.initRetrofit(this)
-
-       getPublicToiletById(35)
     }
-
-    private fun getPublicToiletById(toiletId: Int) {
-        val call: Call<ToiletDataResponse> = RetrofitInstance.api.getPublicToiletById(toiletId)
-        call.enqueue(object : Callback<ToiletDataResponse> {
-            override fun onResponse(call: Call<ToiletDataResponse>, response: Response<ToiletDataResponse>) {
-                if (response.isSuccessful) {
-                    val toiletData = response.body()?.data?.firstOrNull()
-                    Log.d("GET Response", "Data retrieved: $toiletData")
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    Log.e("GET Error", "Failed to retrieve data: $errorBody")
-                }
-            }
-
-            override fun onFailure(call: Call<ToiletDataResponse>, t: Throwable) {
-                Log.e("GET Failure", "Error: ${t.message}")
-            }
-        })
-    }
-
 
     private fun checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

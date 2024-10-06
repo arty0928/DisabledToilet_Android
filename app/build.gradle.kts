@@ -132,4 +132,7 @@ dependencies {
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
+
+    // drawerlayout
+    implementation ("androidx.drawerlayout:drawerlayout:1.2.0")
 }

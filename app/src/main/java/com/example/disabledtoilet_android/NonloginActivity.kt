@@ -4,12 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
@@ -18,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -28,6 +32,8 @@ class NonloginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseAuth: FirebaseAuth
 
+    private lateinit var drawerLayout  : DrawerLayout
+
     private val RC_SIGN_IN = 9001
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,15 +41,6 @@ class NonloginActivity : AppCompatActivity() {
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         enableEdgeToEdge()
-
-        //임시 버튼
-        binding.tempButton.setOnClickListener {
-            // MainActivity로 이동
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) // 이전 액티비티 제거
-            startActivity(intent)
-            finish() // 현재 액티비티 종료
-        }
 
         //내 주변
         val nearButton: LinearLayout = findViewById(R.id.near_button)
@@ -66,6 +63,43 @@ class NonloginActivity : AppCompatActivity() {
         val googleLoginButton: Button = findViewById(R.id.google_login_button)
         googleLoginButton.setOnClickListener {
             startLoginGoogle()
+        }
+
+        //Navigation DrawerLayout
+        drawerLayout = findViewById(R.id.drawer_layout_login)
+        //NaviationView 설정
+        val navigationView : NavigationView = findViewById(R.id.nav_view)
+
+        //NavigationView 너비를 화면의 80%로 설정
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val layoutParams = navigationView.layoutParams
+        layoutParams.width =  (screenWidth * 0.35).toInt()
+        navigationView.layoutParams = layoutParams
+
+        //NavigationView 아이템 클릭 리스너 설정
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            val handled = when (menuItem.itemId) {
+                R.id.nav_plusItem_icon -> {
+                    // 해당 아이템이 선택되었을 때 수행할 작업
+                    Toast.makeText(this, "Plus Item 클릭됨", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+
+            // 메뉴 아이템이 선택된 후, 드로어를 닫음
+            drawerLayout.closeDrawers()
+
+            // handled 값 반환
+            handled
+        }
+
+        //menu_icon 클릭시 Drawer 열기
+        val menuIcon : ImageView = findViewById(R.id.menu_icon)
+        menuIcon.setOnClickListener {
+//            drawerLayout.openDrawer(navigationView)
+            drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
