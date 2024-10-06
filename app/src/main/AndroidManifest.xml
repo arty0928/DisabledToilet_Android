@@ -21,6 +21,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ToiletPlus.ToiletPlusActivity"
+            android:exported="false" />
+        <activity
             android:name=".ToiletSearch.ToiletFilterSearchActivity"
             android:exported="false" />
         <activity

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +34,7 @@ class NonloginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        enableEdgeToEdge()
 
         //임시 버튼
         binding.tempButton.setOnClickListener {
