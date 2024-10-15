@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:orientation="vertical"
-    android:padding="10dp">
+    >
 
     <ImageView
         android:id="@+id/nav_plusitem_icon"

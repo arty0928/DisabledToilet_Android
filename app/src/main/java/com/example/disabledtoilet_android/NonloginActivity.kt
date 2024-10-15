@@ -65,11 +65,6 @@ class NonloginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // 로그인 버튼 클릭 시 구글 로그인 처리
-        val googleLoginButton: Button = findViewById(R.id.google_login_button)
-        googleLoginButton.setOnClickListener {
-            startLoginGoogle()
-        }
 
         drawerLayout = findViewById(R.id.drawer_layout_nonlogin)
         val navigationView: NavigationView = findViewById(R.id.nav_view)
@@ -78,7 +73,7 @@ class NonloginActivity : AppCompatActivity() {
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val layoutParams = navigationView.layoutParams
-        layoutParams.width =  (screenWidth * 0.35).toInt()
+        layoutParams.width =  (screenWidth * 0.3).toInt()
         navigationView.layoutParams = layoutParams
 
         updateNavHeader()

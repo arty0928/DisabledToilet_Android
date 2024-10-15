@@ -3,14 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dp"
+    android:id="@+id/nav_mypage"
     android:orientation="vertical"
-    android:padding="10dp">
+    >
 
     <ImageView
-        android:id="@+id/nav_plusitem_icon"
+        android:id="@+id/nav_mypage_icon"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="0.8"
         android:src="@drawable/mypage_main"
         android:scaleType="fitCenter"
         android:contentDescription="마이페이지" />

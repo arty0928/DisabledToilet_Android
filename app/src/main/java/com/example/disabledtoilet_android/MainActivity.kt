@@ -15,7 +15,6 @@ import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivit
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,14 +56,17 @@ class MainActivity : AppCompatActivity() {
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val layoutParams = navigationView.layoutParams
-        layoutParams.width =  (screenWidth * 0.35).toInt()
+        layoutParams.width =  (screenWidth * 0.3).toInt()
         navigationView.layoutParams = layoutParams
 
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.my_toilet_button -> {
+                R.id.nav_mypage -> {
                     Toast.makeText(this, "mypage 아이템", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, DetailActivity::class.java)  // MyPageActivity로 이동
+                    startActivity(intent)
+                    drawerLayout.closeDrawers()  // Drawer 닫기
                     true
                 }
                 else -> false
