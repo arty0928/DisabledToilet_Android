@@ -1,0 +1,7 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_plusItem"
+        android:title="@null"
+        app:actionLayout="@layout/nav_customed_before_login_item" />
+</menu>

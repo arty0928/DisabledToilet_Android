@@ -1,7 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_plusItem_icon"
-        android:title="화장실등록" />
-
-    <!-- 추가 메뉴 항목 -->
-</menu>

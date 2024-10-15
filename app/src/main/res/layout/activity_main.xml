@@ -129,7 +129,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="2"
                     android:paddingTop="15dp"
-                    android:src="@drawable/plustoielt_main" />
+                    android:src="@drawable/plustoilet_main" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -179,7 +179,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
+        app:headerLayout="@layout/nav_header_after_login"
+        app:menu="@menu/after_login_drawer_item" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

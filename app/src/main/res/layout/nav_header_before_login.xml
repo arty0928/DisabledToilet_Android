@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    >
+
+    <!-- 로그인 아이콘 ImageView -->
+    <LinearLayout
+        android:paddingTop="20dp"
+        android:id="@+id/login_nav_login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/login_icon"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/login"
+            android:scaleType="centerInside"
+            android:contentDescription="로그인 아이콘" />
+
+        <TextView
+            android:id="@+id/login_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="로그인"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/notosanskr_semibold"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
