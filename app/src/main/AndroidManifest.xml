@@ -1,4 +1,4 @@
-<<<<<<< Original<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 package="com.example.disabledtoilet_android">
 
@@ -45,10 +45,7 @@ package="com.example.disabledtoilet_android">
         android:name="com.kakao.sdk.AppKey"
         android:value="ce27585c8cc7c468ac7c46901d87199d" />
 
-    <activity
-        android:name=".DetailActivity"
-        android:exported="false"
-        android:theme="@style/Theme.DisabledToilet_Android" />
+
     <activity
         android:name=".DetailBottomSheet"
         android:exported="false"
@@ -63,6 +60,12 @@ package="com.example.disabledtoilet_android">
         android:label="@string/title_activity_near"
         android:theme="@style/Theme.DisabledToilet_Android" />
     <activity
+        android:name="com.example.disabledtoilet_android.User.MyPageActivity"
+        android:exported="false"
+        android:label="@string/title_activity_my_page"
+        android:theme="@style/Theme.DisabledToilet_Android" />
+
+    <activity
         android:name=".MainActivity"
         android:exported="true">
         <intent-filter>
@@ -71,16 +74,8 @@ package="com.example.disabledtoilet_android">
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
+
 </application>
 
-</manifest>=======
+</manifest>
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-<application>
-    <activity
-        android:name="com.example.disabledtoilet_android.User.MyPageActivity"
-        android:exported="false"
-        android:label="@string/title_activity_my_page"
-        android:theme="@style/Theme.DisabledToilet_Android" />
-</application>
-</manifest>>>>>>>> Added

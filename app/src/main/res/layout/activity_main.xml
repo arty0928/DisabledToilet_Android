@@ -181,7 +181,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_after_login"
-        android:background="@drawable/background_rounded"
+        android:background="@drawable/rightside_background_rounded"
         app:menu="@menu/after_login_drawer_item" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

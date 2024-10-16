@@ -119,7 +119,7 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_before_login"
-        android:background="@drawable/background_rounded"
+        android:background="@drawable/rightside_background_rounded"
         app:menu="@menu/before_login_drawer_item" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

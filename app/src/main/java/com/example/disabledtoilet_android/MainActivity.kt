@@ -12,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
+import com.example.disabledtoilet_android.User.MyPageActivity
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.nav_mypage -> {
                     Toast.makeText(this, "mypage 아이템", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, DetailActivity::class.java)  // MyPageActivity로 이동
+                    val intent = Intent(this, MyPageActivity::class.java)  // MyPageActivity로 이동
                     startActivity(intent)
                     drawerLayout.closeDrawers()  // Drawer 닫기
                     true

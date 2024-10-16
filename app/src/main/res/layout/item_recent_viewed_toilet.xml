@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="100dp"
+    android:layout_height="100dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
+
+    <ImageView
+        android:id="@+id/toilet_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo"
+        android:background="@drawable/rounded_background"
+        android:contentDescription="Rounded Image"
+        android:clipToOutline="true"
+        />
+
+    <TextView
+        android:id="@+id/toilet_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="세진상가"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/notosanskr_semibold"
+        android:gravity="center"
+        android:layout_gravity="bottom|center_horizontal"
+        android:paddingBottom="8dp" />
+</FrameLayout>
