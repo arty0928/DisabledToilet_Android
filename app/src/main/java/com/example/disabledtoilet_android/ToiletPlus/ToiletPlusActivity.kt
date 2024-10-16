@@ -1,30 +1,36 @@
 package com.example.disabledtoilet_android.ToiletPlus
 
+import android.content.Intent
 import android.location.Location
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.disabledtoilet_android.R
-import com.example.disabledtoilet_android.databinding.ActivityToiletPlusBinding
-import com.google.android.gms.location.LocationListener
+import com.example.disabledtoilet_android.databinding.ActivityInputPlusToiletInfoBinding
+import com.example.disabledtoilet_android.databinding.ActivityPlusToiletBinding
 
 class ToiletPlusActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityToiletPlusBinding
-    private lateinit var lastLocation: Location
-
+    private lateinit var binding: ActivityPlusToiletBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityToiletPlusBinding.inflate(layoutInflater)
+
+        binding = ActivityPlusToiletBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val locationListener = object : LocationListener {
-            override fun onLocationChanged(location: Location) {
-                lastLocation = location
-            }
+        val checkBtn = binding.plusToiletCheckButton
+
+        checkBtn.setOnClickListener {
+            val intent = Intent(this, InputPlusToiletInputPageActivity::class.java)  // Activity 클래스를 사용해야 함
+            startActivity(intent)
+
+        }
+
+        val backButton = binding.backButton
+        backButton.setOnClickListener {
+            onBackPressed()
         }
 
     }

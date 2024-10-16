@@ -20,11 +20,18 @@
     <string name="sha1_release">62:2F:FD:B0:3A:91:3E:98:D0:35:D8:99:1B:2B:26:B9:69:C9:7A:DA</string>
     <string name="sha1_debug">BF:32:C9:99:30:F2:3B:16:7E:B6:B9:27:7D:23:20:85:A6:91:B1:1D</string>
 
-    <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <string-array name="floor_array">
+        <item>1층</item>
+        <item>2층</item>
+        <item>3층</item>
+        <item>4층</item>
+        <item>5층</item>
+    </string-array>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -155,4 +162,7 @@
     <string name="action_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_plus_toilet">PlusToiletActivity</string>
+    <string name="title_activity_input_plus_toilet_input_page">InputPlusToiletInputPageActivity
+    </string>
 </resources>

@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
+import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
+import com.example.disabledtoilet_android.User.MyPageActivity
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -85,7 +87,12 @@ class NonloginActivity : AppCompatActivity() {
                 R.id.nav_plusItem -> {
                     Toast.makeText(this, "Plus Item 클릭됨", Toast.LENGTH_SHORT).show()
                     startLoginGoogle()
+
+                    val intent = Intent(this, ToiletPlusActivity::class.java)  // MyPageActivity로 이동
+                    startActivity(intent)
+                    drawerLayout.closeDrawers()  // Drawer 닫기
                     true
+
                 }
                 else -> false
             }
@@ -136,7 +143,7 @@ class NonloginActivity : AppCompatActivity() {
 
     private fun startLoginGoogle() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.web_client_id))
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
 
