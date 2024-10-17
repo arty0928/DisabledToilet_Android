@@ -1,0 +1,11 @@
+<resources>
+    <!-- BottomSheetDialogTheme 스타일 정의 -->
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
+
+    <!-- CustomBottomSheetStyle 정의 -->
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_corner_background</item>
+    </style>
+</resources>

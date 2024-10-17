@@ -1,17 +1,25 @@
 package com.example.disabledtoilet_android.Near
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.disabledtoilet_android.DetailActivity
 import com.example.disabledtoilet_android.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
@@ -45,6 +53,60 @@ class NearActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
+
+    private fun initializeBottomSheet() {
+        // detail_bottomsheet 레이아웃을 바텀시트로 사용
+        val bottomSheetView = layoutInflater.inflate(R.layout.detail_bottomsheet, null)
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        // 배경을 투명하게 설정
+        bottomSheetDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        // BottomSheetBehavior를 통해 슬라이드 가능하도록 설정
+        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet!!)
+
+        // BottomSheetDialog 표시
+        bottomSheetDialog.show()
+
+        // GestureDetector 설정
+        val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                // 아래에서 위로 스크롤하는 경우
+                if (e1 != null && e2.y < e1.y) {
+                    // BottomSheet를 위로 움직이는 애니메이션
+                    bottomSheet.animate()
+                        .translationY(-bottomSheet.height.toFloat())
+                        .setDuration(300)
+                        .withEndAction {
+                            // 애니메이션이 끝난 후 DetailActivity로 이동
+                            val intent = Intent(this@NearActivity, DetailActivity::class.java)
+                            startActivity(intent)
+                            bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
+                        }
+                    return true
+                }
+                return false
+            }
+        })
+
+        // BottomSheet 터치 이벤트 처리
+        bottomSheet.setOnTouchListener { v, event ->
+            // GestureDetector 이벤트 처리
+            gestureDetector.onTouchEvent(event)
+            false
+        }
+
+        // 더보기 버튼 클릭 시 DetailActivity 실행
+        val moreButton: TextView = bottomSheetView.findViewById(R.id.more_button)
+        moreButton.setOnClickListener {
+            val intent = Intent(this@NearActivity, DetailActivity::class.java)
+            startActivity(intent)
+            bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
+        }
+    }
+
 
     private fun checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -119,12 +181,24 @@ class NearActivity : AppCompatActivity() {
         // 2. LabelOptions 생성하기
         val options = LabelOptions.from(position)
             .setStyles(styles)
+            .setClickable(true)
 
         // 3. LabelLayer 가져오기 (또는 커스텀 Layer 생성)
         val layer = kakaoMap.labelManager?.layer
 
         // 4. LabelLayer에 LabelOptions을 넣어 Label 생성하기
         val label = layer?.addLabel(options)
+
+
+        // 5. Label 클릭 이벤트 처리
+        kakaoMap.setOnLabelClickListener { kakaoMap, layer, clickedLabel ->
+            if (clickedLabel == label) {
+                initializeBottomSheet()
+                true
+            } else {
+                false  // 다른 이벤트 리스너로 이벤트 전달
+            }
+        }
     }
 
     override fun onResume() {
