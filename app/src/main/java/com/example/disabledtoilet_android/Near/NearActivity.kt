@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.disabledtoilet_android.DetailActivity
+import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -25,9 +25,6 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class NearActivity : AppCompatActivity() {
 
@@ -81,7 +78,7 @@ class NearActivity : AppCompatActivity() {
                         .setDuration(300)
                         .withEndAction {
                             // 애니메이션이 끝난 후 DetailActivity로 이동
-                            val intent = Intent(this@NearActivity, DetailActivity::class.java)
+                            val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
                             startActivity(intent)
                             bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
                         }
@@ -101,7 +98,7 @@ class NearActivity : AppCompatActivity() {
         // 더보기 버튼 클릭 시 DetailActivity 실행
         val moreButton: TextView = bottomSheetView.findViewById(R.id.more_button)
         moreButton.setOnClickListener {
-            val intent = Intent(this@NearActivity, DetailActivity::class.java)
+            val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
             startActivity(intent)
             bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
         }

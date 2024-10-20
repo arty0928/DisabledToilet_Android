@@ -7,15 +7,20 @@ data class ToiletModel(
     val restroom_name: String = "",
     val address_road: String = "",
     val address_lot: String = "",
+
     val male_toilet_count: Int = 0,
     val male_urinal_count: Int = 0,
+
     val male_disabled_toilet_count: Int = 0,
     val male_disabled_urinal_count: Int = 0,
+
     val male_child_toilet_count: Int = 0,
     val male_child_urinal_count: Int = 0,
+
     val female_toilet_count: Int = 0,
     val female_disabled_toilet_count: Int = 0,
     val female_child_toilet_count: Int = 0,
+
     val management_agency_name: String = "",
     val restroom_ownership_type: String = "",
     val waste_disposal_method: String = "",

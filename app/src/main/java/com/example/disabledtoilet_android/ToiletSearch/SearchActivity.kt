@@ -1,9 +1,10 @@
-package com.example.disabledtoilet_android
+package com.example.disabledtoilet_android.ToiletSearch
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import com.example.disabledtoilet_android.R
 
 class SearchActivity : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")

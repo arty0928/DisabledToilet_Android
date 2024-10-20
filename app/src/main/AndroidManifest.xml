@@ -26,17 +26,18 @@
             android:exported="false"
             android:label="@string/title_activity_plus_toilet"
             android:theme="@style/Theme.DisabledToilet_Android" />
-        <activity
-            android:name=".DetailActivity"
-            android:exported="false"
-            android:label="@string/title_activity_my_page"
-            android:theme="@style/Theme.DisabledToilet_Android.NoActionBar" />
+
         <activity
             android:name=".ToiletPlus.ToiletPlusActivity"
             android:exported="false" />
         <activity
             android:name=".ToiletSearch.ToiletFilterSearchActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".Detail.DetailPageActivity"
+            android:exported="false" />
+
         <activity
             android:name=".NonloginActivity"
             android:exported="true"
@@ -53,11 +54,11 @@
             android:value="ce27585c8cc7c468ac7c46901d87199d" />
 
         <activity
-            android:name=".DetailBottomSheet"
+            android:name=".Detail.DetailBottomSheet"
             android:exported="false"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".ToiletSearch.SearchActivity"
             android:exported="false"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity

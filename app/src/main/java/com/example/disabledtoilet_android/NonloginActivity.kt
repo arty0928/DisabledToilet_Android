@@ -16,6 +16,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
+import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.example.disabledtoilet_android.User.MyPageActivity
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -61,12 +62,18 @@ class NonloginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // 내 주변 버튼
-        val nearButton: LinearLayout = findViewById(R.id.near_button)
+        val nearButton = binding.nearButton
         nearButton.setOnClickListener {
             val intent = Intent(this, NearActivity::class.java)
             startActivity(intent)
         }
 
+        // 장소 검색 버튼
+        val searchButton = binding.searchButton
+        searchButton.setOnClickListener {
+            val intent = Intent(this, ToiletFilterSearchActivity::class.java)
+            startActivity(intent)
+        }
 
         drawerLayout = findViewById(R.id.drawer_layout_nonlogin)
         val navigationView: NavigationView = findViewById(R.id.nav_view)
