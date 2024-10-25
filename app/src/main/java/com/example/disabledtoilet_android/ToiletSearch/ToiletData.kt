@@ -20,7 +20,9 @@ object ToiletData {
         toiletsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (childSnapshot in snapshot.children) {
+                    Log.d(Tag, childSnapshot.toString())
                     val toilet = childSnapshot.getValue(ToiletModel::class.java)
+
                     toilet?.let { toilets.add(it) }
                 }
                 toiletListInit = true

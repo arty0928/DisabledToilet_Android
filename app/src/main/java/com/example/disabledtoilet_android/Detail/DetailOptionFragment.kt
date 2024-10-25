@@ -29,6 +29,7 @@ class DetailOptionFragment : Fragment() {
         // binding 객체를 초기화
         _binding = FragmentDetailOptionBinding.inflate(inflater, container, false)
 
+        binding.root.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         // 화장실 데이터 가져오기
         val toiletMaleData = listOf(
             ToiletModel(
@@ -57,7 +58,14 @@ class DetailOptionFragment : Fragment() {
                 data_reference_date = "",
 
                 opening_hours_detail = "8:00 - 22:00",
-                opening_hours = ""
+                opening_hours = "",
+
+                installation_date = "",
+                phone_number= "",
+                remodeling_date = "",
+                wgs84_latitude= 0.0,  // Double -> String
+                wgs84_longitude= 0.0,
+
             )
         )
 

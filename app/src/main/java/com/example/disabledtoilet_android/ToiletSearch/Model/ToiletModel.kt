@@ -33,5 +33,12 @@ data class ToiletModel(
     val data_reference_date: String = "",
 
     val opening_hours_detail: String = "",
-    val opening_hours: String = ""
+    val opening_hours: String = "",
+
+    val installation_date: String = "",
+    val phone_number: String = "",
+    val remodeling_date: String =  "",
+    val wgs84_latitude: Double = 0.0,
+    val wgs84_longitude: Double = 0.0
 )
+

@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.example.disabledtoilet_android.ToiletSearch.ToiletData
+import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -33,6 +36,9 @@ class NearActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
+
+    val toiletRepository = ToiletRepository()
+    val Tag = "NearActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +110,6 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
-
     private fun checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
@@ -158,7 +163,7 @@ class NearActivity : AppCompatActivity() {
                         // 지도 중심 설정 및 줌 레벨 설정
                         kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(startPosition, 16))
 
-                        addMarkerToMap(startPosition)
+                        addMarkerToMap(startPosition, null)
 
                     }
                 }
@@ -169,10 +174,69 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
-    private fun addMarkerToMap(position: LatLng) {
-        // 1. LabelStyles 생성하기 - Icon 이미지 하나만 있는 스타일
+
+    private fun setToiletLabel() {
+        // Firebase에서 화장실 데이터를 가져옴
+        ToiletData.getToiletData { toilets: List<ToiletModel>? ->
+            if (toilets != null) {
+                toilets.forEach { toilet ->
+                    try {
+                        // 로그로 데이터 타입 확인
+                        Log.d(Tag + "Firebase", "Toilet data: $toilet")
+
+                        val toiletLatLng = LatLng.from(
+                            toilet.wgs84_latitude.toString().toDoubleOrNull() ?: 0.0,
+                            toilet.wgs84_longitude.toString().toDoubleOrNull() ?: 0.0
+                        )
+
+                        if (toiletLatLng != null) {
+                            addMarkerToMap(toiletLatLng, toilet)
+                        } else {
+                            Log.e(Tag + "setToiletLabel", "Invalid latitude or longitude for toilet: ${toilet.restroom_name}")
+                        }
+                    } catch (e: Exception) {
+                        // 예외 발생 시 오류 로그 출력 후 다음 데이터 처리
+                        Log.e(Tag + "FirebaseError", "Error processing toilet data: ${e.message}")
+                    }
+                }
+            } else {
+                Log.e(Tag, "Failed to load toilet data from Firebase")
+            }
+        }
+    }
+
+
+//    // 위도 및 경도를 LatLng으로 변환하는 메서드
+//    private fun convertToLatLng(latitude: String?, longitude: String?): LatLng? {
+//        return try {
+//            val lat = latitude?.toDoubleOrNull()
+//            val lng = longitude?.toDoubleOrNull()
+//            if (lat != null && lng != null) {
+//                LatLng.from(lat, lng)
+//            } else {
+//                null
+//            }
+//        } catch (e: Exception) {
+//            Log.e("convertToLatLng", "Error converting to LatLng: ${e.message}")
+//            null
+//        }
+//    }
+
+
+    private fun addMarkerToMap(position: LatLng, toilet: ToiletModel?) {
+        setToiletLabel()
+
+        val iconRes = if (toilet == null) {
+            // 현재 위치인 경우 star_icon을 사용
+            R.drawable.star_main
+        } else {
+            // 화장실 위치인 경우 logo를 사용
+            R.drawable.logo
+        }
+
+        // 1. LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
         val styles = kakaoMap.labelManager
-            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(R.drawable.saved_star_icon))
+            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(iconRes))
             )
 
         // 2. LabelOptions 생성하기
@@ -185,7 +249,6 @@ class NearActivity : AppCompatActivity() {
 
         // 4. LabelLayer에 LabelOptions을 넣어 Label 생성하기
         val label = layer?.addLabel(options)
-
 
         // 5. Label 클릭 이벤트 처리
         kakaoMap.setOnLabelClickListener { kakaoMap, layer, clickedLabel ->
