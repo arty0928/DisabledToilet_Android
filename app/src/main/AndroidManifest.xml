@@ -21,6 +21,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ToiletPlus.ToiletInfoInputActivity"
+            android:exported="false" />
+        <activity
             android:name=".ToiletPlus.ToiletPlusActivity"
             android:exported="false" />
         <activity
@@ -38,7 +41,7 @@
         </activity>
 
         <meta-data
-            android:name="com.kakao.sdk.AppKey"
+            android:name="com.kakao.vectormap.APP_KEY"
             android:value="ce27585c8cc7c468ac7c46901d87199d" />
 
         <activity

@@ -2,7 +2,6 @@ package com.example.disabledtoilet_android.ToiletSearch
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityToiletFilterSearchBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

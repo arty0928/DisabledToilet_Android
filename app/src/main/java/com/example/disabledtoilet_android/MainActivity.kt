@@ -46,6 +46,5 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.d("KeyHash", "${Utility.getKeyHash(this)}")
-
     }
 }

@@ -36,15 +36,6 @@ class NonloginActivity : AppCompatActivity() {
         setContentView(binding.root)
         enableEdgeToEdge()
 
-        //임시 버튼
-        binding.tempButton.setOnClickListener {
-            // MainActivity로 이동
-            val intent = Intent(this, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK) // 이전 액티비티 제거
-            startActivity(intent)
-            finish() // 현재 액티비티 종료
-        }
-
         //내 주변
         val nearButton: LinearLayout = findViewById(R.id.near_button)
         nearButton.setOnClickListener {
