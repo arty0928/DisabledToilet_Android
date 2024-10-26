@@ -3,6 +3,7 @@ package com.example.disabledtoilet_android.Near
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector
@@ -28,6 +29,7 @@ import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.LatLng
 
 class NearActivity : AppCompatActivity() {
 
@@ -44,6 +46,7 @@ class NearActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
         setContentView(R.layout.activity_near)
+        initializeMap() //멘토님 추가
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -113,6 +116,7 @@ class NearActivity : AppCompatActivity() {
     private fun checkLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            //TODO:인증되기 전 로딩 화면 띄우기 (다른 XML 파일)
         } else {
             initializeMap()
         }
@@ -152,23 +156,54 @@ class NearActivity : AppCompatActivity() {
     }
 
     private fun setMapToCurrentLocation() {
+        val sharedPreferences = getSharedPreferences("LocationCache", MODE_PRIVATE)
+
+        // 이전에 저장된 위치 가져오기 (위도, 경도)
+        val cachedLatitude = sharedPreferences.getString("latitude", null)?.toDoubleOrNull()
+        val cachedLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
+
+        var cachedPosition: LatLng? = null
+        if (cachedLatitude != null && cachedLongitude != null) {
+            cachedPosition = LatLng.from(cachedLatitude, cachedLongitude)
+            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16))
+            addMarkerToMap(cachedPosition, null)
+        }
+
+        // 위치 권한이 허용되었는지 확인
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // 현재 위치 가져오기
-            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                 .addOnSuccessListener { location ->
-                    location!!.let {
-                        // 현재 위치를 기반으로 지도의 중심을 설정
-                        val startPosition = LatLng.from(it.latitude, it.longitude)
+                    location?.let {
+                        val currentPosition = LatLng.from(it.latitude, it.longitude)
 
-                        // 지도 중심 설정 및 줌 레벨 설정
-                        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(startPosition, 16))
+                        // 이전 위치와 현재 위치 비교, 거리 차가 10미터 이상인 경우만
+                        //초기값이 null인 경우는 바로 true
+                        val isLocationChanged = cachedPosition?.let { cachedPos ->
+                            val cachedLocation = Location("").apply {
+                                latitude = cachedPos.latitude
+                                longitude = cachedPos.longitude
+                            }
+                            val currentLocation = Location("").apply {
+                                latitude = it.latitude
+                                longitude = it.longitude
+                            }
+                            cachedLocation.distanceTo(currentLocation) > 10 // 10 meters threshold
+                        } ?: true
 
-                        addMarkerToMap(startPosition, null)
+                        if (isLocationChanged) {
+                            // 현재 위치로 지도 중심 설정
+                            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(currentPosition, 16))
+                            addMarkerToMap(currentPosition, null)
 
+                            // 새로운 위치를 캐싱
+                            val editor = sharedPreferences.edit()
+                            editor.putString("latitude", it.latitude.toString())
+                            editor.putString("longitude", it.longitude.toString())
+                            editor.apply()
+                        }
                     }
                 }
                 .addOnFailureListener {
-                    // 위치 가져오기 실패 시 처리
                     Toast.makeText(this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
         }
@@ -205,26 +240,8 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
-
-//    // 위도 및 경도를 LatLng으로 변환하는 메서드
-//    private fun convertToLatLng(latitude: String?, longitude: String?): LatLng? {
-//        return try {
-//            val lat = latitude?.toDoubleOrNull()
-//            val lng = longitude?.toDoubleOrNull()
-//            if (lat != null && lng != null) {
-//                LatLng.from(lat, lng)
-//            } else {
-//                null
-//            }
-//        } catch (e: Exception) {
-//            Log.e("convertToLatLng", "Error converting to LatLng: ${e.message}")
-//            null
-//        }
-//    }
-
-
     private fun addMarkerToMap(position: LatLng, toilet: ToiletModel?) {
-        setToiletLabel()
+//        setToiletLabel()
 
         val iconRes = if (toilet == null) {
             // 현재 위치인 경우 star_icon을 사용
