@@ -241,14 +241,14 @@ class NearActivity : AppCompatActivity() {
     }
 
     private fun addMarkerToMap(position: LatLng, toilet: ToiletModel?) {
-//        setToiletLabel()
+        setToiletLabel()
 
         val iconRes = if (toilet == null) {
             // 현재 위치인 경우 star_icon을 사용
-            R.drawable.star_main
+            R.drawable.logo
         } else {
             // 화장실 위치인 경우 logo를 사용
-            R.drawable.logo
+            R.drawable.star_main
         }
 
         // 1. LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
