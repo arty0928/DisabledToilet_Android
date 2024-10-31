@@ -58,22 +58,23 @@ class FilterSearchDialog : DialogFragment() {
         }
 
         // 화장실 최근 점검
-        binding.circle1.setOnClickListener {
+        binding.recentCheck1.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckNever
         }
-        binding.circle2.setOnClickListener {
+        binding.recentCheck2.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckInYear
         }
-        binding.circle3.setOnClickListener {
+        binding.recentCheck3.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckHalfYear
         }
-        binding.circle4.setOnClickListener {
+        binding.recentCheck4.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckInMonth
         }
+
         viewModel.toiletRecentCheck.observe(this) { value ->
             when (value) {
                 viewModel.filterString.toiletCheckNever -> {
@@ -99,12 +100,13 @@ class FilterSearchDialog : DialogFragment() {
         }
 
         // 현재 운영
-        binding.operatingCircle1.setOnClickListener {
+        binding.operating1.setOnClickListener {
             viewModel.isToiletOperating.value = false
         }
-        binding.operatingCircle2.setOnClickListener {
+        binding.operating2.setOnClickListener {
             viewModel.isToiletOperating.value = true
         }
+
         viewModel.isToiletOperating.observe(this) { value ->
             if (value) {
                 binding.operatingCircle1.setImageResource(

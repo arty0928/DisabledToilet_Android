@@ -52,96 +52,122 @@
             android:text="화장실 최근 점검"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/text1"
+            app:layout_constraintBottom_toTopOf="@id/recentCheck1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/circle1"
+        <LinearLayout
+            android:id="@+id/recentCheck1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="19dp"
-            android:background="@color/white"
-            android:src="@drawable/check_circle"
-            app:flow_verticalBias="0.5"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+            app:layout_constraintTop_toBottomOf="@id/recentCheck">
 
-        <TextView
-            android:id="@+id/text1"
+            <ImageButton
+                android:id="@+id/circle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:layout_marginRight="4dp"
+                android:background="@color/white"
+                android:src="@drawable/check_circle" />
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="없음"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/recentCheck2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="없음"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/circle1"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/recentCheck1"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck">
 
-        <ImageButton
-            android:id="@+id/circle2"
+            <ImageButton
+                android:id="@+id/circle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginRight="4dp"
+                android:background="@color/white"
+                android:src="@drawable/check_circle"
+                app:flow_verticalBias="0.5" />
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="1년 이내"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/recentCheck3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="19dp"
-            android:background="@color/white"
-            android:src="@drawable/check_circle"
-            app:flow_verticalBias="0.5"
-            app:layout_constraintStart_toEndOf="@id/text1"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/recentCheck2"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck">
 
-        <TextView
-            android:id="@+id/text2"
+            <ImageButton
+                android:id="@+id/circle3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginRight="4dp"
+                android:background="@color/white"
+                android:src="@drawable/check_circle" />
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="6개월 이내"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/recentCheck4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="1년 이내"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/circle2"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+            android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/recentCheck3"
+            app:layout_constraintTop_toBottomOf="@id/recentCheck">
 
-        <ImageButton
-            android:id="@+id/circle3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="19dp"
-            android:background="@color/white"
-            android:src="@drawable/check_circle"
-            app:flow_verticalBias="0.5"
-            app:layout_constraintStart_toEndOf="@id/text2"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+            <ImageButton
+                android:id="@+id/circle4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginRight="4dp"
+                android:background="@color/white"
+                android:src="@drawable/check_circle"
+                app:flow_verticalBias="0.5" />
 
-        <TextView
-            android:id="@+id/text3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="6개월 이내"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/circle3"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
+            <TextView
+                android:id="@+id/text4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="한달 이내"
+                android:textColor="@color/black" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/circle4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="19dp"
-            android:background="@color/white"
-            android:src="@drawable/check_circle"
-            app:flow_verticalBias="0.5"
-            app:layout_constraintStart_toEndOf="@id/text3"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
-
-        <TextView
-            android:id="@+id/text4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="한달 이내"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/circle4"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -164,50 +190,61 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/operatingCircle1"
+        <LinearLayout
+            android:id="@+id/operating1"
+            android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="19dp"
-            android:background="@color/white"
-            android:src="@drawable/check_circle"
-            app:flow_verticalBias="0.5"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/operating" />
+            app:layout_constraintTop_toBottomOf="@id/operating">
 
-        <TextView
-            android:id="@+id/operatingText1"
+            <ImageButton
+                android:id="@+id/operatingCircle1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="19dp"
+                android:background="@color/white"
+                android:src="@drawable/check_circle"/>
+
+            <TextView
+                android:id="@+id/operatingText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="15dp"
+                android:text="없음"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/operating2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="15dp"
-            android:text="없음"
-            android:textColor="@color/black"
-            app:layout_constraintStart_toEndOf="@id/operatingCircle1"
-            app:layout_constraintTop_toBottomOf="@id/operating" />
-
-        <ImageButton
-            android:id="@+id/operatingCircle2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="19dp"
-            android:layout_marginRight="5dp"
-            android:background="@color/white"
-            android:src="@drawable/check_circle"
-            app:layout_constraintEnd_toStartOf="@id/operatingText2"
-            app:layout_constraintTop_toBottomOf="@id/operating" />
-
-        <TextView
-            android:id="@+id/operatingText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginRight="70dp"
-            android:text="한달 이내"
-            android:textColor="@color/black"
+            android:layout_marginRight="30dp"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/operating" />
+            app:layout_constraintTop_toBottomOf="@id/operating">
+
+            <ImageButton
+                android:id="@+id/operatingCircle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:layout_marginRight="5dp"
+                android:background="@color/white"
+                android:src="@drawable/check_circle"/>
+
+            <TextView
+                android:id="@+id/operatingText2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="한달 이내"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -231,114 +268,154 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alignmentMode="alignBounds"
-            android:columnCount="2"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:rowCount="4"
             android:useDefaultMargins="true">
 
-            <TextView
-                android:id="@+id/filter1"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_selected"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="남녀구분"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:orientation="horizontal"
+                android:padding="5dp">
 
-            <TextView
-                android:id="@+id/filter2"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
-                android:gravity="center"
-                android:text="손잡이"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/filter1"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_selected"
+                    android:gravity="center"
+                    android:text="남녀구분"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/filter3"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
-                android:gravity="center"
-                android:text="자동문"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/filter2"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="손잡이"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/filter4"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="다목적 화장실"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:orientation="horizontal"
+                android:padding="5dp">
 
-            <TextView
-                android:id="@+id/filter5"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
-                android:gravity="center"
-                android:text="미닫이"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/filter3"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="자동문"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
 
-            <TextView
-                android:id="@+id/filter6"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
-                android:gravity="center"
-                android:text="점자블록"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/filter4"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="다목적 화장실"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/filter7"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="접이문"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
-            <TextView
-                android:id="@+id/filter8"
-                android:layout_gravity="center"
-                android:layout_width="130dp"
-                android:layout_height="20dp"
-                android:background="@drawable/filter_button_around"
-                android:gravity="center"
-                android:text="접이문"
-                android:textColor="@color/black"
-                android:textSize="13sp" />
+                android:orientation="horizontal"
+                android:padding="5dp">
 
-        </GridLayout>
+                <TextView
+                    android:id="@+id/filter5"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="미닫이"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/filter6"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="점자블록"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/filter7"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="접이문"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/filter8"
+                    android:layout_width="100dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/filter_button_around"
+                    android:gravity="center"
+                    android:text="접이문"
+                    android:textColor="@color/black"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
 
 
     </LinearLayout>
 
     <LinearLayout
-        android:paddingVertical="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:background="@color/white"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingVertical="10dp">
 
         <TextView
             android:id="@+id/clearButton"
