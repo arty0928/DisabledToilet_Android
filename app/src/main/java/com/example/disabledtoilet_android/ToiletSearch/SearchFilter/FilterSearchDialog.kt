@@ -58,22 +58,23 @@ class FilterSearchDialog : DialogFragment() {
         }
 
         // 화장실 최근 점검
-        binding.circle1.setOnClickListener {
+        binding.recentCheck1.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckNever
         }
-        binding.circle2.setOnClickListener {
+        binding.recentCheck2.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckInYear
         }
-        binding.circle3.setOnClickListener {
+        binding.recentCheck3.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckHalfYear
         }
-        binding.circle4.setOnClickListener {
+        binding.recentCheck4.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckInMonth
         }
+
         viewModel.toiletRecentCheck.observe(this) { value ->
             when (value) {
                 viewModel.filterString.toiletCheckNever -> {
@@ -99,12 +100,13 @@ class FilterSearchDialog : DialogFragment() {
         }
 
         // 현재 운영
-        binding.operatingCircle1.setOnClickListener {
+        binding.operating1.setOnClickListener {
             viewModel.isToiletOperating.value = false
         }
-        binding.operatingCircle2.setOnClickListener {
+        binding.operating2.setOnClickListener {
             viewModel.isToiletOperating.value = true
         }
+
         viewModel.isToiletOperating.observe(this) { value ->
             if (value) {
                 binding.operatingCircle1.setImageResource(
@@ -131,6 +133,9 @@ class FilterSearchDialog : DialogFragment() {
             binding.filter5, binding.filter6,
             binding.filter7, binding.filter8
         )
+        for(i in 0 until filterButtonList.size){
+            filterButtonList[i].text = viewModel.filterString.filterNameList[i]
+        }
         for (i in 0 until filterButtonList.size) {
             filterButtonList.get(i).setOnClickListener {
                 if (viewModel.filterLiveList.value!!.get(i).checked) {
@@ -165,6 +170,11 @@ class FilterSearchDialog : DialogFragment() {
         // 초기화
         binding.clearButton.setOnClickListener {
             clearAll()
+        }
+
+        // 화장실 보기
+        binding.searchToilet.setOnClickListener {
+            dismiss()
         }
 
     }
@@ -218,14 +228,14 @@ class FilterViewModel : ViewModel() {
         val toiletCheckHalfYear: Int = 3,
         val toiletCheckInMonth: Int = 4,
         val filterNameList: List<String> = listOf(
-            "남녀구분",
-            "손잡이",
-            "자동문",
-            "다목적 화장실",
-            "미닫이",
-            "점자블록",
-            "접이문",
-            "접이문",
+            "장애인 소변기",
+            "장애인 대변기",
+            "비상벨",
+            "입구 CCTV",
+            "개방화장실",
+            "공중화장실",
+            "민간소유",
+            "공공기관"
         )
 
     )
@@ -234,6 +244,4 @@ class FilterViewModel : ViewModel() {
         var filterName: String,
         var checked: Boolean
     )
-
-
 }
