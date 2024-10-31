@@ -111,20 +111,12 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-analytics")
-
     implementation ("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-database-ktx")
 
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
 
-    implementation("com.google.firebase:firebase-firestore")
-
-    // Declare the dependency for the Cloud Firestore library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation("com.google.firebase:firebase-firestore")
-
-    // Add the dependency for the Realtime Database library
-    // When using the BoM, you don't specify versions in Firebase library dependencies
-    implementation("com.google.firebase:firebase-database-ktx")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
 
     // drawerlayout

@@ -1,9 +1,7 @@
 package com.example.disabledtoilet_android.ToiletSearch
 
+import ToiletModel
 import android.util.Log
-import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class ToiletRepository {
     val Tag = "[ToiletRepository]"

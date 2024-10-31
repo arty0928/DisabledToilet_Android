@@ -1,12 +1,12 @@
 package com.example.disabledtoilet_android.ToiletSearch.Adapter
 
+import ToiletModel
 import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.example.disabledtoilet_android.databinding.ToiletListItemBinding
 
 class ToiletListViewAdapter(itemList: MutableList<ToiletModel>): RecyclerView.Adapter<ToiletListViewAdapter.ItemViewHolder>() {

@@ -1,5 +1,6 @@
 package com.example.disabledtoilet_android.ToiletSearch
 
+import ToiletModel
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -8,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.disabledtoilet_android.MainActivity
 import com.example.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
-import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.example.disabledtoilet_android.Utility.Dialog.FilterDialog
 import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog

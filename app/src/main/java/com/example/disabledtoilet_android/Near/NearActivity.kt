@@ -1,5 +1,6 @@
 package com.example.disabledtoilet_android.Near
 
+import ToiletModel
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -16,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
-import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -30,6 +30,7 @@ import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.LatLng
+import com.google.firebase.FirebaseApp
 
 class NearActivity : AppCompatActivity() {
 
@@ -39,13 +40,15 @@ class NearActivity : AppCompatActivity() {
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
-    val toiletRepository = ToiletRepository()
     val Tag = "NearActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
         setContentView(R.layout.activity_near)
+
+        FirebaseApp.initializeApp(this)
+
         initializeMap() //멘토님 추가
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -212,33 +215,43 @@ class NearActivity : AppCompatActivity() {
 
     private fun setToiletLabel() {
         // Firebase에서 화장실 데이터를 가져옴
-        ToiletData.getToiletData { toilets: List<ToiletModel>? ->
-            if (toilets != null) {
-                toilets.forEach { toilet ->
-                    try {
-                        // 로그로 데이터 타입 확인
-                        Log.d(Tag + "Firebase", "Toilet data: $toilet")
+        ToiletData.getToiletAllData(
+            onSuccess = { toilets ->
+                if (toilets.isNotEmpty()) {
+                    toilets.forEach { toilet ->
+                        try {
+                            // 로그로 화장실 데이터 출력
+                            Log.d("$Tag Firebase", "Toilet data: $toilet")
 
-                        val toiletLatLng = LatLng.from(
-                            toilet.wgs84_latitude.toString().toDoubleOrNull() ?: 0.0,
-                            toilet.wgs84_longitude.toString().toDoubleOrNull() ?: 0.0
-                        )
+                            // 위도와 경도를 Double로 변환
+                            val latitude = toilet.wgs84_latitude.toString().toDoubleOrNull()
+                            val longitude = toilet.wgs84_longitude.toString().toDoubleOrNull()
 
-                        if (toiletLatLng != null) {
-                            addMarkerToMap(toiletLatLng, toilet)
-                        } else {
-                            Log.e(Tag + "setToiletLabel", "Invalid latitude or longitude for toilet: ${toilet.restroom_name}")
+                            // 유효한 위도와 경도인지 확인
+                            if (latitude != null && longitude != null) {
+                                val toiletLatLng = LatLng.from(latitude, longitude)
+                                addMarkerToMap(toiletLatLng, toilet)
+                            } else {
+                                Log.e("$Tag setToiletLabel", "Invalid latitude or longitude for toilet: ${toilet.restroom_name}")
+                            }
+                        } catch (e: Exception) {
+                            // 예외 발생 시 오류 로그 출력
+                            Log.e("$Tag FirebaseError", "Error processing toilet data: ${e.message}", e)
                         }
-                    } catch (e: Exception) {
-                        // 예외 발생 시 오류 로그 출력 후 다음 데이터 처리
-                        Log.e(Tag + "FirebaseError", "Error processing toilet data: ${e.message}")
                     }
+                } else {
+                    Log.e("$Tag setToiletLabel", "No toilet data found.")
                 }
-            } else {
-                Log.e(Tag, "Failed to load toilet data from Firebase")
+            },
+            onFailure = { exception ->
+                Log.e("$Tag FirebaseError", "Failed to load toilet data from Firebase: ${exception.message}", exception)
             }
-        }
+        )
     }
+
+
+
+
 
     private fun addMarkerToMap(position: LatLng, toilet: ToiletModel?) {
         setToiletLabel()
