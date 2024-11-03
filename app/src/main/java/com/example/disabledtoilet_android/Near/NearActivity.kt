@@ -73,32 +73,40 @@ class NearActivity : AppCompatActivity() {
         bottomSheetDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         // BottomSheetBehavior를 통해 슬라이드 가능하도록 설정
-        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet!!)
 
         // BottomSheetDialog 표시
         bottomSheetDialog.show()
 
         // GestureDetector 설정
-        val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-                // 아래에서 위로 스크롤하는 경우
-                if (e1 != null && e2.y < e1.y) {
-                    // BottomSheet를 위로 움직이는 애니메이션
-                    bottomSheet.animate()
-                        .translationY(-bottomSheet.height.toFloat())
-                        .setDuration(300)
-                        .withEndAction {
-                            // 애니메이션이 끝난 후 DetailActivity로 이동
-                            val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
-                            startActivity(intent)
-                            bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
-                        }
-                    return true
+        val gestureDetector =
+            GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onScroll(
+                    e1: MotionEvent?,
+                    e2: MotionEvent,
+                    distanceX: Float,
+                    distanceY: Float
+                ): Boolean {
+                    // 아래에서 위로 스크롤하는 경우
+                    if (e1 != null && e2.y < e1.y) {
+                        // BottomSheet를 위로 움직이는 애니메이션
+                        bottomSheet.animate()
+                            .translationY(-bottomSheet.height.toFloat())
+                            .setDuration(300)
+                            .withEndAction {
+                                // 애니메이션이 끝난 후 DetailActivity로 이동
+                                val intent =
+                                    Intent(this@NearActivity, DetailPageActivity::class.java)
+                                startActivity(intent)
+                                bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
+                            }
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        })
+            })
 
         // BottomSheet 터치 이벤트 처리
         bottomSheet.setOnTouchListener { v, event ->
@@ -117,15 +125,27 @@ class NearActivity : AppCompatActivity() {
     }
 
     private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
             //TODO:인증되기 전 로딩 화면 띄우기 (다른 XML 파일)
         } else {
             initializeMap()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
@@ -173,7 +193,11 @@ class NearActivity : AppCompatActivity() {
         }
 
         // 위치 권한이 허용되었는지 확인
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                 .addOnSuccessListener { location ->
                     location?.let {
@@ -195,7 +219,12 @@ class NearActivity : AppCompatActivity() {
 
                         if (isLocationChanged) {
                             // 현재 위치로 지도 중심 설정
-                            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(currentPosition, 16))
+                            kakaoMap.moveCamera(
+                                CameraUpdateFactory.newCenterPosition(
+                                    currentPosition,
+                                    16
+                                )
+                            )
                             addMarkerToMap(currentPosition, null)
 
                             // 새로운 위치를 캐싱
@@ -232,11 +261,18 @@ class NearActivity : AppCompatActivity() {
                                 val toiletLatLng = LatLng.from(latitude, longitude)
                                 addMarkerToMap(toiletLatLng, toilet)
                             } else {
-                                Log.e("$Tag setToiletLabel", "Invalid latitude or longitude for toilet: ${toilet.restroom_name}")
+                                Log.e(
+                                    "$Tag setToiletLabel",
+                                    "Invalid latitude or longitude for toilet: ${toilet.restroom_name}"
+                                )
                             }
                         } catch (e: Exception) {
                             // 예외 발생 시 오류 로그 출력
-                            Log.e("$Tag FirebaseError", "Error processing toilet data: ${e.message}", e)
+                            Log.e(
+                                "$Tag FirebaseError",
+                                "Error processing toilet data: ${e.message}",
+                                e
+                            )
                         }
                     }
                 } else {
@@ -244,13 +280,14 @@ class NearActivity : AppCompatActivity() {
                 }
             },
             onFailure = { exception ->
-                Log.e("$Tag FirebaseError", "Failed to load toilet data from Firebase: ${exception.message}", exception)
+                Log.e(
+                    "$Tag FirebaseError",
+                    "Failed to load toilet data from Firebase: ${exception.message}",
+                    exception
+                )
             }
         )
     }
-
-
-
 
 
     private fun addMarkerToMap(position: LatLng, toilet: ToiletModel?) {
@@ -266,7 +303,8 @@ class NearActivity : AppCompatActivity() {
 
         // 1. LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
         val styles = kakaoMap.labelManager
-            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(iconRes))
+            ?.addLabelStyles(
+                LabelStyles.from(LabelStyle.from(iconRes))
             )
 
         // 2. LabelOptions 생성하기

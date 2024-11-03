@@ -17,7 +17,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
-import com.example.disabledtoilet_android.User.MyPageActivity
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,8 +24,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
 
 class NonloginActivity : AppCompatActivity() {
 

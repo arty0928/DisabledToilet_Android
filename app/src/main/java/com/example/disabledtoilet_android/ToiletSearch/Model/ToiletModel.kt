@@ -40,7 +40,7 @@ data class ToiletModel(
                 number = document.getLong("number")?.toInt() ?: 0,
                 category = document.getString("category") ?: "",
                 basis = document.getString("basis") ?: "",
-                restroom_name = document.getString("restroom_name") ?: "",
+                restroom_name = document.getString("toilet_name") ?: "",
                 address_road = document.getString("address_road") ?: "",
                 address_lot = document.getString("address_lot") ?: "",
                 male_toilet_count = document.getLong("male_toilet_count")?.toInt() ?: 0,
