@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -19,6 +20,8 @@ import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
+import com.example.disabledtoilet_android.databinding.ActivityDetailBinding
+import com.example.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -37,6 +40,7 @@ class NearActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var binding: ActivityNearBinding
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
 
@@ -44,6 +48,8 @@ class NearActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityNearBinding.inflate(layoutInflater)
+
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
         setContentView(R.layout.activity_near)
 
@@ -56,12 +62,38 @@ class NearActivity : AppCompatActivity() {
         // 위치 권한 체크 및 요청
         checkLocationPermission()
 
+        //카메라 현재위치로 원위치
+        val btnBackToCurrentLocation : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
+        btnBackToCurrentLocation.setOnClickListener {
+            moveCameraToCachedLocation()
+        }
+
         // 뒤로 가기 버튼 설정
-        val backButton: ImageButton = findViewById(R.id.back_button)
+        val backButton : ImageButton = findViewById(R.id.back_button)
         backButton.setOnClickListener {
             onBackPressed()
         }
     }
+
+    private fun moveCameraToCachedLocation() {
+        // SharedPreferences에서 캐시된 위치 정보 불러오기
+        val sharedPreferences = getSharedPreferences("LocationCache", MODE_PRIVATE)
+        val cachedLatitude = sharedPreferences.getString("latitude", null)?.toDoubleOrNull()
+        val cachedLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
+
+        if (cachedLatitude != null && cachedLongitude != null) {
+            val cachedPosition = LatLng.from(cachedLatitude, cachedLongitude)
+            // 지도의 중심을 캐시된 위치로 이동
+            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16))
+            // 캐시된 위치에 마커 추가 (선택 사항)
+            addMarkerToMap(cachedPosition, null)
+            Toast.makeText(this, "캐시된 현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
+        } else {
+            // 캐시된 위치 정보가 없는 경우 사용자에게 알림
+            Toast.makeText(this, "캐시된 현재 위치가 없습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     private fun initializeBottomSheet() {
         // detail_bottomsheet 레이아웃을 바텀시트로 사용
@@ -154,6 +186,8 @@ class NearActivity : AppCompatActivity() {
 
                 // 현재 위치를 중심으로 지도를 이동
                 setMapToCurrentLocation()
+                // 화장실 마커 설정
+                setToiletLabel()
             }
         })
     }
@@ -252,10 +286,7 @@ class NearActivity : AppCompatActivity() {
 
 
 
-
     private fun addMarkerToMap(position: LatLng, toilet: ToiletModel?) {
-        setToiletLabel()
-
         val iconRes = if (toilet == null) {
             // 현재 위치인 경우 star_icon을 사용
             R.drawable.logo

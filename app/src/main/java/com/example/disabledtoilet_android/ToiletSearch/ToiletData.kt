@@ -37,6 +37,9 @@ object ToiletData {
                 }
         }
     }
+
+
+
     fun getToiletData(callback: (List<ToiletModel>?) -> Unit) {
         Log.d(Tag, "getToiletData called")
         toiletsRef.addListenerForSingleValueEvent(object : ValueEventListener {
