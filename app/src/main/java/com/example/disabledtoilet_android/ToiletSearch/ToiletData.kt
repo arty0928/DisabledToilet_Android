@@ -14,7 +14,6 @@ object ToiletData {
     val database: FirebaseDatabase =
         FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
     val toiletsRef: DatabaseReference = database.getReference("public_toilet")
-    var toilets = mutableListOf<ToiletModel>()
     var toiletListInit = false
     var cachedToiletList: List<ToiletModel>? = null
 
@@ -28,9 +27,13 @@ object ToiletData {
             db.collection("dreamhyoja")
                 .get()
                 .addOnSuccessListener { documents ->
-                    cachedToiletList = documents.map { doc ->
-                        ToiletModel.fromDocument(doc)
-                    }
+                    cachedToiletList = cleanToiletList(
+                        documents.map { doc ->
+                            ToiletModel.fromDocument(doc)
+                        }
+                    )
+
+                    // 데이터 정리해서 넣기
                     onSuccess(cachedToiletList!!)
                 }
                 .addOnFailureListener { exception ->
@@ -40,9 +43,20 @@ object ToiletData {
         }
     }
 
+    // 데이터 정리 함수
+    fun cleanToiletList(toiletList: List<ToiletModel>): List<ToiletModel> {
+        val resultList = mutableListOf<ToiletModel>()
 
-    fun getToilets() {
-        Log.d("size of toiletList", toilets.size.toString())
-        Log.d("data of toilet", toilets.toString())
+        // 이름 비어있는 아이템 제외
+        for (i in 0 until toiletList.size) {
+            var toiletName = toiletList[i].restroom_name
+
+            if (toiletName.isNotBlank() && toiletName != "\"\"") {
+                resultList.add(toiletList[i])
+            }
+        }
+
+        return resultList.toList()
     }
+
 }
