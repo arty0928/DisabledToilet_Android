@@ -16,6 +16,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
+import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.example.disabledtoilet_android.User.MyPageActivity
 import com.example.disabledtoilet_android.databinding.ActivityNonloginBinding
@@ -27,6 +28,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
 
 class NonloginActivity : AppCompatActivity() {
 
@@ -60,6 +62,17 @@ class NonloginActivity : AppCompatActivity() {
 
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        Log.d("MyApplication", "Initializing ToiletRepository...")
+        ToiletData.initialize(this) { success ->
+            if (success) {
+                Log.d("MyApplication", "ToiletRepository initialized successfully.")
+            } else {
+                Log.e("MyApplication", "Failed to initialize ToiletRepository.")
+            }
+        }
+
 
         // 내 주변 버튼
         val nearButton = binding.nearButton

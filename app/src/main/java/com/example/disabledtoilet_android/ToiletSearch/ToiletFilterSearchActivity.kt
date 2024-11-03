@@ -19,8 +19,8 @@ import kotlinx.coroutines.withContext
 
 class ToiletFilterSearchActivity : AppCompatActivity() {
     lateinit var binding: ActivityToiletFilterSearchBinding
-    val toiletRepository = ToiletRepository()
-    var toiletListViewAdapter = ToiletListViewAdapter(ToiletData.toilets)
+//    val toiletRepository = ToiletRepository()
+//    var toiletListViewAdapter = ToiletListViewAdapter(ToiletData.toilets)
     val loadingDialog = LoadingDialog()
     val filterDialog = FilterDialog()
 
@@ -34,42 +34,42 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         CoroutineScope(Dispatchers.Main).launch {
-            setUi()
+//            setUi()
         }
     }
 
-    suspend fun setUi() {
-        binding.toiletRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        binding.toiletRecyclerView.adapter = toiletListViewAdapter
-
-        if (!ToiletData.toiletListInit) {
-            loadingDialog.show(supportFragmentManager, loadingDialog.tag)
-            withContext(Dispatchers.IO) {
-                ToiletData.getToiletData { toilets: List<ToiletModel>? ->
-                    loadingDialog.dismiss()
-                    toiletListViewAdapter.updateList(toiletRepository.getToiletByRoadAddress(query))
-                }
-            }
-        } else {
-            toiletListViewAdapter.updateList(toiletRepository.getToiletByRoadAddress(query))
-        }
-
-        binding.filterButton.setOnClickListener {
-            applyFilter()
-        }
-        binding.backButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-        binding.filter.setOnClickListener {
-            showFilterDialog()
-        }
-        binding.toggle.setOnClickListener {
-            showFilterDialog()
-        }
-    }
+//    suspend fun setUi() {
+//        binding.toiletRecyclerView.layoutManager =
+//            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+//        binding.toiletRecyclerView.adapter = toiletListViewAdapter
+//
+//        if (!ToiletData.toiletListInit) {
+//            loadingDialog.show(supportFragmentManager, loadingDialog.tag)
+//            withContext(Dispatchers.IO) {
+//                ToiletData.getToiletData { toilets: List<ToiletModel>? ->
+//                    loadingDialog.dismiss()
+//                    toiletListViewAdapter.updateList(toiletRepository.getToiletByRoadAddress(query))
+//                }
+//            }
+//        } else {
+//            toiletListViewAdapter.updateList(toiletRepository.getToiletByRoadAddress(query))
+//        }
+//
+//        binding.filterButton.setOnClickListener {
+//            applyFilter()
+//        }
+//        binding.backButton.setOnClickListener {
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        }
+//        binding.filter.setOnClickListener {
+//            showFilterDialog()
+//        }
+//        binding.toggle.setOnClickListener {
+//            showFilterDialog()
+//        }
+//    }
 
     fun showFilterDialog() {
         filterDialog.show(supportFragmentManager, loadingDialog.tag)
