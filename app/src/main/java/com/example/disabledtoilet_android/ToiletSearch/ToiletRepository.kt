@@ -104,9 +104,6 @@ class ToiletRepository {
         // 현재 운영
         if (filterViewModel.isToiletOperating.value!!){
             for (i in resultToiletList.size - 1 downTo 0){
-                if (resultToiletList[i].opening_hours != "상시"){
-                    if (resultToiletList[i].)
-                }
 
             }
         }

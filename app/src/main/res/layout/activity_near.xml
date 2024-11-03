@@ -66,6 +66,7 @@
             android:layout_gravity="end|top" />
 
         <ImageButton
+            android:id="@+id/map_return_cur_pos_btn"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="40dp"
             android:padding="10dp"
