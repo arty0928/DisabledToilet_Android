@@ -16,13 +16,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
-import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
-import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -177,9 +174,6 @@ class NearActivity : AppCompatActivity() {
 
                 // 화장실 데이터 가져오기 및 표시
                 fetchToiletDataAndDisplay()
-
-                // 지도 이동 및 줌 변경 리스너 설정
-                setMapViewChangeListener()
             }
         })
     }
@@ -317,24 +311,17 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
-
-    // 새로운 함수 추가: 지도 이동 및 줌 변경 시 호출
-    private fun setMapViewChangeListener() {
-        kakaoMap.setOnCameraMoveEndListener(object : KakaoMap.OnCameraMoveEndListener {
-            override fun onCameraMoveEnd(kakaoMap: KakaoMap, cameraPosition: CameraPosition, gestureType: GestureType) {
-                // 카메라 이동이나 줌 변경이 완료되었을 때 호출됨
-                displayToiletsWithinView()
-            }
-        })
-    }
-
     // 마커 추가 함수 수정: ToiletModel에서 ToiletData로 변경
     private fun addMarkerToMapToilet(position: LatLng): Label? {
-        val iconRes = R.drawable.pin
-
-        // LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
-        val styles = kakaoMap.labelManager
-            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(iconRes)))
+        // 줌 레벨에 따른 라벨 스타일 정의
+        val styles = kakaoMap.labelManager?.addLabelStyles(
+            LabelStyles.from(
+                LabelStyle.from(R.drawable.pin1).setZoomLevel(10),
+                LabelStyle.from(R.drawable.pin2).setZoomLevel(13),
+                LabelStyle.from(R.drawable.pin3).setZoomLevel(16),
+                LabelStyle.from(R.drawable.pin).setZoomLevel(19)
+            )
+        )
 
         // LabelOptions 생성하기
         val options = LabelOptions.from(position)
@@ -354,12 +341,11 @@ class NearActivity : AppCompatActivity() {
                 false  // 다른 이벤트 리스너로 이벤트 전달
             }
         }
-
         return label
     }
 
     private fun addMarkerToMapCur(position: LatLng): Label? {
-        val iconRes = R.drawable.logo
+        val iconRes = R.drawable.cur
 
         // LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
         val styles = kakaoMap.labelManager
@@ -396,6 +382,7 @@ class NearActivity : AppCompatActivity() {
             Toast.makeText(this, "캐시된 현재 위치가 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     override fun onResume() {
         super.onResume()
