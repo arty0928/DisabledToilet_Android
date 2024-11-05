@@ -1,189 +1,254 @@
 package com.example.disabledtoilet_android.ToiletSearch
 
 import ToiletModel
-import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.toObject
-import android.content.Context
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import androidx.annotation.RequiresApi
+import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterViewModel
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
-object ToiletRepository {
-    private val TAG = "[ToiletRepository]"
-    private val COLLECTION_NAME = "dreamhyoja" // Firebase Firestore의 컬렉션 이름
-    private val PREFS_NAME = "ToiletCache"
-    private val TOILETS_KEY = "ToiletList"
+@RequiresApi(Build.VERSION_CODES.O)
+class ToiletRepository {
+    val Tag = "[ToiletRepository]"
+    private var filterViewModel: FilterViewModel? = null
+    private var filteredToiletList = listOf<ToiletModel>()
+    private var isFilteredListInit = false
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val gson = Gson()
-    private val toiletList = mutableListOf<ToiletModel>()
-    private var listenerRegistration: ListenerRegistration? = null
-    private lateinit var sharedPreferences: SharedPreferences
+    fun getToiletWithSearchKeyword(
+        toiletList: List<ToiletModel>,
+        keyword: String
+    ): MutableList<ToiletModel> {
+        Log.d("test log", "filteredToiletList 사이즈: " + filteredToiletList.size.toString())
 
+        val finalResult: MutableList<ToiletModel>
 
-    /**
-     * 초기화 함수, 앱 시작 시 호출
-     */
-    fun initialize(context: Context, onComplete: (Boolean) -> Unit) {
-        sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        loadCachedData()
-
-        fetchAllToilets { success ->
-            if (success) {
-                listenToToiletUpdates()
-            }
-            onComplete(success)
-        }
-    }
-
-    /**
-     * 캐시된 데이터를 로드
-     */
-    private fun loadCachedData() {
-        val json = sharedPreferences.getString(TOILETS_KEY, null)
-        if (json != null) {
-            val type = object : TypeToken<MutableList<ToiletModel>>() {}.type
-            val cachedList: MutableList<ToiletModel> = gson.fromJson(json, type)
-            toiletList.clear()
-            toiletList.addAll(cachedList)
-            Log.d(TAG, "Loaded ${toiletList.size} toilets from cache.")
+        if (isFilteredListInit){
+            finalResult = applyQuery(filteredToiletList, keyword)
+            Log.d("test log", "검색된 화장실 데이터 수: " + finalResult.size.toString())
         } else {
-            Log.d(TAG, "No cached toilet data found.")
+            finalResult = applyQuery(toiletList, keyword)
         }
+
+
+        return finalResult
+    }
+
+    private fun applyQuery(toiletList: List<ToiletModel>, keyword: String): MutableList<ToiletModel>{
+        val roadAddressResult = getToiletByRoadAddress(toiletList, keyword)
+        val lotAddressResult = getToiletByLotAddress(toiletList, keyword)
+        val nameResult = getToiletByToiletName(toiletList, keyword)
+
+        val finalResult = getMergedResults(
+            roadAddressResult,
+            lotAddressResult,
+            nameResult
+        )
+
+        Log.d("test log", "검색된 화장실 데이터 수: " + finalResult.size.toString())
+
+        return finalResult
     }
 
     /**
-     * Firebase에서 모든 화장실 데이터를 가져와 리스트에 저장 및 캐싱
-     */
-    private fun fetchAllToilets(onComplete: (Boolean) -> Unit) {
-        firestore.collection(COLLECTION_NAME)
-            .get()
-            .addOnSuccessListener { result ->
-                toiletList.clear()
-                for (document in result) {
-                    val toilet = document.toObject(ToiletModel::class.java)
-                    toiletList.add(toilet)
-                }
-                cacheData()
-                Log.d(TAG, "Fetched ${toiletList.size} toilets from Firebase.")
-                onComplete(true)
-            }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error fetching toilets: ${exception.message}", exception)
-                onComplete(false)
-            }
-    }
-
-    /**
-     * Firestore의 실시간 업데이트 리스너 설정
-     */
-    private fun listenToToiletUpdates() {
-        listenerRegistration = firestore.collection(COLLECTION_NAME)
-            .addSnapshotListener { snapshots, error ->
-                if (error != null) {
-                    Log.e(TAG, "Listen failed: ${error.message}", error)
-                    return@addSnapshotListener
-                }
-
-                for (dc in snapshots!!.documentChanges) {
-                    when (dc.type) {
-                        com.google.firebase.firestore.DocumentChange.Type.ADDED -> {
-                            val newToilet = dc.document.toObject(ToiletModel::class.java)
-                            toiletList.add(newToilet)
-                            Log.d(TAG, "New toilet added: ${newToilet.restroom_name}")
-                        }
-                        com.google.firebase.firestore.DocumentChange.Type.MODIFIED -> {
-                            val modifiedToilet = dc.document.toObject(ToiletModel::class.java)
-                            val index = toiletList.indexOfFirst { it.restroom_name == modifiedToilet.restroom_name } // 고유 식별자 필요
-                            if (index != -1) {
-                                toiletList[index] = modifiedToilet
-                                Log.d(TAG, "Toilet modified: ${modifiedToilet.restroom_name}")
-                            }
-                        }
-                        com.google.firebase.firestore.DocumentChange.Type.REMOVED -> {
-                            val removedToilet = dc.document.toObject(ToiletModel::class.java)
-                            toiletList.removeAll { it.restroom_name == removedToilet.restroom_name } // 고유 식별자 필요
-                            Log.d(TAG, "Toilet removed: ${removedToilet.restroom_name}")
-                        }
-                    }
-                }
-                cacheData() // 업데이트된 데이터를 캐싱
-            }
-    }
-
-
-    /**
-     * 캐시 데이터를 SharedPreferences에 저장
-     */
-    private fun cacheData() {
-        val json = gson.toJson(toiletList)
-        sharedPreferences.edit().putString(TOILETS_KEY, json).apply()
-        Log.d(TAG, "Cached ${toiletList.size} toilets.")
-    }
-
-
-    /**
-     * 현재 지도 화면에 보이는 영역 내의 화장실을 필터링하여 반환합니다.
+     * 필터 세팅되면 바로 실행됨
      *
-     * @param southWest 남서쪽 경도/위도
-     * @param northEast 북동쪽 경도/위도
-     * @return 현재 화면 내에 위치한 화장실의 리스트
      */
-    fun getToiletsWithinBounds(southWestLatitude: Double, southWestLongitude: Double, northEastLatitude: Double, northEastLongitude: Double): List<ToiletModel> {
-        return toiletList.filter { toilet ->
-            toilet.wgs84_latitude in southWestLatitude..northEastLatitude &&
-                    toilet.wgs84_longitude in southWestLongitude..northEastLongitude
-        }
-    }
+    private fun setFilteredToiletList(
+        filterViewModel: FilterViewModel,
+        toiletList: MutableList<ToiletModel>
+    ): List<ToiletModel> {
+        Log.d("test log", "filteredToiletList built")
 
-    fun getAllToilets() : List<ToiletModel>{
-        return toiletList
-    }
-
-
-    fun getToiletByRoadAddress(roadAddress: String): MutableList<ToiletModel>{
-        val tag = TAG + "[getToiletByRoadAddress]"
-        Log.d(tag,"getToiletByRoadAddress called")
         var resultToiletList = mutableListOf<ToiletModel>()
 
-        for (i in 0 until toiletList.size){
+        // 최근 점검
+        when (filterViewModel.toiletRecentCheck.value) {
+            filterViewModel.filterString.toiletCheckNever -> {
+                resultToiletList = toiletList
+            }
+
+            //1년 이내
+            filterViewModel.filterString.toiletCheckInYear -> {
+                for (i in 0 until toiletList.size) {
+                    if (isWithinOneYear(toiletList[i].data_reference_date)) {
+                        resultToiletList.add(toiletList[i])
+                    }
+                }
+                Log.d("test log", "남은 화장실 데이터 수: " + resultToiletList.size.toString())
+            }
+
+            //6개월 이내
+            filterViewModel.filterString.toiletCheckHalfYear -> {
+                for (i in 0 until toiletList.size) {
+                    if (isWithinSixMonths(toiletList[i].data_reference_date)) {
+                        resultToiletList.add(toiletList[i])
+                    }
+                }
+                Log.d("test log", "남은 화장실 데이터 수: " + resultToiletList.size.toString())
+            }
+
+            //1달 이내
+            filterViewModel.filterString.toiletCheckInMonth -> {
+                for (i in 0 until toiletList.size) {
+                    if (isWithinOneMonth(toiletList[i].data_reference_date)) {
+                        resultToiletList.add(toiletList[i])
+                    }
+                }
+                Log.d("test log", "남은 화장실 데이터 수: " + resultToiletList.size.toString())
+            }
+        }
+
+        // 현재 운영
+        if (filterViewModel.isToiletOperating.value!!){
+            for (i in resultToiletList.size - 1 downTo 0){
+
+            }
+        }
+        // 조건 적용
+
+        isFilteredListInit = true
+
+        return resultToiletList.toList()
+    }
+
+    fun getCurrentTime() {
+        val currentTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val formattedTime = currentTime.format(formatter)
+        println("현재 시간: $formattedTime")
+    }
+
+    /**
+     * 필터 세팅하고 바로 필터 적용한 화장실 리스트 만든다.
+     */
+    fun setFilter(filterViewModel: FilterViewModel, toiletList: List<ToiletModel>) {
+        this.filterViewModel = filterViewModel
+
+        //받은 toiletList 바로 넘김
+        filteredToiletList = setFilteredToiletList(filterViewModel, toiletList.toMutableList())
+    }
+
+
+    fun getToiletByRoadAddress(
+        toiletList: List<ToiletModel>,
+        roadAddress: String
+    ): MutableList<ToiletModel> {
+        val tag = Tag + "[getToiletByRoadAddress]"
+        Log.d(tag, "getToiletByRoadAddress called")
+        var resultToiletList = mutableListOf<ToiletModel>()
+
+        for (i in toiletList.indices) {
             val toilet = toiletList.get(i)
             val toiletRoadAddress = toilet.address_road
 
-            if (toiletRoadAddress.contains(roadAddress)){
+            if (toiletRoadAddress.contains(roadAddress)) {
                 resultToiletList.add(toilet)
-                Log.d(tag,toilet.toString())
             }
         }
 
         return resultToiletList
     }
 
-    fun getToiletByLotAddress(lotAddress: String): MutableList<ToiletModel>{
-        val tag = TAG + "[getToiletByLotAddress]"
-        Log.d(tag,"called")
-        var resultToiletList = mutableListOf<ToiletModel>()
 
-        for (i in 0 until toiletList.size){
+    private fun getToiletByLotAddress(
+        toiletList: List<ToiletModel>,
+        lotAddress: String
+    ): MutableList<ToiletModel> {
+        val tag = Tag + "[getToiletByLotAddress]"
+        Log.d(tag, "called")
+        val resultToiletList = mutableListOf<ToiletModel>()
+
+        for (i in 0 until toiletList.size) {
             val toilet = toiletList.get(i)
             val toiletLotAddress = toilet.address_lot
 
-            if (toiletLotAddress.contains(lotAddress)){
+            if (toiletLotAddress.contains(lotAddress)) {
                 resultToiletList.add(toilet)
-                Log.d(tag,toilet.toString())
+
             }
         }
 
         return resultToiletList
     }
 
-    /**
-     * 리포지토리 정리 시 호출
-     */
-    fun clearListener() {
-        listenerRegistration?.remove()
+    fun getToiletByToiletName(
+        toiletList: List<ToiletModel>,
+        toiletName: String
+    ): MutableList<ToiletModel> {
+        val tag = Tag + "[getToiletByToiletName]"
+        Log.d(tag, "called")
+        val resultToiletList = mutableListOf<ToiletModel>()
+
+        for (i in 0 until toiletList.size) {
+            val toilet = toiletList.get(i)
+            val restroomName = toilet.restroom_name
+
+            if (restroomName.contains(toiletName)) {
+                resultToiletList.add(toilet)
+                Log.d(tag, toilet.restroom_name)
+            }
+        }
+
+        return resultToiletList
+    }
+
+    private fun getMergedResults(
+        roadAddressResults: List<ToiletModel>,
+        lotAddressResults: List<ToiletModel>,
+        nameResults: List<ToiletModel>
+    ): MutableList<ToiletModel> {
+        val tag = Tag + "[getMergedResults]"
+        Log.d(tag, "called")
+
+        // HashSet을 사용하여 중복 제거
+        val mergedResults = HashSet<ToiletModel>()
+
+        // 각 결과를 Set에 추가
+        mergedResults.addAll(roadAddressResults)
+        mergedResults.addAll(lotAddressResults)
+        mergedResults.addAll(nameResults)
+
+        return mergedResults.toMutableList()
+    }
+
+    // 1년 이내 체크
+    private fun isWithinOneYear(dateStr: String): Boolean {
+        return isWithinPeriod(dateStr, 1, PeriodType.YEAR)
+    }
+
+    // 6개월 이내 체크
+    private fun isWithinSixMonths(dateStr: String): Boolean {
+        return isWithinPeriod(dateStr, 6, PeriodType.MONTH)
+    }
+
+    // 1개월 이내 체크
+    private fun isWithinOneMonth(dateStr: String): Boolean {
+        return isWithinPeriod(dateStr, 1, PeriodType.MONTH)
+    }
+
+    // 기간 체크를 위한 공통 함수
+    private fun isWithinPeriod(dateStr: String, amount: Long, type: PeriodType): Boolean {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        try {
+            val date = LocalDate.parse(dateStr, formatter)
+            val currentDate = LocalDate.now()
+
+            val previousDate = when (type) {
+                PeriodType.YEAR -> currentDate.minusYears(amount)
+                PeriodType.MONTH -> currentDate.minusMonths(amount)
+            }
+
+            return !date.isBefore(previousDate) && !date.isAfter(currentDate)
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    private enum class PeriodType {
+        YEAR, MONTH
     }
 
 }

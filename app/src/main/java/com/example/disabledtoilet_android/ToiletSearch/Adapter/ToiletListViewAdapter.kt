@@ -9,13 +9,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.disabledtoilet_android.databinding.ToiletListItemBinding
 
-class ToiletListViewAdapter(itemList: MutableList<ToiletModel>): RecyclerView.Adapter<ToiletListViewAdapter.ItemViewHolder>() {
-    var itemList = itemList
+class ToiletListViewAdapter(private var itemList: MutableList<ToiletModel>) :
+    RecyclerView.Adapter<ToiletListViewAdapter.ItemViewHolder>() {
 
-    inner class ItemViewHolder(val binding: ToiletListItemBinding): RecyclerView.ViewHolder(binding.root) {
-        fun bind(toiletListItem: ToiletModel){
+    inner class ItemViewHolder(val binding: ToiletListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(toiletListItem: ToiletModel) {
             binding.toiletName.text = toiletListItem.restroom_name
-            binding.address.text = toiletListItem.address_road
+            val toiletRoadAddress = toiletListItem.address_road
+            if (toiletRoadAddress.isNotBlank() && toiletRoadAddress != "\"\"") {
+                binding.address.text = toiletListItem.address_road
+            } else {
+                binding.address.text = toiletListItem.address_lot
+            }
         }
     }
 
@@ -34,7 +40,7 @@ class ToiletListViewAdapter(itemList: MutableList<ToiletModel>): RecyclerView.Ad
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(updatedList: MutableList<ToiletModel>){
+    fun updateList(updatedList: MutableList<ToiletModel>) {
         itemList.clear()
         itemList.addAll(updatedList)
         notifyDataSetChanged()

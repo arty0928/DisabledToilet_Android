@@ -7,6 +7,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 import android.content.Context
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -22,9 +24,53 @@ object ToiletData {
     private var listenerRegistration: ListenerRegistration? = null
     private lateinit var sharedPreferences: SharedPreferences
 
-    /**
-     * 초기화 함수, 앱 시작 시 호출
-     */
+    val database: FirebaseDatabase =
+        FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
+    var toiletListInit = false
+    var cachedToiletList: List<ToiletModel>? = null
+
+    fun getToiletAllData(onSuccess: (List<ToiletModel>) -> Unit, onFailure: (Exception) -> Unit) {
+        if (cachedToiletList != null) {
+            // 캐시된 데이터가 있는 경우
+            onSuccess(cachedToiletList!!)
+        } else {
+            // Firestore에서 데이터 로드
+            val db = FirebaseFirestore.getInstance()
+            db.collection("dreamhyoja")
+                .get()
+                .addOnSuccessListener { documents ->
+                    cachedToiletList = cleanToiletList(
+                        documents.map { doc ->
+                            ToiletModel.fromDocument(doc)
+                        }
+                    )
+
+                    // 데이터 정리해서 넣기
+                    onSuccess(cachedToiletList!!)
+                }
+                .addOnFailureListener { exception ->
+                    onFailure(exception)
+                }
+            toiletListInit = true
+        }
+    }
+
+    // 데이터 정리 함수
+    fun cleanToiletList(toiletList: List<ToiletModel>): List<ToiletModel> {
+        val resultList = mutableListOf<ToiletModel>()
+
+        // 이름 비어있는 아이템 제외
+        for (i in 0 until toiletList.size) {
+            var toiletName = toiletList[i].restroom_name
+
+            if (toiletName.isNotBlank() && toiletName != "\"\"") {
+                resultList.add(toiletList[i])
+            }
+        }
+
+        return resultList.toList()
+    }
+
     fun initialize(context: Context, onComplete: (Boolean) -> Unit) {
         ToiletData.sharedPreferences = context.getSharedPreferences(ToiletData.PREFS_NAME, Context.MODE_PRIVATE)
         loadCachedData()
@@ -152,42 +198,6 @@ object ToiletData {
         return ToiletData.toiletList
     }
 
-
-    fun getToiletByRoadAddress(roadAddress: String): MutableList<ToiletModel>{
-        val tag = TAG + "[getToiletByRoadAddress]"
-        Log.d(tag,"getToiletByRoadAddress called")
-        var resultToiletList = mutableListOf<ToiletModel>()
-
-        for (i in 0 until ToiletData.toiletList.size){
-            val toilet = ToiletData.toiletList.get(i)
-            val toiletRoadAddress = toilet.address_road
-
-            if (toiletRoadAddress.contains(roadAddress)){
-                resultToiletList.add(toilet)
-                Log.d(tag,toilet.toString())
-            }
-        }
-
-        return resultToiletList
-    }
-
-    fun getToiletByLotAddress(lotAddress: String): MutableList<ToiletModel>{
-        val tag = TAG + "[getToiletByLotAddress]"
-        Log.d(tag,"called")
-        var resultToiletList = mutableListOf<ToiletModel>()
-
-        for (i in 0 until ToiletData.toiletList.size){
-            val toilet = ToiletData.toiletList.get(i)
-            val toiletLotAddress = toilet.address_lot
-
-            if (toiletLotAddress.contains(lotAddress)){
-                resultToiletList.add(toilet)
-                Log.d(tag,toilet.toString())
-            }
-        }
-
-        return resultToiletList
-    }
 
     /**
      * 리포지토리 정리 시 호출

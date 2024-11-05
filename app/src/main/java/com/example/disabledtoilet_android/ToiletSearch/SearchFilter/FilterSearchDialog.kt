@@ -5,20 +5,30 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.disabledtoilet_android.R
-import com.example.disabledtoilet_android.databinding.DialogFilterBinding
 import com.example.disabledtoilet_android.databinding.FilterSearchDialogBinding
 
 class FilterSearchDialog : DialogFragment() {
     lateinit var binding: FilterSearchDialogBinding
     lateinit var viewModel: FilterViewModel
+
+    companion object{
+        fun newInstance() = FilterSearchDialog()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        this.setCancelable(false)
+        viewModel = ViewModelProvider(requireActivity())[FilterViewModel::class.java]
+
+        viewModel.storeStatus()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +39,6 @@ class FilterSearchDialog : DialogFragment() {
         dialog?.window?.setBackgroundDrawableResource(
             R.drawable.filter_dialog_round
         )
-        viewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
 
         return binding.root
     }
@@ -41,20 +50,18 @@ class FilterSearchDialog : DialogFragment() {
         setUi()
     }
 
-    fun clearRecentButton() {
+    private fun clearRecentButton() {
         binding.circle1.setImageResource(R.drawable.check_circle)
         binding.circle2.setImageResource(R.drawable.check_circle)
         binding.circle3.setImageResource(R.drawable.check_circle)
         binding.circle4.setImageResource(R.drawable.check_circle)
     }
 
-    fun applyFilterTextView(textView: TextView) {
-    }
-
-    fun setUi() {
+    private fun setUi() {
         // 뒤록가기
         binding.backButton.setOnClickListener {
             this.dismiss()
+            viewModel.loadStatus()
         }
 
         // 화장실 최근 점검
@@ -133,12 +140,12 @@ class FilterSearchDialog : DialogFragment() {
             binding.filter5, binding.filter6,
             binding.filter7, binding.filter8
         )
-        for(i in 0 until filterButtonList.size){
+        for(i in filterButtonList.indices){
             filterButtonList[i].text = viewModel.filterString.filterNameList[i]
         }
-        for (i in 0 until filterButtonList.size) {
-            filterButtonList.get(i).setOnClickListener {
-                if (viewModel.filterLiveList.value!!.get(i).checked) {
+        for (i in filterButtonList.indices) {
+            filterButtonList[i].setOnClickListener {
+                if (viewModel.filterLiveList.value!![i].checked) {
                     Log.d("check", "unselect")
                     viewModel.updateFilterCheck(i, false)
                 } else {
@@ -147,18 +154,18 @@ class FilterSearchDialog : DialogFragment() {
                 }
             }
         }
-        for (i in 0 until viewModel.filterLiveList.value!!.size) {
+        for (a in 0 until viewModel.filterLiveList.value!!.size) {
             viewModel.filterLiveList.observe(this) { value ->
                 for (i in 0 until value.size) {
-                    if (value.get(i).checked) {
+                    if (value[i].checked) {
                         Log.d("observe", "select")
-                        filterButtonList.get(i)
+                        filterButtonList[i]
                             .setBackgroundResource(
                                 R.drawable.filter_button_selected
                             )
                     } else {
                         Log.d("observe", "unselect")
-                        filterButtonList.get(i)
+                        filterButtonList[i]
                             .setBackgroundResource(
                                 R.drawable.filter_button_around
                             )
@@ -175,6 +182,7 @@ class FilterSearchDialog : DialogFragment() {
         // 화장실 보기
         binding.searchToilet.setOnClickListener {
             dismiss()
+            viewModel.isDialogDismissed.value = true
         }
 
     }
@@ -190,11 +198,12 @@ class FilterSearchDialog : DialogFragment() {
         viewModel.toiletRecentCheck.value =
             viewModel.filterString.toiletCheckNever
     }
-
 }
 
 class FilterViewModel : ViewModel() {
     val filterString = FilterString()
+
+    var isDialogDismissed = MutableLiveData<Boolean>()
     var toiletRecentCheck = MutableLiveData<Int>()
     var isToiletOperating = MutableLiveData<Boolean>()
     private var filterList = mutableListOf<FilterModel>()
@@ -206,7 +215,7 @@ class FilterViewModel : ViewModel() {
         for (i in 0 until filterString.filterNameList.size) {
             filterList.add(
                 FilterModel(
-                    filterString.filterNameList.get(i),
+                    filterString.filterNameList[i],
                     false
                 )
             )
@@ -222,6 +231,7 @@ class FilterViewModel : ViewModel() {
     }
 
 
+    // 지정된 값
     data class FilterString(
         val toiletCheckNever: Int = 0,
         val toiletCheckInYear: Int = 1,
@@ -244,4 +254,34 @@ class FilterViewModel : ViewModel() {
         var filterName: String,
         var checked: Boolean
     )
+
+    data class FilterStatus(
+        val filterCheckedStates: List<Boolean>,
+        val toiletRecentCheckValue: Int,
+        val isToiletOperatingValue: Boolean
+    )
+
+    private var savedStatus: FilterStatus? = null
+
+    fun storeStatus() {
+        savedStatus = FilterStatus(
+            filterCheckedStates = filterList.map { it.checked },
+            toiletRecentCheckValue = toiletRecentCheck.value ?: filterString.toiletCheckNever,
+            isToiletOperatingValue = isToiletOperating.value ?: false
+        )
+    }
+
+    fun loadStatus() {
+        savedStatus?.let { status ->
+            // filterList 복원
+            status.filterCheckedStates.forEachIndexed { index, checked ->
+                filterList[index].checked = checked
+            }
+            filterLiveList.value = filterList
+
+            // 다른 상태값들 복원
+            toiletRecentCheck.value = status.toiletRecentCheckValue
+            isToiletOperating.value = status.isToiletOperatingValue
+        }
+    }
 }
