@@ -1,5 +1,6 @@
 package com.example.disabledtoilet_android.ToiletSearch
 
+import ToiletModel
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -31,6 +32,8 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     val loadingDialog = LoadingDialog()
     val sortDialog = SortDialog()
 
+    lateinit var toiletList: MutableList<ToiletModel>
+
     var query = ""
     lateinit var filterSearchDialog: FilterSearchDialog
 
@@ -43,6 +46,12 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         filterViewModel = ViewModelProvider(this)[FilterViewModel::class.java]
+
+        if (ToiletData.cachedToiletList.isNullOrEmpty()){
+            toiletList = mutableListOf<ToiletModel>()
+        } else {
+            toiletList = ToiletData.cachedToiletList!!.toMutableList()
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             setUi()
@@ -58,23 +67,14 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         if (!ToiletData.toiletListInit) {
             loadingDialog.show(supportFragmentManager, loadingDialog.tag)
             withContext(Dispatchers.IO) {
-                ToiletData.getToiletAllData(
-                    onSuccess = { toilets ->
-                        toiletListViewAdapter.updateList(
-                            toiletRepository.getToiletWithSearchKeyword(
-                                toilets,
-                                query
-                            )
-                        )
-                        loadingDialog.dismiss()
-                    },
-                    onFailure = { exception ->
-                        Log.d("[ToiletFilterSearchActivity] ", exception.toString())
-                        toiletListViewAdapter.updateList(
-                            mutableListOf()
-                        )
-                    }
+
+                toiletListViewAdapter.updateList(
+                    toiletRepository.getToiletWithSearchKeyword(
+                        toiletList,
+                        query
+                    )
                 )
+                loadingDialog.dismiss()
             }
         } else {
             toiletListViewAdapter.updateList(
