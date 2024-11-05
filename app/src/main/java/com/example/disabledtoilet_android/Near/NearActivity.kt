@@ -18,8 +18,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
+import com.example.disabledtoilet_android.NonloginActivity
+import com.example.disabledtoilet_android.NonloginActivity.Companion
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
+import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -35,6 +38,9 @@ import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.LatLng
 import com.google.firebase.FirebaseApp
 import com.kakao.vectormap.camera.CameraPosition
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NearActivity : AppCompatActivity() {
 
@@ -46,6 +52,7 @@ class NearActivity : AppCompatActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
     private val Tag = "NearActivity"
 
+    val loadingDialog = LoadingDialog()
 
     // 화장실 데이터를 저장할 리스트
     private val toiletList = mutableListOf<ToiletModel>()
@@ -170,15 +177,28 @@ class NearActivity : AppCompatActivity() {
                 Log.d(Tag, "KakaoMap is ready")
 
                 // 현재 위치를 중심으로 지도를 이동
-                setMapToCurrentLocation()
+                CoroutineScope(Dispatchers.Main).launch {
+                    loadingDialog.show(supportFragmentManager, loadingDialog.tag)
+                    setMapToCurrentLocation { success ->
+                        // 데이터 로드 완료 후 loadingDialog.dismiss() 호출
+                        loadingDialog.dismiss()
 
+                        if (success) {
+                            Log.d(TAG, "Toilet data loaded successfully.")
+                            // 추가적인 성공 처리 로직을 여기에 작성할 수 있습니다.
+                        } else {
+                            Log.e(TAG, "Failed to load toilet data.")
+                            // 실패 처리 로직을 여기에 작성할 수 있습니다.
+                        }
+                    }
+                }
                 // 화장실 데이터 가져오기 및 표시
                 fetchToiletDataAndDisplay()
             }
         })
     }
 
-    private fun setMapToCurrentLocation() {
+    private fun setMapToCurrentLocation(onComplete: (Boolean) -> Unit) {
         val sharedPreferences = getSharedPreferences("LocationCache", MODE_PRIVATE)
 
         // 이전에 저장된 위치 가져오기 (위도, 경도)
@@ -196,19 +216,18 @@ class NearActivity : AppCompatActivity() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
                 .addOnSuccessListener { location ->
-                    location?.let {
-                        val currentPosition = LatLng.from(it.latitude, it.longitude)
+                    if (location != null) {
+                        val currentPosition = LatLng.from(location.latitude, location.longitude)
 
                         // 이전 위치와 현재 위치 비교, 거리 차가 10미터 이상인 경우만
-                        //초기값이 null인 경우는 바로 true
                         val isLocationChanged = cachedPosition?.let { cachedPos ->
                             val cachedLocation = Location("").apply {
                                 latitude = cachedPos.latitude
                                 longitude = cachedPos.longitude
                             }
                             val currentLocation = Location("").apply {
-                                latitude = it.latitude
-                                longitude = it.longitude
+                                latitude = location.latitude
+                                longitude = location.longitude
                             }
                             cachedLocation.distanceTo(currentLocation) > 10 // 10 meters threshold
                         } ?: true
@@ -220,17 +239,25 @@ class NearActivity : AppCompatActivity() {
 
                             // 새로운 위치를 캐싱
                             val editor = sharedPreferences.edit()
-                            editor.putString("latitude", it.latitude.toString())
-                            editor.putString("longitude", it.longitude.toString())
+                            editor.putString("latitude", location.latitude.toString())
+                            editor.putString("longitude", location.longitude.toString())
                             editor.apply()
                         }
+                        onComplete(true)  // 위치 설정 성공
+                    } else {
+                        onComplete(false)  // 위치를 가져오지 못함
                     }
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+                    onComplete(false)  // 위치 설정 실패
                 }
+        } else {
+            onComplete(false)  // 위치 권한이 없음
         }
     }
+
+
     /**
      * Firebase에서 데이터를 가져와 리스트에 저장하고 현재 지도 범위에 맞는 마커를 표시
      */
