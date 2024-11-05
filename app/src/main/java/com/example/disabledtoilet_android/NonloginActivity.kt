@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
@@ -29,6 +30,10 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
+import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class NonloginActivity : AppCompatActivity() {
 
@@ -36,6 +41,7 @@ class NonloginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var drawerLayout: DrawerLayout
+    var loadingDialog = LoadingDialog()
 
     private val RC_SIGN_IN = 9001
 
@@ -65,11 +71,21 @@ class NonloginActivity : AppCompatActivity() {
 
 
         Log.d("MyApplication", "Initializing ToiletRepository...")
-        ToiletData.initialize(this) { success ->
-            if (success) {
-                Log.d("MyApplication", "ToiletRepository initialized successfully.")
-            } else {
-                Log.e("MyApplication", "Failed to initialize ToiletRepository.")
+
+        CoroutineScope(Dispatchers.Main).launch {
+            loadingDialog.show(supportFragmentManager, loadingDialog.tag)
+
+            ToiletData.initialize { success ->
+                // 데이터 로드 완료 후 loadingDialog.dismiss() 호출
+                loadingDialog.dismiss()
+
+                if (success) {
+                    Log.d(TAG, "Toilet data loaded successfully.")
+                    // 추가적인 성공 처리 로직을 여기에 작성할 수 있습니다.
+                } else {
+                    Log.e(TAG, "Failed to load toilet data.")
+                    // 실패 처리 로직을 여기에 작성할 수 있습니다.
+                }
             }
         }
 

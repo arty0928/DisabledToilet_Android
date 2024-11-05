@@ -22,6 +22,7 @@ import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
+import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -47,6 +48,7 @@ class NearActivity : AppCompatActivity() {
 
     private val LOCATION_PERMISSION_REQUEST_CODE = 1000
     private val Tag = "NearActivity"
+
 
     // 화장실 데이터를 저장할 리스트
     private val toiletList = mutableListOf<ToiletModel>()
@@ -239,12 +241,8 @@ class NearActivity : AppCompatActivity() {
      * Firebase에서 데이터를 가져와 리스트에 저장하고 현재 지도 범위에 맞는 마커를 표시
      */
     private fun fetchToiletDataAndDisplay() {
-        val toilets = ToiletData.getAllToilets()
-        if (toilets.isNotEmpty()) {
-            toiletList.clear()
-            toiletList.addAll(toilets)
-            Log.d(TAG, "Fetched ${toilets.size} toilets from ToiletRepository.")
-//            displayToiletsWithinView()
+        val toilets = ToiletData.getToiletAllData()
+        if (toilets!!.isNotEmpty()) {
             toilets.forEach{
                 toilet ->
                 val pos = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
@@ -332,7 +330,7 @@ class NearActivity : AppCompatActivity() {
 
     // 마커 추가 함수 수정: ToiletModel에서 ToiletData로 변경
     private fun addMarkerToMapToilet(position: LatLng): Label? {
-        val iconRes = R.drawable.star_main
+        val iconRes = R.drawable.pin
 
         // LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
         val styles = kakaoMap.labelManager
