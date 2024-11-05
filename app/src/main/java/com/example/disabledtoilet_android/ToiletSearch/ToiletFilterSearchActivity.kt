@@ -131,7 +131,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     }
 
     private fun showSortDialog() {
-        sortDialog.show(supportFragmentManager, sortDialog.tag)
+        sortDialog.show(supportFragmentManager,ㅣㅐ.tag)
     }
 
     private fun showFilter() {
