@@ -1,7 +1,6 @@
 package com.example.disabledtoilet_android.Near
 
 import ToiletModel
-import VisibleRegion
 import android.Manifest
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -60,6 +59,8 @@ class NearActivity : AppCompatActivity() {
     // 활성화된 마커 관리
     private val activeMarkers = mutableListOf<ToiletModel>()
 
+    private val labelToToiletMap = mutableMapOf<Label, ToiletModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNearBinding.inflate(layoutInflater)
@@ -68,86 +69,184 @@ class NearActivity : AppCompatActivity() {
         setContentView(R.layout.activity_near)
 
         FirebaseApp.initializeApp(this)
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // 위치 권한 체크 및 요청
-        checkLocationPermission()
+        // MapView 초기화
+        mapView = findViewById(R.id.map_view)
+        initializeMapView()  // 새로운 함수로 맵 초기화 로직 분리
 
         // 버튼 설정
         val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
-
         backToCurBtn.setOnClickListener {
-            moveCameraToCachedLocation()
+            if (::kakaoMap.isInitialized) {
+                moveCameraToCachedLocation()
+            }
         }
-
         val backBtn : ImageButton = findViewById(R.id.back_button)
         backBtn.setOnClickListener {
             onBackPressed()
         }
     }
+    private fun initializeMapView() {
+        mapView.start(object : MapLifeCycleCallback() {
+            override fun onMapDestroy() {
+                Log.d(Tag, "MapView destroyed")
+            }
 
-    private fun initializeBottomSheet() {
-        // detail_bottomsheet 레이아웃을 바텀시트로 사용
+            override fun onMapError(error: Exception) {
+                Log.e(Tag, "Map error: ${error.message}")
+            }
+        }, object : KakaoMapReadyCallback() {
+            override fun onMapReady(map: KakaoMap) {
+                kakaoMap = map
+                Log.d(Tag, "KakaoMap is ready")
+
+                // 맵이 준비되면 클릭 리스너 설정
+                setupMapClickListener()
+
+                // 위치 권한 확인 및 현재 위치 설정
+                checkLocationPermission()
+            }
+        })
+    }
+    private fun setupMapClickListener() {
+        kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
+            Log.d("BottomSheet", "Label clicked: $clickedLabel")
+            Log.d("BottomSheet", "Map size: ${labelToToiletMap.size}")
+            val toilet = labelToToiletMap[clickedLabel]
+            Log.d("BottomSheet", "Found toilet: $toilet")
+
+            if (toilet != null) {
+                Log.d("BottomSheet", "Matched label clicked. Showing Bottomsheet for toilet: ${toilet.restroom_name}")
+                initializeBottomSheet(toilet)
+                true
+            } else {
+                Log.d("BottomSheet", "Unmatched label clicked")
+                false
+            }
+        }
+    }
+
+
+    private fun initializeBottomSheet(toilet: ToiletModel) {
+        Log.d("BottomSheet", "Initializing BottomSheet for toilet: ${toilet.restroom_name}")
         val bottomSheetView = layoutInflater.inflate(R.layout.detail_bottomsheet, null)
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         bottomSheetDialog.setContentView(bottomSheetView)
 
-        // 배경을 투명하게 설정
-        bottomSheetDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        // BottomSheetBehavior를 통해 슬라이드 가능하도록 설정
-        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        val behavior = BottomSheetBehavior.from(bottomSheet!!)
-
-        // BottomSheetDialog 표시
-        bottomSheetDialog.show()
-
-        // GestureDetector 설정
-        val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-                // 아래에서 위로 스크롤하는 경우
-                if (e1 != null && e2.y < e1.y) {
-                    // BottomSheet를 위로 움직이는 애니메이션
-                    bottomSheet.animate()
-                        .translationY(-bottomSheet.height.toFloat())
-                        .setDuration(300)
-                        .withEndAction {
-                            // 애니메이션이 끝난 후 DetailActivity로 이동
-                            val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
-                            startActivity(intent)
-                            bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
-                        }
-                    return true
-                }
-                return false
-            }
-        })
-
-        // BottomSheet 터치 이벤트 처리
-        bottomSheet.setOnTouchListener { v, event ->
-            // GestureDetector 이벤트 처리
-            gestureDetector.onTouchEvent(event)
-            false
+        bottomSheetView.findViewById<TextView>(R.id.toilet_name).text = toilet.restroom_name
+        bottomSheetView.findViewById<TextView>(R.id.toilet_address).text = if (toilet.address_road.isNullOrBlank() ||
+                toilet.address_road == "\"" ||
+                toilet.address_road == "\"\"" ||
+                toilet.address_road == "") {
+            "정보 없음"
+        } else {
+            toilet.address_road
         }
 
-        // 더보기 버튼 클릭 시 DetailActivity 실행
+        bottomSheetView.findViewById<TextView>(R.id.toilet_opening_hours).text = if (toilet.opening_hours.isNullOrBlank() ||
+            toilet.opening_hours == "\"" ||
+            toilet.opening_hours == "\"\"" ||
+            toilet.opening_hours == "") {
+            "정보 없음"
+        } else {
+            toilet.opening_hours
+        }
+
+        bottomSheetView.findViewById<TextView>(R.id.toilet_distance).text = run {
+            val sharedPreferences = getSharedPreferences("LocationCache", MODE_PRIVATE)
+            val currentLatitude = sharedPreferences.getString("latitude", null)?.toDoubleOrNull()
+            val currentLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
+
+            if (currentLatitude != null && currentLongitude != null) {
+                // 현재 위치의 Location 객체 생성
+                val currentLocation = Location("").apply {
+                    latitude = currentLatitude
+                    longitude = currentLongitude
+                }
+
+                // 화장실 위치의 Location 객체 생성
+                val toiletLocation = Location("").apply {
+                    latitude = toilet.wgs84_latitude
+                    longitude = toilet.wgs84_longitude
+                }
+
+                // 두 위치 사이의 거리 계산 (미터 단위)
+                val distanceInMeters = currentLocation.distanceTo(toiletLocation)
+
+                // 거리를 적절한 형식으로 변환
+                when {
+                    distanceInMeters < 1000 -> "${distanceInMeters.toInt()}m"
+                    else -> String.format("%.1fkm", distanceInMeters / 1000)
+                }
+            } else {
+                "-"
+            }
+        }
+        bottomSheetDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+//        bottomSheet?.let { sheet ->
+//            val behavior = BottomSheetBehavior.from(sheet)
+//
+//            val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+//                override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+//                    if (e1 != null && e2.y < e1.y) {
+//                        sheet.animate()
+//                            .translationY(-sheet.height.toFloat())
+//                            .setDuration(300)
+//                            .withEndAction {
+//                                val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
+//                                intent.putExtra("TOILET_DATA", toilet)
+//                                startActivity(intent)
+//                                bottomSheetDialog.dismiss()
+//                            }
+//                        return true
+//                    }
+//                    return false
+//                }
+//            })
+//
+//            sheet.setOnTouchListener { _, event ->
+//                gestureDetector.onTouchEvent(event)
+//                false
+//            }
+//        }
+
+        bottomSheetDialog.show()
+
         val moreButton: TextView = bottomSheetView.findViewById(R.id.more_button)
         moreButton.setOnClickListener {
             val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
+            intent.putExtra("TOILET_DATA", toilet)
             startActivity(intent)
-            bottomSheetDialog.dismiss()  // DetailActivity로 이동 시 다이얼로그 닫기
+            bottomSheetDialog.dismiss()
         }
     }
 
     private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
-            //TODO: 인증되기 전 로딩 화면 띄우기 (다른 XML 파일)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         } else {
-            initializeMap()
+            // 현재 위치를 중심으로 지도를 이동
+            CoroutineScope(Dispatchers.Main).launch {
+                loadingDialog.show(supportFragmentManager, loadingDialog.tag)
+                setMapToCurrentLocation { success ->
+                    loadingDialog.dismiss()
+                    if (success) {
+                        fetchToiletDataAndDisplay()
+                    }
+                }
+            }
         }
     }
+
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -196,6 +295,23 @@ class NearActivity : AppCompatActivity() {
                 fetchToiletDataAndDisplay()
             }
         })
+
+        // 라벨 클릭 리스너 설정
+        kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
+            Log.d("BottomSheet", "Label clicked: $clickedLabel")
+            Log.d("BottomSheet", "Map size: ${labelToToiletMap.size}")
+            val toilet = labelToToiletMap[clickedLabel]
+            Log.d("BottomSheet", "Found toilet: $toilet")
+
+            if (toilet != null) {
+                Log.d("BottomSheet", "Matched label clicked. Showing Bottomsheet for toilet: ${toilet.restroom_name}")
+                initializeBottomSheet(toilet)
+                true
+            } else {
+                Log.d("BottomSheet", "Unmatched label clicked")
+                false
+            }
+        }
     }
 
     private fun setMapToCurrentLocation(onComplete: (Boolean) -> Unit) {
@@ -268,7 +384,7 @@ class NearActivity : AppCompatActivity() {
                 toilet ->
                 val pos = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
                 if(toilet.wgs84_latitude != 0.0 && toilet.wgs84_longitude != 0.0){
-                    addMarkerToMapToilet(pos)
+                    addMarkerToMapToilet(pos, toilet)
                 }
             }
         } else {
@@ -279,74 +395,74 @@ class NearActivity : AppCompatActivity() {
     /**
      * 현재 지도 화면에 보이는 영역 내의 화장실을 필터링하여 표시
      */
-    private fun displayToiletsWithinView() {
-        if (!::kakaoMap.isInitialized) return
-
-        // 지도의 현재 화면 영역 가져오기
-        val visibleRegion = kakaoMap.cameraPosition?.let { cameraPosition ->
-            val center = cameraPosition.position // 현재 카메라의 중심 좌표
-            val zoomLevel = cameraPosition.zoomLevel // 현재 줌 레벨
-
-            // 카메라의 중심을 기준으로 화면에 보이는 영역을 계산합니다.
-            // 이 부분은 Kakao Map API에서 제공하는 기능에 따라 조정해야 합니다.
-
-            // 예를 들어, 특정 거리만큼의 범위를 계산하여 visibleRegion을 생성할 수 있습니다.
-            // 여기서는 단순히 중심 좌표를 visibleRegion으로 반환하는 예시입니다.
-            // 실제 visibleRegion 객체를 구성하는 방법은 Kakao Map의 API에 따라 다를 수 있습니다.
-
-            // 가상의 visibleRegion 객체 생성 (실제 API에 맞춰 조정 필요)
-            VisibleRegion(
-                southwest = LatLng.from(center.latitude - 0.01, center.longitude - 0.01),
-                northeast = LatLng.from(center.latitude + 0.01, center.longitude + 0.01)
-            )
-        }
-
-        val bounds = visibleRegion!!.latLngBounds
-
-        // 현재 화면에 보이는 화장실 데이터 필터링
-        val visibleToilets = ToiletData.getToiletsWithinBounds(
-            bounds.southWest.latitude,
-            bounds.southWest.longitude,
-            bounds.northEast.latitude,
-            bounds.northEast.longitude
-        )
-
-        Log.d(TAG, "Visible toilets count: ${visibleToilets.size}")
-
-        val markersToKeep: MutableSet<ToiletModel> = mutableSetOf() // Toilet 타입을 명시적으로 선언
-
-        visibleToilets.forEach { toilet ->
-            markersToKeep.add(toilet)
-            if (!activeMarkers.contains(toilet)) {
-                val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
-                val label = addMarkerToMapToilet(position)
-
-            }
-        }
-
-        // 현재 보이지 않는 마커는 제거
-        val iterator = activeMarkers.iterator()
-        while (iterator.hasNext()) {
-            val toilet = iterator.next()
-            if (!markersToKeep.contains(toilet)) { // entry.key가 Toilet 타입이어야 함
-                // 레이블 제거를 위한 올바른 메서드를 사용해야 합니다.
-                kakaoMap.labelManager?.layer?.let { layer ->
-                    // 예: layer.remove(entry.value) 와 같은 올바른 메서드 사용
-                }
-                iterator.remove()
-            }
-        }
-    }
+//    private fun displayToiletsWithinView() {
+//        if (!::kakaoMap.isInitialized) return
+//
+//        // 지도의 현재 화면 영역 가져오기
+//        val visibleRegion = kakaoMap.cameraPosition?.let { cameraPosition ->
+//            val center = cameraPosition.position // 현재 카메라의 중심 좌표
+//            val zoomLevel = cameraPosition.zoomLevel // 현재 줌 레벨
+//
+//            // 카메라의 중심을 기준으로 화면에 보이는 영역을 계산합니다.
+//            // 이 부분은 Kakao Map API에서 제공하는 기능에 따라 조정해야 합니다.
+//
+//            // 예를 들어, 특정 거리만큼의 범위를 계산하여 visibleRegion을 생성할 수 있습니다.
+//            // 여기서는 단순히 중심 좌표를 visibleRegion으로 반환하는 예시입니다.
+//            // 실제 visibleRegion 객체를 구성하는 방법은 Kakao Map의 API에 따라 다를 수 있습니다.
+//
+//            // 가상의 visibleRegion 객체 생성 (실제 API에 맞춰 조정 필요)
+//            VisibleRegion(
+//                southwest = LatLng.from(center.latitude - 0.01, center.longitude - 0.01),
+//                northeast = LatLng.from(center.latitude + 0.01, center.longitude + 0.01)
+//            )
+//        }
+//
+//        val bounds = visibleRegion!!.latLngBounds
+//
+//        // 현재 화면에 보이는 화장실 데이터 필터링
+//        val visibleToilets = ToiletData.getToiletsWithinBounds(
+//            bounds.southWest.latitude,
+//            bounds.southWest.longitude,
+//            bounds.northEast.latitude,
+//            bounds.northEast.longitude
+//        )
+//
+//        Log.d(TAG, "Visible toilets count: ${visibleToilets.size}")
+//
+//        val markersToKeep: MutableSet<ToiletModel> = mutableSetOf() // Toilet 타입을 명시적으로 선언
+//
+//        visibleToilets.forEach { toilet ->
+//            markersToKeep.add(toilet)
+//            if (!activeMarkers.contains(toilet)) {
+//                val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
+//                val label = addMarkerToMapToilet(position)
+//
+//            }
+//        }
+//
+//        // 현재 보이지 않는 마커는 제거
+//        val iterator = activeMarkers.iterator()
+//        while (iterator.hasNext()) {
+//            val toilet = iterator.next()
+//            if (!markersToKeep.contains(toilet)) { // entry.key가 Toilet 타입이어야 함
+//                // 레이블 제거를 위한 올바른 메서드를 사용해야 합니다.
+//                kakaoMap.labelManager?.layer?.let { layer ->
+//                    // 예: layer.remove(entry.value) 와 같은 올바른 메서드 사용
+//                }
+//                iterator.remove()
+//            }
+//        }
+//    }
 
     // 마커 추가 함수 수정: ToiletModel에서 ToiletData로 변경
-    private fun addMarkerToMapToilet(position: LatLng): Label? {
+    private fun addMarkerToMapToilet(position: LatLng, toilet: ToiletModel) {
         // 줌 레벨에 따른 라벨 스타일 정의
         val styles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(
-                LabelStyle.from(R.drawable.pin1).setZoomLevel(10),
-                LabelStyle.from(R.drawable.pin2).setZoomLevel(13),
-                LabelStyle.from(R.drawable.pin3).setZoomLevel(16),
-                LabelStyle.from(R.drawable.pin).setZoomLevel(19)
+                LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
+                LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
+                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
+                LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
             )
         )
 
@@ -359,25 +475,20 @@ class NearActivity : AppCompatActivity() {
         val layer = kakaoMap.labelManager?.layer
         val label = layer?.addLabel(options)
 
-        // Label 클릭 이벤트 처리
-        kakaoMap.setOnLabelClickListener { kakaoMap, layer, clickedLabel ->
-            if (clickedLabel == label) {
-                initializeBottomSheet()
-                true
-            } else {
-                false  // 다른 이벤트 리스너로 이벤트 전달
-            }
+        // 생성된 라벨과 화장실 정보를 맵에 저장
+        if (label != null) {
+            labelToToiletMap[label] = toilet
+            Log.d("BottomSheet", "Added to map - Label: $label, Toilet: ${toilet.restroom_name}")
         }
-        return label
     }
 
+
     private fun addMarkerToMapCur(position: LatLng): Label? {
-        val iconRes = R.drawable.cur
-
-        // LabelStyles 생성하기 - 위치에 따라 다른 아이콘을 설정
-        val styles = kakaoMap.labelManager
-            ?.addLabelStyles(LabelStyles.from(LabelStyle.from(iconRes)))
-
+        val styles = kakaoMap.labelManager?.addLabelStyles(
+            LabelStyles.from(
+                LabelStyle.from(R.drawable.cur2)
+            )
+        )
         // LabelOptions 생성하기
         val options = LabelOptions.from(position)
             .setStyles(styles)
