@@ -187,7 +187,7 @@ class ToiletRepository {
 
             if (restroomName.contains(toiletName)) {
                 resultToiletList.add(toilet)
-                Log.d(tag, toilet.restroom_name)
+//                Log.d(tag, toilet.restroom_name)
             }
         }
 

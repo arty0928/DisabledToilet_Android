@@ -31,90 +31,68 @@ class DetailOptionFragment : Fragment() {
         _binding = FragmentDetailOptionBinding.inflate(inflater, container, false)
 
         binding.root.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        // 화장실 데이터 가져오기
-//        val toiletMaleData = listOf(
-//            ToiletModel(
-//                number = 2,
-//                category = "카테고리",
-//                basis = "",
-//                restroom_name = "에버랜드 놀이공원",
-//                address_road = "경기도 용인시 48",
-//                address_lot = "1",
-//
-//                male_toilet_count = 2,
-//                male_urinal_count = 1,
-//                male_disabled_toilet_count = 1,
-//                male_disabled_urinal_count = 1,
-//
-//                management_agency_name = "관리주소명 ~~~",
-//                restroom_ownership_type = "restroom_ownership_type ~~",
-//
-//                waste_disposal_method = "",
-//                safety_management_facility_installed = "",
-//                emergency_bell_installed = "",
-//                emergency_bell_location = "",
-//                restroom_entrance_cctv_installed = "",
-//                diaper_change_table_available = "",
-//                diaper_change_table_location = "",
-//                data_reference_date = "",
-//
-//                opening_hours_detail = "8:00 - 22:00",
-//                opening_hours = "",
-//
-//                installation_date = "",
-//                phone_number= "",
-//                remodeling_date = "",
-//                wgs84_latitude= 0.0,
-//                wgs84_longitude= 0.0,
-//
-//            )
-//        )
 
-        val maleContentLinear = binding.toiletInfoManListLinear
-        Log.d("DetailOptionFragment", "LinearLayout ID: $maleContentLinear")
+        // 전달받은 화장실 데이터
+        val toiletData = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
 
-        // 데이터 추가
-//        for (content in toiletMaleData) {
-//            val fields = ToiletModel::class.java.declaredFields
-//
-//            for (field in fields) {
-//                field.isAccessible = true
-//
-//                Log.d("DetailOptionFragment", field.name)
-//
-//                if (field.name.startsWith("male_")) {
-//                    val value = field.get(content)
-//                    if (value is Int && value > 0) {
-//                        val optionName = getOptionName(field)
-//                        val optionNum = value.toString()
-//
-//                        Log.d("DetailOptionFragment", "View added. Total views: " + maleContentLinear.childCount)
-//
-//                        // View를 inflate 할 때 attachToRoot를 false로 설정
-//                        val itemView = layoutInflater.inflate(
-//                            R.layout.fragment_toilet_detail_content,
-//                            maleContentLinear,
-//                            false
-//                        )
-//
-//                        val title = itemView.findViewById<TextView>(R.id.toilet_detail_option_name)
-//                        val num = itemView.findViewById<TextView>(R.id.toilet_detail_option_num)
-//
-//                        // TextView에 내용 설정
-//                        title.text = optionName
-//                        num.text = optionNum
-//
-//                        // LinearLayout에 View 추가
-//                        maleContentLinear.addView(itemView)
-//                        Log.d("DetailOptionFragment", "View added to LinearLayout")
-//                    }
-//                }
-//            }
-//        }
+        toiletData?.let { toilet ->
+            // 화장실 정보 표시
+            binding.toiletName.text = toilet.restroom_name
+            binding.toiletOpeningHours.text = toilet.opening_hours
+            binding.toiletLocationAddress.text = toilet.address_road
+            binding.toiletManageOfficeName.text = toilet.management_agency_name
+            binding.toiletManageOfficeNumber.text = toilet.phone_number?.replace("[\"']".toRegex(), "") ?: ""
+
+            // 남성 화장실 정보 표시
+            val maleContentLinear = binding.toiletInfoManListLinear
+            addToiletInfo(maleContentLinear, "화장실 개수", toilet.male_toilet_count)
+            addToiletInfo(maleContentLinear, "소변기 개수", toilet.male_urinal_count)
+            addToiletInfo(maleContentLinear, "장애인용 화장실 개수", toilet.male_disabled_toilet_count)
+            addToiletInfo(maleContentLinear, "장애인용 소변기 개수", toilet.male_disabled_urinal_count)
+
+            val femaleContentLinear = binding.toiletInfoWomanListLinear
+            // 여성 화장실 정보 표시 (필요한 경우)
+            addToiletInfo(femaleContentLinear, "화장실 개수", toilet.female_toilet_count)
+            addToiletInfo(femaleContentLinear, "장애인용 화장실 개수", toilet.female_disabled_toilet_count)
+            addToiletInfo(femaleContentLinear, "어린이용 화장실 개수", toilet.female_child_toilet_count)
+            
+
+            // 기타 정보 표시
+            binding.toiletManageOfficeName.text = if (toilet.management_agency_name.isNullOrBlank() ||
+                toilet.management_agency_name == "\"" ||
+                toilet.management_agency_name == "\"\"" ||
+                toilet.management_agency_name == "") {
+                "정보 없음"
+            } else {
+                toilet.management_agency_name
+            }
+
+            binding.toiletOpeningHours.text = if (toilet.opening_hours_detail.isNullOrBlank() ||
+                toilet.opening_hours_detail == "\"" ||
+                toilet.opening_hours_detail == "\"\"" ||
+                toilet.opening_hours_detail == "") {
+                "정보 없음"
+            } else {
+                toilet.opening_hours_detail
+            }
+
+
+        }
+
+        return binding.root
 
         // root 뷰를 반환
-        return binding.root
     }
+
+    private fun addToiletInfo(container: ViewGroup, optionName: String, optionValue: Int?) {
+        if (optionValue != null && optionValue > 0) {
+            val itemView = layoutInflater.inflate(R.layout.fragment_toilet_detail_content, container, false)
+            itemView.findViewById<TextView>(R.id.toilet_detail_option_name).text = optionName
+            itemView.findViewById<TextView>(R.id.toilet_detail_option_num).text = optionValue.toString()
+            container.addView(itemView)
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -125,10 +103,17 @@ class DetailOptionFragment : Fragment() {
     // male_로 시작하는 필드명에 맞는 옵션 이름을 반환하는 함수
     private fun getOptionName(field: Field): String {
         return when (field.name) {
-            "male_toilet_count" -> "화장실 개수"
-            "male_urinal_count" -> "소변기 개수"
+            "male_toilet_count" -> "남성 화장실 개수"
+            "male_urinal_count" -> "남성 소변기 개수"
             "male_disabled_toilet_count" -> "장애인용 화장실 개수"
             "male_disabled_urinal_count" -> "장애인용 소변기 개수"
+            "male_child_toilet_count" -> "남자 어린이용 화장실 개수"
+            "male_child_urinal_count" -> "남자 어린이용 소변기 개수"
+
+            "female_toilet_count" -> "여성 화장실 개수"
+            "female_disabled_toilet_count" -> "여성 장애인용 화장실 개수"
+            "female_child_toilet_count" -> "여성 어린이용 화장실 개수"
+
             else -> "Unknown Option"
         }
     }

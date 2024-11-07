@@ -12,8 +12,7 @@ import com.example.disabledtoilet_android.databinding.ToiletListItemBinding
 class ToiletListViewAdapter(private var itemList: MutableList<ToiletModel>) :
     RecyclerView.Adapter<ToiletListViewAdapter.ItemViewHolder>() {
 
-    inner class ItemViewHolder(val binding: ToiletListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class ItemViewHolder(val binding: ToiletListItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(toiletListItem: ToiletModel) {
             binding.toiletName.text = toiletListItem.restroom_name
             val toiletRoadAddress = toiletListItem.address_road

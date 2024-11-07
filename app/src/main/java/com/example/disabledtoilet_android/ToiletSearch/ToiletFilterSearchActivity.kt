@@ -57,7 +57,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            setUi()
+//            setUi()
         }
 
     }
