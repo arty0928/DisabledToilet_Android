@@ -27,13 +27,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NonloginActivity : AppCompatActivity() {
 
@@ -65,22 +64,18 @@ class NonloginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         firebaseAuth = FirebaseAuth.getInstance()
-
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
         Log.d("MyApplication", "Initializing ToiletRepository...")
+        loadingDialog.show(supportFragmentManager, loadingDialog.tag)
 
-        CoroutineScope(Dispatchers.Main).launch {
-            loadingDialog.show(supportFragmentManager, loadingDialog.tag)
-
-            ToiletData.initialize { success ->
-                // 데이터 로드 완료 후 loadingDialog.dismiss() 호출
-                loadingDialog.dismiss()
-
-                if (success) {
+        // 비동기 처리해도 현재 파이어베이스에서 read하는 작업이 UI thread를 블록하고 있음
+        CoroutineScope(Dispatchers.IO).launch {
+            val initResult = ToiletData.initialize()
+            withContext(Dispatchers.Main){
+                if (initResult) {
                     Log.d(TAG, "Toilet data loaded successfully.")
+                    loadingDialog.dismiss()
                     // 추가적인 성공 처리 로직을 여기에 작성할 수 있습니다.
                 } else {
                     Log.e(TAG, "Failed to load toilet data.")
@@ -88,7 +83,6 @@ class NonloginActivity : AppCompatActivity() {
                 }
             }
         }
-
 
         // 내 주변 버튼
         val nearButton = binding.nearButton

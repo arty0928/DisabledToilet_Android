@@ -16,13 +16,10 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
-import com.example.disabledtoilet_android.ToiletSearch.ToiletRepository
-import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -400,6 +397,14 @@ class NearActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         mapView.resume()
+        /*
+        여기서 앱 들어가면 튕김 권한설정 문제
+        lateinit 안된 시점에 resume호출
+        FATAL EXCEPTION: main
+                Process: com.example.disabledtoilet_android, PID: 21978
+        java.lang.RuntimeException: Unable to resume activity {com.example.disabledtoilet_android/com.example.disabledtoilet_android.Near.NearActivity}: kotlin.UninitializedPropertyAccessException: lateinit property mapView has not been initialized
+        Caused by: kotlin.UninitializedPropertyAccessException: lateinit property mapView has not been initialized
+                at com.example.disabledtoilet_android.Near.NearActivity.onResume(NearActivity.kt:399)*/
     }
 
     override fun onPause() {

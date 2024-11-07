@@ -47,10 +47,13 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
 
         filterViewModel = ViewModelProvider(this)[FilterViewModel::class.java]
 
-        if (ToiletData.cachedToiletList.isNullOrEmpty()){
+        // 혹시 화장실 리스트가 캐시되지 않았을 경우
+        if (!ToiletData.toiletListInit){
+            Log.d("test log","캐시 안됨")
             toiletList = mutableListOf<ToiletModel>()
         } else {
-            toiletList = ToiletData.cachedToiletList!!.toMutableList()
+            Log.d("test log","캐시 됨")
+            toiletList = removeEmptyData(ToiletData.cachedToiletList!!.toMutableList())
         }
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -59,23 +62,20 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
 
     }
 
-    private suspend fun setUi() {
+    private fun setUi() {
         binding.toiletRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.toiletRecyclerView.adapter = toiletListViewAdapter
 
         if (!ToiletData.toiletListInit) {
             loadingDialog.show(supportFragmentManager, loadingDialog.tag)
-            withContext(Dispatchers.IO) {
-
-                toiletListViewAdapter.updateList(
-                    toiletRepository.getToiletWithSearchKeyword(
-                        toiletList,
-                        query
-                    )
+            toiletListViewAdapter.updateList(
+                toiletRepository.getToiletWithSearchKeyword(
+                    toiletList,
+                    query
                 )
-                loadingDialog.dismiss()
-            }
+            )
+            loadingDialog.dismiss()
         } else {
             toiletListViewAdapter.updateList(
                 ToiletData.cachedToiletList!!.toMutableList()
@@ -113,10 +113,10 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 query = binding.searchBar.text.toString()
-                if (ToiletData.toiletListInit) {
+                if (toiletList.isNotEmpty()) {
                     toiletListViewAdapter.updateList(
                         toiletRepository.getToiletWithSearchKeyword(
-                            ToiletData.cachedToiletList!!,
+                            toiletList,
                             query
                         )
                     )
@@ -131,7 +131,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     }
 
     private fun showSortDialog() {
-        sortDialog.show(supportFragmentManager,ㅣㅐ.tag)
+        sortDialog.show(supportFragmentManager,loadingDialog.tag)
     }
 
     private fun showFilter() {
@@ -142,11 +142,25 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
 
     private fun applyFilter() {
         Log.d("test log", "[applyFilter]: dismissed")
-        toiletRepository.setFilter(filterViewModel, ToiletData.cachedToiletList!!.toList())
+        toiletRepository.setFilter(filterViewModel, toiletList.toList())
         toiletListViewAdapter.updateList(
             toiletRepository.getToiletWithSearchKeyword(
-                ToiletData.cachedToiletList!!, query
+                toiletList,
+                query
             )
         )
+    }
+
+    private fun removeEmptyData(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        for (i in toiletList.size-1 downTo 0){
+            val toiletName = toiletList[i].restroom_name
+
+            if (toiletName == ""){
+                Log.d("test log",toiletList[i].toString())
+                toiletList.removeAt(i)
+            }
+        }
+
+        return toiletList
     }
 }

@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.databinding.FilterSearchDialogBinding
 
@@ -27,6 +28,7 @@ class FilterSearchDialog : DialogFragment() {
         this.setCancelable(false)
         viewModel = ViewModelProvider(requireActivity())[FilterViewModel::class.java]
 
+        // 초기 상태 저장
         viewModel.storeStatus()
     }
 
@@ -61,6 +63,7 @@ class FilterSearchDialog : DialogFragment() {
         // 뒤록가기
         binding.backButton.setOnClickListener {
             this.dismiss()
+            // 뷰모델 초기 상태로
             viewModel.loadStatus()
         }
 
@@ -228,6 +231,8 @@ class FilterViewModel : ViewModel() {
     fun updateFilterCheck(index: Int, isChecked: Boolean) {
         filterList[index].checked = isChecked
         filterLiveList.value = filterList
+
+        viewModelScope
     }
 
 

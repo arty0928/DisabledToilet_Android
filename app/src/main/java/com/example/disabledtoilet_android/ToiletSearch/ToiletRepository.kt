@@ -5,12 +5,15 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterViewModel
+import org.apache.commons.lang3.mutable.Mutable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-
+/**
+ * 조건 적용 할 때 사용 함
+ */
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ToiletRepository {
@@ -27,18 +30,19 @@ class ToiletRepository {
 
         val finalResult: MutableList<ToiletModel>
 
-        if (isFilteredListInit){
+        if (isFilteredListInit) {
             finalResult = applyQuery(filteredToiletList, keyword)
             Log.d("test log", "검색된 화장실 데이터 수: " + finalResult.size.toString())
         } else {
             finalResult = applyQuery(toiletList, keyword)
         }
-
-
         return finalResult
     }
 
-    private fun applyQuery(toiletList: List<ToiletModel>, keyword: String): MutableList<ToiletModel>{
+    private fun applyQuery(
+        toiletList: List<ToiletModel>,
+        keyword: String
+    ): MutableList<ToiletModel> {
         val roadAddressResult = getToiletByRoadAddress(toiletList, keyword)
         val lotAddressResult = getToiletByLotAddress(toiletList, keyword)
         val nameResult = getToiletByToiletName(toiletList, keyword)
@@ -104,8 +108,8 @@ class ToiletRepository {
         }
 
         // 현재 운영
-        if (filterViewModel.isToiletOperating.value!!){
-            for (i in resultToiletList.size - 1 downTo 0){
+        if (filterViewModel.isToiletOperating.value!!) {
+            for (i in resultToiletList.size - 1 downTo 0) {
 
             }
         }
@@ -114,13 +118,6 @@ class ToiletRepository {
         isFilteredListInit = true
 
         return resultToiletList.toList()
-    }
-
-    fun getCurrentTime() {
-        val currentTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val formattedTime = currentTime.format(formatter)
-        println("현재 시간: $formattedTime")
     }
 
     /**

@@ -12,6 +12,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object ToiletData {
     private val TAG = "[ToiletData]"
@@ -27,9 +29,9 @@ object ToiletData {
     val database: FirebaseDatabase =
         FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
     var toiletListInit = false
-    var cachedToiletList: List<ToiletModel>? = null
+    var cachedToiletList: List<ToiletModel>? = listOf()
 
-    fun initialize(onComplete: (Boolean) -> Unit) {
+    suspend fun initialize(): Boolean = suspendCoroutine { continuation ->
         // Firestore에서 데이터 로드
         val db = FirebaseFirestore.getInstance()
         db.collection("dreamhyoja") // "dreamhyoja" 컬렉션에서 데이터 가져오기
@@ -39,13 +41,14 @@ object ToiletData {
                 cachedToiletList = documents.mapNotNull { doc ->
                     ToiletModel.fromDocument(doc) // null이 아닌 경우만 포함
                 }
-                // 데이터 로드 성공 시 onComplete 호출
-                onComplete(true)
+                // 데이터 로드 성공 시 true 반환
+                toiletListInit = true
+                continuation.resume(true)
             }
             .addOnFailureListener { exception ->
-                // 데이터 로드 실패 시 onComplete 호출
+                // 데이터 로드 실패 시 false 반환
                 Log.e(TAG, "Error loading data: ${exception.message}")
-                onComplete(false)
+                continuation.resume(false)
             }
     }
 
