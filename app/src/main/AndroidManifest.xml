@@ -36,6 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".ToiletSearch.ToiletFilterSearchActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:exported="false" />
 
         <activity
