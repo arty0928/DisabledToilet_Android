@@ -129,4 +129,6 @@ dependencies {
 
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0")
 
+    //카카오 네비
+    implementation ("com.kakao.sdk:v2-navi:2.13.0")
 }
