@@ -57,6 +57,7 @@ import java.net.URLEncoder
 
 class NearActivity : AppCompatActivity() {
 
+    private var searchingToilet: ToiletModel? = null
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -71,6 +72,8 @@ class NearActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityNearBinding.inflate(layoutInflater)
+
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
 
         binding = ActivityNearBinding.inflate(layoutInflater)
@@ -89,6 +92,10 @@ class NearActivity : AppCompatActivity() {
             initializeMapView()
         }
 
+        // 인텐트 지점 찾기
+        val rootActivity = intent.getStringExtra("rootActivity")
+
+
         // 버튼 설정
         val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
         backToCurBtn.setOnClickListener {
@@ -101,6 +108,26 @@ class NearActivity : AppCompatActivity() {
         }
 
 
+
+        when(rootActivity){
+            null -> {
+                Log.d("test log", "root activity data is null")
+            }
+
+            "ToiletFilterSearchActivity" -> {
+                val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
+                if (parcelableData is ToiletModel) {
+                    searchingToilet = parcelableData
+                    Log.d("test log", "Restroom Name: ${searchingToilet!!.restroom_name}")
+                    if (searchingToilet != null){
+                        moveCameraToToilet(searchingToilet!!)
+                    }
+                    initializeBottomSheet(searchingToilet!!)
+                } else {
+                    Log.e("test log", "parcelable data type is not matched")
+                }
+            }
+        }
     }
     private fun initializeMapView() {
         CoroutineScope(Dispatchers.Main).launch {
@@ -694,6 +721,24 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
+    // 장소 검색에서 내 주변으로 넘어오면 화장실 위치로 카메라 옮김
+    private fun moveCameraToToilet(toiletData: ToiletModel){
+        val latitude = toiletData.wgs84_latitude
+        val longitude = toiletData.wgs84_longitude
+
+        // 데이터중에 값이 0인 애들이 많음
+        if (latitude.toInt() != 0 && longitude.toInt() != 0) {
+            val toiletPosition = LatLng.from(latitude, longitude)
+            // 지도의 중심을 화장실 위치로 이동
+            if (::kakaoMap.isInitialized){
+                // 여기 비동기 처리하면 바꿔줄 것
+                kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(toiletPosition, 16))
+            }
+        } else {
+            // 화장실 위치 정보가 없는 경우 사용자에게 알림
+            Toast.makeText(this, "위치데이터 준비 중 입니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onResume() {
         super.onResume()
