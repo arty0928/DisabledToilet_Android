@@ -127,4 +127,6 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.14.2")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
+    //카카오 네비
+    implementation ("com.kakao.sdk:v2-navi:2.13.0")
 }

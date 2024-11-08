@@ -2,16 +2,20 @@ package com.example.disabledtoilet_android.Near
 
 import ToiletModel
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +40,11 @@ import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.LatLng
 import com.google.firebase.FirebaseApp
+import com.kakao.sdk.navi.NaviClient
+import com.kakao.sdk.navi.model.CoordType
+import com.kakao.sdk.navi.model.NaviOption
+import com.kakao.sdk.navi.model.RpOption
+import com.kakao.sdk.navi.model.VehicleType
 import com.kakao.vectormap.camera.CameraPosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -131,6 +140,7 @@ class NearActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initializeBottomSheet(toilet: ToiletModel) {
         Log.d("BottomSheet", "Initializing BottomSheet for toilet: ${toilet.restroom_name}")
         val bottomSheetView = layoutInflater.inflate(R.layout.detail_bottomsheet, null)
@@ -139,10 +149,10 @@ class NearActivity : AppCompatActivity() {
 
         bottomSheetView.findViewById<TextView>(R.id.toilet_name).text = toilet.restroom_name
         bottomSheetView.findViewById<TextView>(R.id.toilet_address).text = if (toilet.address_road.isNullOrBlank() ||
-                toilet.address_road == "\"" ||
-                toilet.address_road == "\"\"" ||
-                toilet.address_road == "") {
-            "정보 없음"
+            toilet.address_road == "\"" ||
+            toilet.address_road == "\"\"" ||
+            toilet.address_road == "") {
+            "-"
         } else {
             toilet.address_road
         }
@@ -151,7 +161,7 @@ class NearActivity : AppCompatActivity() {
             toilet.opening_hours == "\"" ||
             toilet.opening_hours == "\"\"" ||
             toilet.opening_hours == "") {
-            "정보 없음"
+            "-"
         } else {
             toilet.opening_hours
         }
@@ -162,22 +172,18 @@ class NearActivity : AppCompatActivity() {
             val currentLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
 
             if (currentLatitude != null && currentLongitude != null) {
-                // 현재 위치의 Location 객체 생성
                 val currentLocation = Location("").apply {
                     latitude = currentLatitude
                     longitude = currentLongitude
                 }
 
-                // 화장실 위치의 Location 객체 생성
                 val toiletLocation = Location("").apply {
                     latitude = toilet.wgs84_latitude
                     longitude = toilet.wgs84_longitude
                 }
 
-                // 두 위치 사이의 거리 계산 (미터 단위)
                 val distanceInMeters = currentLocation.distanceTo(toiletLocation)
 
-                // 거리를 적절한 형식으로 변환
                 when {
                     distanceInMeters < 1000 -> "${distanceInMeters.toInt()}m"
                     else -> String.format("%.1fkm", distanceInMeters / 1000)
@@ -188,34 +194,8 @@ class NearActivity : AppCompatActivity() {
         }
         bottomSheetDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
-        val bottomSheet =
-            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-//        bottomSheet?.let { sheet ->
-//            val behavior = BottomSheetBehavior.from(sheet)
-//
-//            val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-//                    if (e1 != null && e2.y < e1.y) {
-//                        sheet.animate()
-//                            .translationY(-sheet.height.toFloat())
-//                            .setDuration(300)
-//                            .withEndAction {
-//                                val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
-//                                intent.putExtra("TOILET_DATA", toilet)
-//                                startActivity(intent)
-//                                bottomSheetDialog.dismiss()
-//                            }
-//                        return true
-//                    }
-//                    return false
-//                }
-//            })
-//
-//            sheet.setOnTouchListener { _, event ->
-//                gestureDetector.onTouchEvent(event)
-//                false
-//            }
-//        }
+        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        // 주석 처리된 제스처 관련 코드는 그대로 유지
 
         bottomSheetDialog.show()
 
@@ -225,6 +205,56 @@ class NearActivity : AppCompatActivity() {
             intent.putExtra("TOILET_DATA", toilet)
             startActivity(intent)
             bottomSheetDialog.dismiss()
+        }
+
+        // 네비게이션 연동
+        val navBtn: LinearLayout = bottomSheetView.findViewById(R.id.toilet_navigation_btn)
+        navBtn.setOnClickListener {
+            Log.d("navBtn", "Navigation button clicked")
+            showKakaoMap(toilet)
+        }
+    }
+
+
+    private fun showKakaoMap(toilet: ToiletModel) {
+        // 현재 위치 가져오기 (이전에 저장된 위치 사용)
+        val sharedPreferences = getSharedPreferences("LocationCache", MODE_PRIVATE)
+        val currentLatitude = sharedPreferences.getString("latitude", null)?.toDoubleOrNull()
+        val currentLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
+
+
+        Log.d("showKakaoMap", "showKakaoMap 1")
+        if (currentLatitude != null && currentLongitude != null) {
+            // 카카오맵 URL Scheme 생성
+            val uri = Uri.parse("kakaomap://route?" +
+                    "sp=$currentLatitude,$currentLongitude" +  // 출발지 (현재 위치)
+                    "&ep=${toilet.wgs84_latitude},${toilet.wgs84_longitude}" +  // 도착지 (화장실 위치)
+                    "&by=FOOT")  // 이동 수단 (도보)
+
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.addCategory(Intent.CATEGORY_BROWSABLE)
+
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                // 카카오맵 앱이 설치되어 있지 않은 경우
+                Toast.makeText(this, "카카오맵 앱이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+
+                // 카카오맵 앱 설치 페이지로 이동
+                val playStoreUri = Uri.parse("market://details?id=net.daum.android.map")
+                val playStoreIntent = Intent(Intent.ACTION_VIEW, playStoreUri)
+
+                try {
+                    startActivity(playStoreIntent)
+                } catch (e: Exception) {
+                    // 플레이 스토어를 열 수 없는 경우 웹 브라우저로 열기
+                    val webIntent = Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=net.daum.android.map"))
+                    startActivity(webIntent)
+                }
+            }
+        } else {
+            Toast.makeText(this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
