@@ -28,6 +28,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.vectormap.KakaoMapSdk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -62,12 +64,14 @@ class NonloginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        KakaoSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
 
         firebaseAuth = FirebaseAuth.getInstance()
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("MyApplication", "Initializing ToiletRepository...")
         loadingDialog.show(supportFragmentManager, loadingDialog.tag)
+
 
         // 비동기 처리해도 현재 파이어베이스에서 read하는 작업이 UI thread를 블록하고 있음
         CoroutineScope(Dispatchers.IO).launch {

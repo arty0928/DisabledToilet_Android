@@ -45,16 +45,19 @@
                 />
 
             <LinearLayout
+                android:id="@+id/save_btn1"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true"
                 >
 
                 <ImageView
                     android:layout_gravity="center"
-                    android:id="@+id/icon_toggle"
+                    android:id="@+id/save_icon1"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/save_icon" />
@@ -101,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:gravity="center_vertical"
-                android:text="영업 중"
+                android:text="개방 시간"
                 android:textColor="@android:color/black"
                 android:textSize="15sp"
                 android:fontFamily="@font/notosanskr_bold"/>
@@ -164,6 +167,7 @@
         android:gravity="center">
 
         <LinearLayout
+            android:id="@+id/save_btn2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -173,8 +177,9 @@
             android:focusable="true">
 
             <ImageView
+
                 android:padding="10dp"
-                android:id="@+id/save_icon"
+                android:id="@+id/save_icon2"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -191,6 +196,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/share_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

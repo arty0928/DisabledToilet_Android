@@ -4,15 +4,16 @@ import ToiletModel
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.ActivityNotFoundException
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -20,9 +21,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
-import com.example.disabledtoilet_android.NonloginActivity
-import com.example.disabledtoilet_android.NonloginActivity.Companion
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
@@ -39,17 +39,24 @@ import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.LatLng
 import com.google.firebase.FirebaseApp
-import com.kakao.sdk.navi.NaviClient
-import com.kakao.sdk.navi.model.CoordType
-import com.kakao.sdk.navi.model.NaviOption
-import com.kakao.sdk.navi.model.RpOption
-import com.kakao.sdk.navi.model.VehicleType
-import com.kakao.vectormap.camera.CameraPosition
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.share.ShareClient
+import com.kakao.sdk.share.WebSharerClient
+import com.kakao.sdk.template.model.Button
+import com.kakao.sdk.template.model.Content
+import com.kakao.sdk.template.model.FeedTemplate
+import com.kakao.sdk.template.model.Link
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.Serializable
+import java.net.URLEncoder
 
 class NearActivity : AppCompatActivity() {
+
     private var searchingToilet: ToiletModel? = null
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
@@ -61,12 +68,6 @@ class NearActivity : AppCompatActivity() {
 
     val loadingDialog = LoadingDialog()
 
-    // 화장실 데이터를 저장할 리스트
-    private val toiletList = mutableListOf<ToiletModel>()
-
-    // 활성화된 마커 관리
-    private val activeMarkers = mutableListOf<ToiletModel>()
-
     private val labelToToiletMap = mutableMapOf<Label, ToiletModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +75,9 @@ class NearActivity : AppCompatActivity() {
         binding = ActivityNearBinding.inflate(layoutInflater)
 
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
+
+        binding = ActivityNearBinding.inflate(layoutInflater)
+
         setContentView(R.layout.activity_near)
 
         FirebaseApp.initializeApp(this)
@@ -81,7 +85,12 @@ class NearActivity : AppCompatActivity() {
 
         // MapView 초기화
         mapView = findViewById(R.id.map_view)
-        initializeMapView()  // 새로운 함수로 맵 초기화 로직 분리
+
+        // MapView 초기화 - 코루틴을 사용하여 비동기 처리
+        CoroutineScope(Dispatchers.Main).launch {
+            mapView = findViewById(R.id.map_view)
+            initializeMapView()
+        }
 
         // 인텐트 지점 찾기
         val rootActivity = intent.getStringExtra("rootActivity")
@@ -90,15 +99,15 @@ class NearActivity : AppCompatActivity() {
         // 버튼 설정
         val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
         backToCurBtn.setOnClickListener {
-            if (::kakaoMap.isInitialized) {
-                moveCameraToCachedLocation()
-            }
+            moveCameraToCachedLocation()
         }
 
         val backBtn : ImageButton = findViewById(R.id.back_button)
         backBtn.setOnClickListener {
             onBackPressed()
         }
+
+
 
         when(rootActivity){
             null -> {
@@ -121,27 +130,30 @@ class NearActivity : AppCompatActivity() {
         }
     }
     private fun initializeMapView() {
-        mapView.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                Log.d(Tag, "MapView destroyed")
-            }
+        CoroutineScope(Dispatchers.Main).launch {
+            mapView.start(object : MapLifeCycleCallback() {
+                override fun onMapDestroy() {
+                    Log.d(Tag, "MapView destroyed")
+                }
 
-            override fun onMapError(error: Exception) {
-                Log.e(Tag, "Map error: ${error.message}")
-            }
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(map: KakaoMap) {
-                kakaoMap = map
-                Log.d(Tag, "KakaoMap is ready")
+                override fun onMapError(error: Exception) {
+                    Log.e(Tag, "Map error: ${error.message}")
+                }
+            }, object : KakaoMapReadyCallback() {
+                override fun onMapReady(map: KakaoMap) {
+                    kakaoMap = map
+                    Log.d(Tag, "KakaoMap is ready")
 
-                // 맵이 준비되면 클릭 리스너 설정
-                setupMapClickListener()
+                    // 맵이 준비되면 클릭 리스너 설정
+                    setupMapClickListener()
 
-                // 위치 권한 확인 및 현재 위치 설정
-                checkLocationPermission()
-            }
-        })
+                    // 위치 권한 확인 및 현재 위치 설정
+                    checkLocationPermission()
+                }
+            })
+        }
     }
+
     private fun setupMapClickListener() {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
             Log.d("BottomSheet", "Label clicked: $clickedLabel")
@@ -234,7 +246,141 @@ class NearActivity : AppCompatActivity() {
             Log.d("navBtn", "Navigation button clicked")
             showKakaoMap(toilet)
         }
+
+        val shareBtn : LinearLayout = bottomSheetView.findViewById(R.id.share_btn)
+        shareBtn.setOnClickListener {
+            Log.d("shareBtn", "share button clicked")
+            shareKakaoMap(toilet)
+        }
+
+
     }
+
+    private fun shareKakaoMap(toilet: ToiletModel) {
+        val toiletAddress = toilet.address_road ?: ""
+        val toiletLatitude = toilet.wgs84_latitude
+        val toiletLongitude = toilet.wgs84_longitude
+
+        // 웹에서 열 수 있는 카카오맵 URL
+        val kakaoMapWebUrl = "https://map.kakao.com/link/map/${toiletLatitude},${toiletLongitude}"
+
+        // 모바일에서 카카오맵 앱으로 열 수 있는 URL
+        val kakaoMapAppUrl = "kakaomap://look?p=${toiletLatitude},${toiletLongitude}"
+
+        // 길찾기를 위한 웹 URL (카카오맵 웹에서 길찾기 기능 사용)
+        val kakaoMapRouteWebUrl = "https://map.kakao.com/link/to/${toiletAddress},${toiletLatitude},${toiletLongitude}"
+
+        val defaultFeed = FeedTemplate(
+            content = Content(
+                title = "방광곡곡 - 화장실 위치",
+                description = toiletAddress,
+                imageUrl = "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
+                link = Link(
+                    webUrl = kakaoMapWebUrl,
+                    mobileWebUrl = kakaoMapWebUrl
+                )
+            ),
+            buttons = listOf(
+                Button(
+                    "위치 보기",
+                    Link(
+                        webUrl = kakaoMapWebUrl,
+                        mobileWebUrl = kakaoMapAppUrl,
+                        androidExecutionParams = mapOf(
+                            "key1" to "value1",
+                            "key2" to "value2"
+                        )
+                    )
+                ),
+                Button(
+                    "길찾기",
+                    Link(
+                        webUrl = kakaoMapRouteWebUrl,
+                        mobileWebUrl = kakaoMapRouteWebUrl
+                    )
+                )
+            )
+        )
+
+        if (ShareClient.instance.isKakaoTalkSharingAvailable(this)) {
+            // 카카오톡으로 카카오톡 공유 가능
+            ShareClient.instance.shareDefault(this, defaultFeed) { sharingResult, error ->
+                if (error != null) {
+                    Log.e("KakaoShare", "카카오톡 공유 실패", error)
+                    Toast.makeText(this, "카카오톡 공유에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+                else if (sharingResult != null) {
+                    Log.d("KakaoShare", "카카오톡 공유 성공")
+                    startActivity(sharingResult.intent)
+
+                    // 버튼 클릭 이벤트를 처리하기 위한 리스너 설정
+                    sharingResult.intent.putExtra("EXTRA_BUTTON_CLICK_LISTENER", object : ButtonClickListener {
+                        override fun onButtonClick(buttonType: String) {
+                            when (buttonType) {
+                                "위치 보기" -> {
+                                    Log.d("KakaoShare", "위치 보기 버튼이 클릭되었습니다.")
+                                    openKakaoMap(kakaoMapAppUrl, kakaoMapWebUrl)
+                                }
+                                "길찾기" -> {
+                                    Log.d("KakaoShare", "길찾기 버튼이 클릭되었습니다.")
+                                    openKakaoMap(kakaoMapRouteWebUrl, kakaoMapRouteWebUrl)
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+        } else {
+            // 카카오톡 미설치: 웹 공유 사용
+            val sharerUrl = WebSharerClient.instance.makeDefaultUrl(defaultFeed)
+
+            try {
+                KakaoCustomTabsClient.openWithDefault(this, sharerUrl)
+            } catch (e: UnsupportedOperationException) {
+                // CustomTabes를 지원하지 않는 환경에서는 인터넷 브라우저 인텐트로 공유 웹페이지 열기
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sharerUrl.toString()))
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(this, "공유에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    // 버튼 클릭 이벤트를 처리하기 위한 인터페이스
+    interface ButtonClickListener : Serializable {
+        fun onButtonClick(buttonType: String)
+    }
+
+    // 카카오맵 열기 함수
+    private fun openKakaoMap(appUrl: String, webUrl: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(appUrl))
+            intent.addCategory(Intent.CATEGORY_BROWSABLE)
+            startActivity(intent)
+        } catch (e: Exception) {
+            // 카카오맵 앱이 설치되어 있지 않은 경우 웹 URL로 열기
+            val webIntent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
+            startActivity(webIntent)
+        }
+    }
+
+
+    // drawable 리소스를 URI 문자열로 변환하는 함수
+    private fun getDrawableUriString(drawableId: Int): String {
+        val drawable = ContextCompat.getDrawable(this, drawableId)
+        val bitmap = (drawable as BitmapDrawable).bitmap
+
+        val file = File(cacheDir, "temp_image.png")
+        val fos = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        fos.flush()
+        fos.close()
+
+        return Uri.fromFile(file).toString()
+    }
+
 
 
     private fun showKakaoMap(toilet: ToiletModel) {
@@ -593,7 +739,6 @@ class NearActivity : AppCompatActivity() {
             Toast.makeText(this, "위치데이터 준비 중 입니다.", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     override fun onResume() {
         super.onResume()
