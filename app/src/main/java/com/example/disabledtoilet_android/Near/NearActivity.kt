@@ -17,8 +17,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
-import com.example.disabledtoilet_android.NonloginActivity
-import com.example.disabledtoilet_android.NonloginActivity.Companion
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
@@ -26,7 +24,6 @@ import com.example.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraUpdateFactory
@@ -40,9 +37,10 @@ import com.kakao.vectormap.camera.CameraPosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.log
 
 class NearActivity : AppCompatActivity() {
-
+    private var searchingToilet: ToiletModel? = null
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -65,8 +63,6 @@ class NearActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNearBinding.inflate(layoutInflater)
 
-
-
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
         setContentView(R.layout.activity_near)
 
@@ -76,6 +72,10 @@ class NearActivity : AppCompatActivity() {
         // MapView 초기화
         mapView = findViewById(R.id.map_view)
         initializeMapView()  // 새로운 함수로 맵 초기화 로직 분리
+
+        // 인텐트 지점 찾기
+        val rootActivity = intent.getStringExtra("rootActivity")
+
 
         // 버튼 설정
         val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
@@ -88,6 +88,26 @@ class NearActivity : AppCompatActivity() {
         val backBtn : ImageButton = findViewById(R.id.back_button)
         backBtn.setOnClickListener {
             onBackPressed()
+        }
+
+        when(rootActivity){
+            null -> {
+                Log.d("test log", "root activity data is null")
+            }
+
+            "ToiletFilterSearchActivity" -> {
+                val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
+                if (parcelableData is ToiletModel) {
+                    searchingToilet = parcelableData
+                    Log.d("test log", "Restroom Name: ${searchingToilet!!.restroom_name}")
+                    if (searchingToilet != null){
+                        moveCameraToToilet(searchingToilet!!)
+                    }
+                    initializeBottomSheet(searchingToilet!!)
+                } else {
+                    Log.e("test log", "parcelable data type is not matched")
+                }
+            }
         }
     }
     private fun initializeMapView() {
@@ -190,32 +210,32 @@ class NearActivity : AppCompatActivity() {
 
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-//        bottomSheet?.let { sheet ->
-//            val behavior = BottomSheetBehavior.from(sheet)
-//
-//            val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-//                override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
-//                    if (e1 != null && e2.y < e1.y) {
-//                        sheet.animate()
-//                            .translationY(-sheet.height.toFloat())
-//                            .setDuration(300)
-//                            .withEndAction {
-//                                val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
-//                                intent.putExtra("TOILET_DATA", toilet)
-//                                startActivity(intent)
-//                                bottomSheetDialog.dismiss()
-//                            }
-//                        return true
-//                    }
-//                    return false
-//                }
-//            })
-//
-//            sheet.setOnTouchListener { _, event ->
-//                gestureDetector.onTouchEvent(event)
-//                false
-//            }
-//        }
+/*        bottomSheet?.let { sheet ->
+            val behavior = BottomSheetBehavior.from(sheet)
+
+            val gestureDetector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
+                override fun onScroll(e1: MotionEvent?, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+                    if (e1 != null && e2.y < e1.y) {
+                        sheet.animate()
+                            .translationY(-sheet.height.toFloat())
+                            .setDuration(300)
+                            .withEndAction {
+                                val intent = Intent(this@NearActivity, DetailPageActivity::class.java)
+                                intent.putExtra("TOILET_DATA", toilet)
+                                startActivity(intent)
+                                bottomSheetDialog.dismiss()
+                            }
+                        return true
+                    }
+                    return false
+                }
+            })
+
+            sheet.setOnTouchListener { _, event ->
+                gestureDetector.onTouchEvent(event)
+                false
+            }
+        }*/
 
         bottomSheetDialog.show()
 
@@ -524,10 +544,29 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
+    // 장소 검색에서 내 주변으로 넘어오면 화장실 위치로 카메라 옮김
+    private fun moveCameraToToilet(toiletData: ToiletModel){
+        val latitude = toiletData.wgs84_latitude
+        val longitude = toiletData.wgs84_longitude
+
+        // 데이터중에 값이 0인 애들이 많음
+        if (latitude.toInt() != 0 && longitude.toInt() != 0) {
+            val toiletPosition = LatLng.from(latitude, longitude)
+            // 지도의 중심을 화장실 위치로 이동
+            if (::kakaoMap.isInitialized){
+                // 여기 비동기 처리하면 바꿔줄 것
+                kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(toiletPosition, 16))
+            }
+        } else {
+            // 화장실 위치 정보가 없는 경우 사용자에게 알림
+            Toast.makeText(this, "위치데이터 준비 중 입니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
-        mapView.resume()
+        mapView.resume() // 여기서 권한 요청 시, lateinit 문제 발생
     }
 
     override fun onPause() {
