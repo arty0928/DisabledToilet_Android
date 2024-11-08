@@ -47,9 +47,11 @@ import com.kakao.sdk.template.model.Button
 import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.Serializable
@@ -87,15 +89,34 @@ class NearActivity : AppCompatActivity() {
         mapView = findViewById(R.id.map_view)
 
         // MapView 초기화 - 코루틴을 사용하여 비동기 처리
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             mapView = findViewById(R.id.map_view)
             initializeMapView()
+            // 인텐트 지점 찾기
+            val rootActivity = intent.getStringExtra("rootActivity")
+
+            withContext(Dispatchers.Main){
+                when(rootActivity){
+                    null -> {
+                        Log.d("test log", "root activity data is null")
+                    }
+                    //화장실 검색에서부터 넘어옴
+                    "ToiletFilterSearchActivity" -> {
+                        val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
+                        if (parcelableData is ToiletModel) {
+                            searchingToilet = parcelableData
+                            Log.d("test log", "Restroom Name: ${searchingToilet!!.restroom_name}")
+                            if (searchingToilet != null){
+                                moveCameraToToilet(searchingToilet!!)
+                            }
+                            initializeBottomSheet(searchingToilet!!)
+                        } else {
+                            Log.e("test log", "parcelable data type is not matched")
+                        }
+                    }
+                }
+            }
         }
-
-        // 인텐트 지점 찾기
-        val rootActivity = intent.getStringExtra("rootActivity")
-
-
         // 버튼 설정
         val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
         backToCurBtn.setOnClickListener {
@@ -108,29 +129,10 @@ class NearActivity : AppCompatActivity() {
         }
 
 
-
-        when(rootActivity){
-            null -> {
-                Log.d("test log", "root activity data is null")
-            }
-
-            "ToiletFilterSearchActivity" -> {
-                val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
-                if (parcelableData is ToiletModel) {
-                    searchingToilet = parcelableData
-                    Log.d("test log", "Restroom Name: ${searchingToilet!!.restroom_name}")
-                    if (searchingToilet != null){
-                        moveCameraToToilet(searchingToilet!!)
-                    }
-                    initializeBottomSheet(searchingToilet!!)
-                } else {
-                    Log.e("test log", "parcelable data type is not matched")
-                }
-            }
-        }
     }
-    private fun initializeMapView() {
-        CoroutineScope(Dispatchers.Main).launch {
+    private suspend fun initializeMapView(): Boolean {
+        val isSucceess = CompletableDeferred<Boolean>()
+        withContext(Dispatchers.IO){
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
                     Log.d(Tag, "MapView destroyed")
@@ -138,6 +140,7 @@ class NearActivity : AppCompatActivity() {
 
                 override fun onMapError(error: Exception) {
                     Log.e(Tag, "Map error: ${error.message}")
+                    isSucceess.completeExceptionally(error)
                 }
             }, object : KakaoMapReadyCallback() {
                 override fun onMapReady(map: KakaoMap) {
@@ -149,9 +152,12 @@ class NearActivity : AppCompatActivity() {
 
                     // 위치 권한 확인 및 현재 위치 설정
                     checkLocationPermission()
+                    isSucceess.complete(true)
                 }
             })
         }
+
+        return isSucceess.await()
     }
 
     private fun setupMapClickListener() {
@@ -725,7 +731,6 @@ class NearActivity : AppCompatActivity() {
     private fun moveCameraToToilet(toiletData: ToiletModel){
         val latitude = toiletData.wgs84_latitude
         val longitude = toiletData.wgs84_longitude
-
         // 데이터중에 값이 0인 애들이 많음
         if (latitude.toInt() != 0 && longitude.toInt() != 0) {
             val toiletPosition = LatLng.from(latitude, longitude)
@@ -733,6 +738,8 @@ class NearActivity : AppCompatActivity() {
             if (::kakaoMap.isInitialized){
                 // 여기 비동기 처리하면 바꿔줄 것
                 kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(toiletPosition, 16))
+            } else{
+                Log.d("test log","kakaoMap is not initailized")
             }
         } else {
             // 화장실 위치 정보가 없는 경우 사용자에게 알림
