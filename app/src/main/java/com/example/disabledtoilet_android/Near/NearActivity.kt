@@ -88,7 +88,7 @@ class NearActivity : AppCompatActivity() {
             mapView = findViewById(R.id.map_view)
             initializeMapView()
         }
-        
+
         // 버튼 설정
         val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
         backToCurBtn.setOnClickListener {
@@ -225,6 +225,8 @@ class NearActivity : AppCompatActivity() {
             Log.d("shareBtn", "share button clicked")
             shareKakaoMap(toilet)
         }
+
+
     }
 
     private fun shareKakaoMap(toilet: ToiletModel) {
