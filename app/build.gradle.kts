@@ -126,12 +126,14 @@ dependencies {
     //Glide 사진
     implementation ("com.github.bumptech.glide:glide:4.14.2")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
     //카카오톡 공유
     implementation ("com.kakao.sdk:v2-share:2.11.2")
 
     //카카오톡 공유
     implementation ("com.kakao.sdk:v2-user:2.14.0") // 최신 버전 사용
     implementation ("com.kakao.sdk:v2-talk:2.14.0")
+
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.0")
 
     //카카오 네비
