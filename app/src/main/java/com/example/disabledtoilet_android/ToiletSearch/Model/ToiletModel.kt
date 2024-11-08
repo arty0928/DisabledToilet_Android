@@ -38,7 +38,8 @@ data class ToiletModel(
     val phone_number: String = "",
     val remodeling_date: String = "",
     val wgs84_latitude: Double = 0.0,
-    val wgs84_longitude: Double = 0.0
+    val wgs84_longitude: Double = 0.0,
+    val save : Int = 0
 ) : Parcelable {
 
     override fun describeContents(): Int {
@@ -79,7 +80,8 @@ data class ToiletModel(
                 phone_number = document.get("phone_number")?.toString() ?: "",
                 remodeling_date = document.getString("remodeling_date") ?: "",
                 wgs84_latitude = document.getDouble("wgs84_latitude") ?: 0.0,
-                wgs84_longitude = document.getDouble("wgs84_longitude") ?: 0.0
+                wgs84_longitude = document.getDouble("wgs84_longitude") ?: 0.0,
+                save = document.getLong("save")?.toInt() ?: 0
             )
         }
     }
