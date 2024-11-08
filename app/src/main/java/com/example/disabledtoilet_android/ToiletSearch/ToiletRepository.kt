@@ -80,6 +80,7 @@ class ToiletRepository {
         toiletList: MutableList<ToiletModel>
     ): List<ToiletModel> {
         Log.d("test log", "filteredToiletList built")
+        //여기에 추가해가는 방식
         var resultToiletList = mutableListOf<ToiletModel>()
         // 최근 점검
         when (filterViewModel.toiletRecentCheck.value) {
@@ -121,9 +122,153 @@ class ToiletRepository {
             }
         }
         //조건 적용
+        val filterList = filterViewModel.filterLiveList.value
+        val nameList = filterViewModel.filterString.filterNameList
+        for (i in 0 until filterList!!.size){
+            when(filterList[i].filterName){
+                nameList[0] -> {
+                    if (filterList[i].checked){
+                        // resultToiletList에서 데이터 추출
+                        resultToiletList = extractDisableUrinalExistingToilet(resultToiletList)
+                    }
+                }
+                nameList[1] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractDisableToiletExistingToilet(resultToiletList)
+                    }
+                }
+                nameList[2] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractEmergencyBellExistingToilet(resultToiletList)
+                    }
+                }
+                nameList[3] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractEntranceCCTVExistingToilet(resultToiletList)
+                    }
+                }
+                nameList[4] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractOpenedToilet(resultToiletList)
+                    }
+                }
+                nameList[5] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractPublicToilet(resultToiletList)
+                    }
+                }
+                nameList[6] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractPrivateOwnerToilet(resultToiletList)
+                    }
+                }
+                nameList[7] -> {
+                    if (filterList[i].checked){
+                        resultToiletList = extractPublicOwnerToilet(resultToiletList)
+                    }
+                }
+            }
+        }
         // Init 정보 업데이트
         isFilteredListInit = true
         return resultToiletList.toList()
+    }
+
+    /**
+     * 장애인 소변기가 1개 이상인 데이터 추출
+     */
+    private fun extractDisableUrinalExistingToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].male_disabled_urinal_count > 0){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 장애인 대변기가 1개 이상인 데이터 추출
+     */
+    private fun extractDisableToiletExistingToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].male_disabled_toilet_count > 0 || toiletList[i].female_disabled_toilet_count > 0){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 비상벨 있는 데이터 추출
+     */
+    private fun extractEmergencyBellExistingToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].emergency_bell_installed == "Y"){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 입구에 CCTV 있는 데이터 추출
+     */
+    private fun extractEntranceCCTVExistingToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].restroom_entrance_cctv_installed == "Y"){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 개방화장실 데이터 추출
+     */
+    private fun extractOpenedToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].category == "개방화장실"){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 공중화장실 데이터 추출
+     */
+    private fun extractPublicToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].category == "공중화장실"){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 민간소유 화장실 데이터 추출
+     */
+    private fun extractPrivateOwnerToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].restroom_ownership_type.contains("민간소유")){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
+    }
+    /**
+     * 공공기관 화장실 데이터 추출
+     */
+    private fun extractPublicOwnerToilet(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel>{
+        val resultList = mutableListOf<ToiletModel>()
+        for (i in 0 until toiletList.size){
+            if (toiletList[i].restroom_ownership_type.contains("공공기관")){
+                resultList.add(toiletList[i])
+            }
+        }
+        return resultList
     }
     /**
      * 도로명 주소로 검색
@@ -245,9 +390,3 @@ class ToiletRepository {
     }
 
 }
-
-
-
-
-
-
