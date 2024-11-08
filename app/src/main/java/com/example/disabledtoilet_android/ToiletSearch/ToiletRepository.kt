@@ -173,6 +173,9 @@ class ToiletRepository {
         isFilteredListInit = true
         return resultToiletList.toList()
     }
+    /**
+     * 조건 필터링 로직
+     */
 
     /**
      * 장애인 소변기가 1개 이상인 데이터 추출
