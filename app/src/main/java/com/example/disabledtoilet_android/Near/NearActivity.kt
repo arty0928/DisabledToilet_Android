@@ -131,7 +131,7 @@ class NearActivity : AppCompatActivity() {
 
     }
     private suspend fun initializeMapView(): Boolean {
-        val isSucceess = CompletableDeferred<Boolean>()
+        val isSuccess = CompletableDeferred<Boolean>()
         withContext(Dispatchers.IO){
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
@@ -140,7 +140,7 @@ class NearActivity : AppCompatActivity() {
 
                 override fun onMapError(error: Exception) {
                     Log.e(Tag, "Map error: ${error.message}")
-                    isSucceess.completeExceptionally(error)
+                    isSuccess.completeExceptionally(error)
                 }
             }, object : KakaoMapReadyCallback() {
                 override fun onMapReady(map: KakaoMap) {
@@ -152,12 +152,12 @@ class NearActivity : AppCompatActivity() {
 
                     // 위치 권한 확인 및 현재 위치 설정
                     checkLocationPermission()
-                    isSucceess.complete(true)
+                    isSuccess.complete(true)
                 }
             })
         }
 
-        return isSucceess.await()
+        return isSuccess.await()
     }
 
     private fun setupMapClickListener() {
@@ -684,7 +684,8 @@ class NearActivity : AppCompatActivity() {
         // 생성된 라벨과 화장실 정보를 맵에 저장
         if (label != null) {
             labelToToiletMap[label] = toilet
-            Log.d("BottomSheet", "Added to map - Label: $label, Toilet: ${toilet.restroom_name}")
+            // 밑의 로그 정신 사나워서 없앰
+            //Log.d("BottomSheet", "Added to map - Label: $label, Toilet: ${toilet.restroom_name}")
         }
     }
 
