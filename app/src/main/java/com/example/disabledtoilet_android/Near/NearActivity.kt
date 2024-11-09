@@ -49,7 +49,9 @@ import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.Serializable
@@ -76,61 +78,56 @@ class NearActivity : AppCompatActivity() {
 
         KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
 
-        binding = ActivityNearBinding.inflate(layoutInflater)
-
         setContentView(R.layout.activity_near)
 
         FirebaseApp.initializeApp(this)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        // MapView 초기화
-        mapView = findViewById(R.id.map_view)
-
         // MapView 초기화 - 코루틴을 사용하여 비동기 처리
         CoroutineScope(Dispatchers.Main).launch {
             mapView = findViewById(R.id.map_view)
-            initializeMapView()
-        }
+            // async를 사용하여 비동기 작업을 수행하고 await로 결과를 기다림
+            val result = initializeMapView()
 
-        // 인텐트 지점 찾기
-        val rootActivity = intent.getStringExtra("rootActivity")
+            // 인텐트 지점 찾기
+            val rootActivity = intent.getStringExtra("rootActivity")
 
+            when(rootActivity){
+                null -> {
+                    Log.d("test log", "root activity data is null")
+                }
 
-        // 버튼 설정
-        val backToCurBtn : ImageButton = findViewById(R.id.map_return_cur_pos_btn)
-        backToCurBtn.setOnClickListener {
-            moveCameraToCachedLocation()
-        }
-
-        val backBtn : ImageButton = findViewById(R.id.back_button)
-        backBtn.setOnClickListener {
-            onBackPressed()
-        }
-
-
-
-        when(rootActivity){
-            null -> {
-                Log.d("test log", "root activity data is null")
-            }
-
-            "ToiletFilterSearchActivity" -> {
-                val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
-                if (parcelableData is ToiletModel) {
-                    searchingToilet = parcelableData
-                    Log.d("test log", "Restroom Name: ${searchingToilet!!.restroom_name}")
-                    if (searchingToilet != null){
-                        moveCameraToToilet(searchingToilet!!)
+                "ToiletFilterSearchActivity" -> {
+                    val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
+                    if (parcelableData is ToiletModel) {
+                        searchingToilet = parcelableData
+                        Log.d("test log", "Restroom Name: ${searchingToilet!!.restroom_name}")
+                        if (searchingToilet != null){
+                            moveCameraToToilet(searchingToilet!!)
+                        }
+                        initializeBottomSheet(searchingToilet!!)
+                    } else {
+                        Log.e("test log", "parcelable data type is not matched")
                     }
-                    initializeBottomSheet(searchingToilet!!)
-                } else {
-                    Log.e("test log", "parcelable data type is not matched")
                 }
             }
         }
     }
-    private fun initializeMapView() {
-        CoroutineScope(Dispatchers.Main).launch {
+
+    // 버튼 설정을 위한 메서드
+    private fun setupButtons() {
+        val backToCurBtn: ImageButton = findViewById(R.id.map_return_cur_pos_btn)
+        backToCurBtn.setOnClickListener {
+            moveCameraToCachedLocation()
+        }
+
+        val backBtn: ImageButton = findViewById(R.id.back_button)
+        backBtn.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    suspend fun initializeMapView() = withContext(Dispatchers.Main) {
             mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
                     Log.d(Tag, "MapView destroyed")
@@ -150,9 +147,12 @@ class NearActivity : AppCompatActivity() {
                     // 위치 권한 확인 및 현재 위치 설정
                     checkLocationPermission()
                 }
-            })
-        }
+            }).await()
+
     }
+
+
+
 
     private fun setupMapClickListener() {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
@@ -733,6 +733,8 @@ class NearActivity : AppCompatActivity() {
             if (::kakaoMap.isInitialized){
                 // 여기 비동기 처리하면 바꿔줄 것
                 kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(toiletPosition, 16))
+            }else{
+                Log.d("Test log", "초기화 안됨")
             }
         } else {
             // 화장실 위치 정보가 없는 경우 사용자에게 알림
