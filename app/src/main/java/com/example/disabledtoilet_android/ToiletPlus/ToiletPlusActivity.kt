@@ -15,7 +15,6 @@ class ToiletPlusActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         binding = ActivityPlusToiletBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -31,6 +30,5 @@ class ToiletPlusActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             onBackPressed()
         }
-
     }
 }

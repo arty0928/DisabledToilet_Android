@@ -20,8 +20,8 @@ import com.example.disabledtoilet_android.MainActivity
 import com.example.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterViewModel
-import com.example.disabledtoilet_android.Utility.Dialog.SortDialog
-import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
+import com.example.disabledtoilet_android.Utility.Dialog.dialog.SortDialog
+import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityToiletFilterSearchBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority

@@ -1,4 +1,4 @@
-package com.example.disabledtoilet_android.Utility.Dialog
+package com.example.disabledtoilet_android.Utility.Dialog.dialog
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable

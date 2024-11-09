@@ -5,13 +5,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.toObject
-import android.content.Context
-import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
