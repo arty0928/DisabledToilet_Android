@@ -16,11 +16,6 @@ object ToiletData {
     private val PREFS_NAME = "ToiletCache"
     private val TOILETS_KEY = "ToiletList"
 
-    private val firestore = FirebaseFirestore.getInstance()
-    private val gson = Gson()
-    private var listenerRegistration: ListenerRegistration? = null
-    private lateinit var sharedPreferences: SharedPreferences
-
     val database: FirebaseDatabase =
         FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
     var toiletListInit = false

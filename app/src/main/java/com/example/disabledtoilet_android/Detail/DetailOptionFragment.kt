@@ -6,18 +6,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.Utility.Dialog.SaveManager
 //import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.example.disabledtoilet_android.databinding.FragmentDetailOptionBinding
 import java.lang.reflect.Field
 
 class DetailOptionFragment : Fragment() {
 
-    // ViewBinding 객체 선언
+    private val TAG = "DetailOptionFragment"
+
     private var _binding: FragmentDetailOptionBinding? = null
     private val binding get() = _binding!!
+    private lateinit var saveManager: SaveManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +66,7 @@ class DetailOptionFragment : Fragment() {
                 toilet.management_agency_name == "\"" ||
                 toilet.management_agency_name == "\"\"" ||
                 toilet.management_agency_name == "") {
-                "정보 없음"
+                "-"
             } else {
                 toilet.management_agency_name
             }
@@ -71,12 +75,30 @@ class DetailOptionFragment : Fragment() {
                 toilet.opening_hours_detail == "\"" ||
                 toilet.opening_hours_detail == "\"\"" ||
                 toilet.opening_hours_detail == "") {
-                "정보 없음"
+                "-"
             } else {
                 toilet.opening_hours_detail
             }
 
 
+            val save_count = binding.toiletSaveCount
+            save_count.text = "저장 (${toilet.save})"
+
+            //TODO: 사용자가 좋아요 눌렀으면 TOGGLE 좋아요 표시
+            val save_icon = binding.iconToggle
+
+            if(toilet.save > 0){
+                save_icon.setImageResource(R.drawable.saved_star_icon)
+            }
+
+            // SaveManager 초기화
+            saveManager = SaveManager(requireContext()) // requireContext()로 초기화
+
+            // Save 버튼 클릭 리스너 추가
+            save_icon.setOnClickListener {
+                Log.d(TAG, "눌림")
+                saveManager.toggleIcon2(binding.root, toilet) // ToiletManager의 toggleIcon 호출
+            }
         }
 
         return binding.root

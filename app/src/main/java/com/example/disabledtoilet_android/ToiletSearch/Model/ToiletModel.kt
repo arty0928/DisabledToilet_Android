@@ -40,7 +40,7 @@ data class ToiletModel(
     val remodeling_date: String = "",
     val wgs84_latitude: Double = 0.0,
     val wgs84_longitude: Double = 0.0,
-    val save : Int = 0
+    var save : Int = 0
 ) : Parcelable {
 
     override fun describeContents(): Int {
