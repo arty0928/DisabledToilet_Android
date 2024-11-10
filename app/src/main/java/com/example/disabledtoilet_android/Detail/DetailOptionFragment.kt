@@ -40,6 +40,9 @@ class DetailOptionFragment : Fragment() {
         val toiletData = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
 
         toiletData?.let { toilet ->
+
+            filterOptionAddScrollView(toilet)
+
             // 화장실 정보 표시
             binding.toiletName.text = toilet.restroom_name
             binding.toiletOpeningHours.text = toilet.opening_hours
@@ -106,6 +109,23 @@ class DetailOptionFragment : Fragment() {
         // root 뷰를 반환
     }
 
+    //해당 화장실의 조건 스크롤 뷰
+    private fun filterOptionAddScrollView(toilet : ToiletModel){
+        // FragmentFilterOption으로 이동할 때
+        val filterOptionFragment = FragmentFilterOption().apply {
+            arguments = Bundle().apply {
+                putParcelable("TOILET_DATA", toilet) // toilet 데이터를 전달
+            }
+        }
+
+        // Fragment 전환 코드
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, filterOptionFragment)
+            .addToBackStack(null)
+            .commit()
+
+    }
+
     private fun addToiletInfo(container: ViewGroup, optionName: String, optionValue: Int?) {
         if (optionValue != null && optionValue > 0) {
             val itemView = layoutInflater.inflate(R.layout.fragment_toilet_detail_content, container, false)
@@ -122,21 +142,21 @@ class DetailOptionFragment : Fragment() {
         _binding = null
     }
 
-    // male_로 시작하는 필드명에 맞는 옵션 이름을 반환하는 함수
-    private fun getOptionName(field: Field): String {
-        return when (field.name) {
-            "male_toilet_count" -> "남성 화장실 개수"
-            "male_urinal_count" -> "남성 소변기 개수"
-            "male_disabled_toilet_count" -> "장애인용 화장실 개수"
-            "male_disabled_urinal_count" -> "장애인용 소변기 개수"
-            "male_child_toilet_count" -> "남자 어린이용 화장실 개수"
-            "male_child_urinal_count" -> "남자 어린이용 소변기 개수"
-
-            "female_toilet_count" -> "여성 화장실 개수"
-            "female_disabled_toilet_count" -> "여성 장애인용 화장실 개수"
-            "female_child_toilet_count" -> "여성 어린이용 화장실 개수"
-
-            else -> "Unknown Option"
-        }
-    }
+//    // male_로 시작하는 필드명에 맞는 옵션 이름을 반환하는 함수
+//    private fun getOptionName(field: Field): String {
+//        return when (field.name) {
+//            "male_toilet_count" -> "남성 화장실 개수"
+//            "male_urinal_count" -> "남성 소변기 개수"
+//            "male_disabled_toilet_count" -> "장애인용 화장실 개수"
+//            "male_disabled_urinal_count" -> "장애인용 소변기 개수"
+//            "male_child_toilet_count" -> "남자 어린이용 화장실 개수"
+//            "male_child_urinal_count" -> "남자 어린이용 소변기 개수"
+//
+//            "female_toilet_count" -> "여성 화장실 개수"
+//            "female_disabled_toilet_count" -> "여성 장애인용 화장실 개수"
+//            "female_child_toilet_count" -> "여성 어린이용 화장실 개수"
+//
+//            else -> "Unknown Option"
+//        }
+//    }
 }
