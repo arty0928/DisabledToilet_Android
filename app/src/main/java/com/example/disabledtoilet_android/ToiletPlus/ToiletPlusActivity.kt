@@ -108,16 +108,25 @@ class ToiletPlusActivity : AppCompatActivity() {
     private fun setCheckBtn() {
         val checkBtn = binding.plusToiletCheckButton
         checkBtn.setOnClickListener {
-            getToiletLocation()
+            val aimLocation = getToiletLocation()
+            if (aimLocation != null){
+                goToToiletInfoInputActivity(
+                    aimLocation.latitude,
+                    aimLocation.longitude
+                )
+            } else {
+                Log.d(Tag, "aimLocation is null")
+            }
         }
     }
     /**
      * 확인 버튼 선택 시점의 위치 정보 받아오기
      */
-    private fun getToiletLocation() {
+    private fun getToiletLocation(): LatLng? {
         // 스크린 중앙의 지리 좌표 구하기
         val centerLocation = makeAimOnMap()
         Log.d(Tag, "선택된 좌표: " + centerLocation.toString())
+        return centerLocation
     }
     /**
      * 비동기로 카카오맵 세팅
@@ -175,8 +184,10 @@ class ToiletPlusActivity : AppCompatActivity() {
                 ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            // 권한 있음
             Log.d("test log", "LocationPermission Granted")
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            // Exception 위험 있는 작업
             try {
                 // 로케이션 받아올때까지 await()
                 val location = fusedLocationClient.getCurrentLocation(
@@ -190,6 +201,7 @@ class ToiletPlusActivity : AppCompatActivity() {
                 Toast.makeText(this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
             }
         } else {
+            // 권한 없음
             Log.e("test log", "Location permission not granted")
         }
         Log.d(Tag, "Location: " + currentPosition.toString())
@@ -251,5 +263,14 @@ class ToiletPlusActivity : AppCompatActivity() {
         val mapCenterLocation = kakaoMap.fromScreenPoint(centerX, centerY)
         return mapCenterLocation
     }
-
+    /**
+     * 좌표 받아서 화장실 추가 상세 화면으로 넘겨주기
+     */
+    private fun goToToiletInfoInputActivity(latitude: Double, longitude: Double){
+        val intent = Intent(this, ToiletInfoInputActivity::class.java)
+        // 좌표 값 넣어서 intent
+        intent.putExtra("latitude", latitude)
+        intent.putExtra("longitude", longitude)
+        startActivity(intent)
+    }
 }
