@@ -52,9 +52,9 @@ class NearActivity : AppCompatActivity() {
                     locationHelper.setMapToCurrentLocation { currentPosition ->
                         if (currentPosition != null) {
                             mapManager.moveCameraToCachedLocation()
-                            Toast.makeText(this@NearActivity, "현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this@NearActivity, "현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(this@NearActivity, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this@NearActivity, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
                     fetchToiletDataAndDisplay()
