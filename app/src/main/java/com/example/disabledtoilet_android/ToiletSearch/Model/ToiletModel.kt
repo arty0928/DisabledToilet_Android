@@ -6,7 +6,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 @Parcelize
 data class ToiletModel(
     val number: Int = 0,
-    val category: String = "",
+
     val basis: String = "",
     val restroom_name: String = "",
     val address_road: String = "",
@@ -14,22 +14,21 @@ data class ToiletModel(
 
     val male_toilet_count: Int = 0,
     val male_urinal_count: Int = 0,
-    val male_disabled_toilet_count: Int = 0,
-    val male_disabled_urinal_count: Int = 0,
+
     val male_child_toilet_count: Int = 0,
     val male_child_urinal_count: Int = 0,
 
     val female_toilet_count: Int = 0,
-    val female_disabled_toilet_count: Int = 0,
+
     val female_child_toilet_count: Int = 0,
 
     val management_agency_name: String = "",
-    val restroom_ownership_type: String = "",
     val waste_disposal_method: String = "",
+
     val safety_management_facility_installed: String = "",
     val emergency_bell_installed: String = "",
-    val emergency_bell_location: String = "",
-    val restroom_entrance_cctv_installed: String = "",
+
+
     val diaper_change_table_available: String = "",
     val diaper_change_table_location: String = "",
     val data_reference_date: String = "",
@@ -40,7 +39,26 @@ data class ToiletModel(
     val remodeling_date: String = "",
     val wgs84_latitude: Double = 0.0,
     val wgs84_longitude: Double = 0.0,
-    val save : Int = 0
+    var save : Int = 0,
+
+    //조건 적용
+    val male_disabled_toilet_count: Int = 0,
+    val male_disabled_urinal_count: Int = 0,
+    val female_disabled_toilet_count: Int = 0,
+
+    //비상벨
+    val emergency_bell_location: String = "",
+
+    //입구 cctv
+    val restroom_entrance_cctv_installed: String = "",
+    // 공중화장실인지 개방화장실인지 ex) 공중화장실 or 개방화장실
+    val category: String = "",
+    // 민간소유 vs 공공기관 ex) 공공기관-지방자치단체, 민간소유-법인
+    val restroom_ownership_type: String = "",
+
+    //TODO: 개발 화장실, 공중 화장실, 민간소유, 공공기관 는 무슨 데이터야?
+
+
 ) : Parcelable {
 
     override fun describeContents(): Int {

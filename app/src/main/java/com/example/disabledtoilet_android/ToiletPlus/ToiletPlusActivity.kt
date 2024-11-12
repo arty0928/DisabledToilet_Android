@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.disabledtoilet_android.R
-import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
+import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityInputPlusToiletInfoBinding
 import com.example.disabledtoilet_android.databinding.ActivityPlusToiletBinding
 import com.google.android.gms.location.LocationServices

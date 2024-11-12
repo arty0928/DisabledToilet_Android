@@ -6,18 +6,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.Utility.Dialog.SaveManager
 //import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.example.disabledtoilet_android.databinding.FragmentDetailOptionBinding
 import java.lang.reflect.Field
 
 class DetailOptionFragment : Fragment() {
 
-    // ViewBinding 객체 선언
+    private val TAG = "DetailOptionFragment"
+
     private var _binding: FragmentDetailOptionBinding? = null
     private val binding get() = _binding!!
+    private lateinit var saveManager: SaveManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +40,9 @@ class DetailOptionFragment : Fragment() {
         val toiletData = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
 
         toiletData?.let { toilet ->
+
+            filterOptionAddScrollView(toilet)
+
             // 화장실 정보 표시
             binding.toiletName.text = toilet.restroom_name
             binding.toiletOpeningHours.text = toilet.opening_hours
@@ -62,7 +69,7 @@ class DetailOptionFragment : Fragment() {
                 toilet.management_agency_name == "\"" ||
                 toilet.management_agency_name == "\"\"" ||
                 toilet.management_agency_name == "") {
-                "정보 없음"
+                "-"
             } else {
                 toilet.management_agency_name
             }
@@ -71,17 +78,52 @@ class DetailOptionFragment : Fragment() {
                 toilet.opening_hours_detail == "\"" ||
                 toilet.opening_hours_detail == "\"\"" ||
                 toilet.opening_hours_detail == "") {
-                "정보 없음"
+                "-"
             } else {
                 toilet.opening_hours_detail
             }
 
 
+            val save_count = binding.toiletSaveCount
+            save_count.text = "저장 (${toilet.save})"
+
+            //TODO: 사용자가 좋아요 눌렀으면 TOGGLE 좋아요 표시
+            val save_icon = binding.iconToggle
+
+            if(toilet.save > 0){
+                save_icon.setImageResource(R.drawable.saved_star_icon)
+            }
+
+            // SaveManager 초기화
+            saveManager = SaveManager(requireContext()) // requireContext()로 초기화
+
+            // Save 버튼 클릭 리스너 추가
+            save_icon.setOnClickListener {
+                Log.d(TAG, "눌림")
+                saveManager.toggleIcon2(binding.root, toilet) // ToiletManager의 toggleIcon 호출
+            }
         }
 
         return binding.root
 
         // root 뷰를 반환
+    }
+
+    //해당 화장실의 조건 스크롤 뷰
+    private fun filterOptionAddScrollView(toilet : ToiletModel){
+        // FragmentFilterOption으로 이동할 때
+        val filterOptionFragment = FragmentFilterOption().apply {
+            arguments = Bundle().apply {
+                putParcelable("TOILET_DATA", toilet) // toilet 데이터를 전달
+            }
+        }
+
+        // Fragment 전환 코드
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, filterOptionFragment)
+            .addToBackStack(null)
+            .commit()
+
     }
 
     private fun addToiletInfo(container: ViewGroup, optionName: String, optionValue: Int?) {
@@ -100,21 +142,21 @@ class DetailOptionFragment : Fragment() {
         _binding = null
     }
 
-    // male_로 시작하는 필드명에 맞는 옵션 이름을 반환하는 함수
-    private fun getOptionName(field: Field): String {
-        return when (field.name) {
-            "male_toilet_count" -> "남성 화장실 개수"
-            "male_urinal_count" -> "남성 소변기 개수"
-            "male_disabled_toilet_count" -> "장애인용 화장실 개수"
-            "male_disabled_urinal_count" -> "장애인용 소변기 개수"
-            "male_child_toilet_count" -> "남자 어린이용 화장실 개수"
-            "male_child_urinal_count" -> "남자 어린이용 소변기 개수"
-
-            "female_toilet_count" -> "여성 화장실 개수"
-            "female_disabled_toilet_count" -> "여성 장애인용 화장실 개수"
-            "female_child_toilet_count" -> "여성 어린이용 화장실 개수"
-
-            else -> "Unknown Option"
-        }
-    }
+//    // male_로 시작하는 필드명에 맞는 옵션 이름을 반환하는 함수
+//    private fun getOptionName(field: Field): String {
+//        return when (field.name) {
+//            "male_toilet_count" -> "남성 화장실 개수"
+//            "male_urinal_count" -> "남성 소변기 개수"
+//            "male_disabled_toilet_count" -> "장애인용 화장실 개수"
+//            "male_disabled_urinal_count" -> "장애인용 소변기 개수"
+//            "male_child_toilet_count" -> "남자 어린이용 화장실 개수"
+//            "male_child_urinal_count" -> "남자 어린이용 소변기 개수"
+//
+//            "female_toilet_count" -> "여성 화장실 개수"
+//            "female_disabled_toilet_count" -> "여성 장애인용 화장실 개수"
+//            "female_child_toilet_count" -> "여성 어린이용 화장실 개수"
+//
+//            else -> "Unknown Option"
+//        }
+//    }
 }

@@ -5,13 +5,8 @@ import android.content.SharedPreferences
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.toObject
-import android.content.Context
-import com.example.disabledtoilet_android.Utility.Dialog.LoadingDialog
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -20,11 +15,6 @@ object ToiletData {
     private val COLLECTION_NAME = "dreamhyoja" // Firebase Firestore의 컬렉션 이름
     private val PREFS_NAME = "ToiletCache"
     private val TOILETS_KEY = "ToiletList"
-
-    private val firestore = FirebaseFirestore.getInstance()
-    private val gson = Gson()
-    private var listenerRegistration: ListenerRegistration? = null
-    private lateinit var sharedPreferences: SharedPreferences
 
     val database: FirebaseDatabase =
         FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
