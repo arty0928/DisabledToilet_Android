@@ -56,8 +56,6 @@ data class ToiletModel(
     // 민간소유 vs 공공기관 ex) 공공기관-지방자치단체, 민간소유-법인
     val restroom_ownership_type: String = "",
 
-
-
     //TODO: 개발 화장실, 공중 화장실, 민간소유, 공공기관 는 무슨 데이터야?
 
 

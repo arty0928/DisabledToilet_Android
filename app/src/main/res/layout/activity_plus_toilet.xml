@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <!-- Top Layout with overlay -->
     <FrameLayout
@@ -14,28 +14,29 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/notosanskr_bold"
             android:gravity="center_horizontal"
             android:text="화장실 등록"
-            android:fontFamily="@font/notosanskr_bold"
             android:textColor="@color/black"
             android:textSize="25dp" />
 
         <!-- Back button positioned on top of the text -->
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_marginLeft="10dp"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="start|center_vertical"
+            android:layout_marginLeft="10dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/back_button"
+            android:contentDescription="Back Button"
             android:scaleType="fitCenter"
-            android:contentDescription="Back Button" />
+            android:src="@drawable/back_button" />
 
     </FrameLayout>
 
     <!-- Main Layout below the top section -->
     <FrameLayout
+        android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10">
@@ -43,34 +44,67 @@
         <com.kakao.vectormap.MapView
             android:id="@+id/map_view"
             android:layout_width="match_parent"
-            android:background="@color/white"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/aim_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/aim_icon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:background="@drawable/white_back_gray_border_rounded"
             android:layout_gravity="top"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
+            android:background="@drawable/white_back_gray_border_rounded"
+            android:fontFamily="@font/notosanskr_bold"
             android:text="지도를 움직여 화장실 위치를 잡아보세요"
-            android:textSize="17dp"
             android:textColor="@color/mainColor"
-            android:fontFamily="@font/notosanskr_bold" />
+            android:textSize="17dp" />
 
         <!-- "확인" 버튼의 높이를 wrap_content로 수정 -->
         <Button
             android:id="@+id/plus_toilet_check_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:background="@drawable/maincolor_rounded"
             android:layout_gravity="bottom"
+            android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="30dp"
+            android:background="@drawable/maincolor_rounded"
+            android:fontFamily="@font/notosanskr_bold"
             android:text="확인"
-            android:textSize="17dp"
             android:textColor="@color/white"
-            android:fontFamily="@font/notosanskr_bold" />
+            android:textSize="17dp" />
 
     </FrameLayout>
 </LinearLayout>
