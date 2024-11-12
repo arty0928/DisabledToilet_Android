@@ -15,17 +15,14 @@ class ToiletPlusActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityPlusToiletBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val checkBtn = binding.plusToiletCheckButton
-
         checkBtn.setOnClickListener {
             val intent = Intent(this, InputPlusToiletInputPageActivity::class.java)  // Activity 클래스를 사용해야 함
             startActivity(intent)
         }
-
         val backButton = binding.backButton
         backButton.setOnClickListener {
             onBackPressed()
