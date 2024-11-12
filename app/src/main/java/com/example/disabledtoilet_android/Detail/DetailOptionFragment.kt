@@ -8,11 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.example.disabledtoilet_android.Utility.Dialog.SaveManager
+import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 //import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.example.disabledtoilet_android.databinding.FragmentDetailOptionBinding
+import com.kakao.vectormap.LatLng
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.reflect.Field
 
 class DetailOptionFragment : Fragment() {
@@ -22,6 +31,8 @@ class DetailOptionFragment : Fragment() {
     private var _binding: FragmentDetailOptionBinding? = null
     private val binding get() = _binding!!
     private lateinit var saveManager: SaveManager
+    val loadingDialog = LoadingDialog()
+    private lateinit var scrollViewContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +49,8 @@ class DetailOptionFragment : Fragment() {
 
         // 전달받은 화장실 데이터
         val toiletData = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
+
+        scrollViewContainer = binding.filterOptionContainer
 
         toiletData?.let { toilet ->
 
@@ -62,7 +75,7 @@ class DetailOptionFragment : Fragment() {
             addToiletInfo(femaleContentLinear, "화장실 개수", toilet.female_toilet_count)
             addToiletInfo(femaleContentLinear, "장애인용 화장실 개수", toilet.female_disabled_toilet_count)
             addToiletInfo(femaleContentLinear, "어린이용 화장실 개수", toilet.female_child_toilet_count)
-            
+
 
             // 기타 정보 표시
             binding.toiletManageOfficeName.text = if (toilet.management_agency_name.isNullOrBlank() ||
@@ -82,7 +95,6 @@ class DetailOptionFragment : Fragment() {
             } else {
                 toilet.opening_hours_detail
             }
-
 
             val save_count = binding.toiletSaveCount
             save_count.text = "저장 (${toilet.save})"
@@ -111,18 +123,41 @@ class DetailOptionFragment : Fragment() {
 
     //해당 화장실의 조건 스크롤 뷰
     private fun filterOptionAddScrollView(toilet : ToiletModel){
-        // FragmentFilterOption으로 이동할 때
-        val filterOptionFragment = FragmentFilterOption().apply {
-            arguments = Bundle().apply {
-                putParcelable("TOILET_DATA", toilet) // toilet 데이터를 전달
-            }
+
+        if (toilet.emergency_bell_location == "Y") {
+            addTextView("비상벨")
         }
 
-        // Fragment 전환 코드
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, filterOptionFragment)
-            .addToBackStack(null)
-            .commit()
+        if (toilet.restroom_entrance_cctv_installed == "Y") {
+            addTextView("입구 CCTV 설치")
+        }
+
+        //공중화장실 or 개방화장실
+        if (toilet.category != ""){
+            addTextView(toilet.category)
+        }
+
+        //민간소유
+        if(toilet.restroom_ownership_type.contains("민간소유")){
+            addTextView("민간 소유")
+        }
+
+        //공공기관 소유
+        if(toilet.restroom_ownership_type.contains("공공기관")){
+            addTextView("공공기관")
+        }
+
+        if (toilet.male_disabled_toilet_count > 0) {
+            addTextView("남성 장애인용 화장실")
+        }
+
+        if (toilet.male_disabled_urinal_count > 0) {
+            addTextView("남성 장애인용 소변기")
+        }
+
+        if (toilet.female_disabled_toilet_count > 0) {
+            addTextView("여성 장애인용 화장실")
+        }
 
     }
 
@@ -135,6 +170,19 @@ class DetailOptionFragment : Fragment() {
         }
     }
 
+    //option scrollView 추가
+    private fun addTextView(optionText: String) {
+        // fragment_filter_option을 inflate
+        val optionView = layoutInflater.inflate(R.layout.fragment_filter_option, null)
+
+        // optionTextView의 텍스트를 설정
+        val optionViewText = optionView.findViewById<TextView>(R.id.optionTextView)
+        optionViewText.text = optionText
+
+        // scrollViewContainer에 추가
+        scrollViewContainer.addView(optionView)
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -142,21 +190,5 @@ class DetailOptionFragment : Fragment() {
         _binding = null
     }
 
-//    // male_로 시작하는 필드명에 맞는 옵션 이름을 반환하는 함수
-//    private fun getOptionName(field: Field): String {
-//        return when (field.name) {
-//            "male_toilet_count" -> "남성 화장실 개수"
-//            "male_urinal_count" -> "남성 소변기 개수"
-//            "male_disabled_toilet_count" -> "장애인용 화장실 개수"
-//            "male_disabled_urinal_count" -> "장애인용 소변기 개수"
-//            "male_child_toilet_count" -> "남자 어린이용 화장실 개수"
-//            "male_child_urinal_count" -> "남자 어린이용 소변기 개수"
-//
-//            "female_toilet_count" -> "여성 화장실 개수"
-//            "female_disabled_toilet_count" -> "여성 장애인용 화장실 개수"
-//            "female_child_toilet_count" -> "여성 어린이용 화장실 개수"
-//
-//            else -> "Unknown Option"
-//        }
-//    }
+
 }
