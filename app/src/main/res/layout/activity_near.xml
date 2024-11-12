@@ -75,7 +75,7 @@
             android:layout_gravity="end|bottom"
             android:elevation="15dp"
             android:background="@drawable/custom_button_round"
-            android:src="@drawable/aim_icon"
+            android:src="@drawable/location"
             android:scaleType="fitCenter" />
     </FrameLayout>
 </LinearLayout>

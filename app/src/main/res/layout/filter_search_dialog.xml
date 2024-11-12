@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -52,120 +53,138 @@
             android:text="화장실 최근 점검"
             android:textColor="@color/black"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/recentCheck1"
+            app:layout_constraintBottom_toTopOf="@id/recentCheckBox"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/recentCheck1"
-            android:layout_width="wrap_content"
+            android:id="@+id/recentCheckBox"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recentCheck">
 
-            <ImageButton
-                android:id="@+id/circle1"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="19dp"
-                android:layout_marginRight="4dp"
-                android:background="@color/white"
-                android:src="@drawable/check_circle" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/text1"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/recentCheck1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/circle1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="19dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/white"
+                        android:src="@drawable/check_circle" />
+
+                    <TextView
+                        android:id="@+id/text1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="없음"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/recentCheck2"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/circle2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="19dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@color/white"
+                        android:src="@drawable/check_circle"
+                        app:flow_verticalBias="0.5" />
+
+                    <TextView
+                        android:id="@+id/text2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="1년 이내"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="없음"
-                android:textColor="@color/black" />
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/recentCheck3"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/recentCheck2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/recentCheck1"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck">
+                    <ImageButton
+                        android:id="@+id/circle3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="19dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@color/white"
+                        android:src="@drawable/check_circle" />
 
-            <ImageButton
-                android:id="@+id/circle2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginRight="4dp"
-                android:background="@color/white"
-                android:src="@drawable/check_circle"
-                app:flow_verticalBias="0.5" />
+                    <TextView
+                        android:id="@+id/text3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="6개월 이내"
+                        android:textColor="@color/black" />
+                </LinearLayout>
 
-            <TextView
-                android:id="@+id/text2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="1년 이내"
-                android:textColor="@color/black" />
+                <LinearLayout
+                    android:id="@+id/recentCheck4"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-        </LinearLayout>
+                    <ImageButton
+                        android:id="@+id/circle4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="19dp"
+                        android:layout_marginRight="4dp"
+                        android:background="@color/white"
+                        android:src="@drawable/check_circle"
+                        app:flow_verticalBias="0.5" />
 
-        <LinearLayout
-            android:id="@+id/recentCheck3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/recentCheck2"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck">
+                    <TextView
+                        android:id="@+id/text4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="한달 이내"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+            </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/circle3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginRight="4dp"
-                android:background="@color/white"
-                android:src="@drawable/check_circle" />
-
-            <TextView
-                android:id="@+id/text3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="6개월 이내"
-                android:textColor="@color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/recentCheck4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/recentCheck3"
-            app:layout_constraintTop_toBottomOf="@id/recentCheck">
-
-            <ImageButton
-                android:id="@+id/circle4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="19dp"
-                android:layout_marginRight="4dp"
-                android:background="@color/white"
-                android:src="@drawable/check_circle"
-                app:flow_verticalBias="0.5" />
-
-            <TextView
-                android:id="@+id/text4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="한달 이내"
-                android:textColor="@color/black" />
         </LinearLayout>
 
 
@@ -192,11 +211,12 @@
 
         <LinearLayout
             android:id="@+id/operating1"
-            android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/operating2"
             app:layout_constraintTop_toBottomOf="@id/operating">
 
             <ImageButton
@@ -206,7 +226,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="19dp"
                 android:background="@color/white"
-                android:src="@drawable/check_circle"/>
+                android:src="@drawable/check_circle" />
 
             <TextView
                 android:id="@+id/operatingText1"
@@ -215,7 +235,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="15dp"
                 android:text="없음"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <LinearLayout
@@ -224,6 +244,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="30dp"
             android:orientation="horizontal"
+            app:layout_constraintStart_toEndOf="@id/operating1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/operating">
 
@@ -234,7 +255,7 @@
                 android:layout_marginTop="19dp"
                 android:layout_marginRight="5dp"
                 android:background="@color/white"
-                android:src="@drawable/check_circle"/>
+                android:src="@drawable/check_circle" />
 
             <TextView
                 android:id="@+id/operatingText2"
@@ -242,14 +263,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="한달 이내"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black" />
         </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="20dp"
