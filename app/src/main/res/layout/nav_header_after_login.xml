@@ -3,12 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
-    >
+    android:padding="16dp">
 
-    <!-- 로그인 아이콘 ImageView -->
     <LinearLayout
-        android:paddingTop="20dp"
         android:id="@+id/login_nav_logout_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,11 +27,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="로그아웃"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@color/black"
-            android:fontFamily="@font/notosanskr_semibold"
-            />
-
+            android:fontFamily="@font/notosanskr_semibold" />
     </LinearLayout>
-
 </LinearLayout>

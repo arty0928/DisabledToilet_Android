@@ -25,82 +25,54 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        firebaseAuth = FirebaseAuth.getInstance()
-
         setContentView(R.layout.activity_main)
 
-        // 내 주변 버튼
+        firebaseAuth = FirebaseAuth.getInstance()
+        initializeUI()
+
+    }
+
+    private fun initializeUI() {
         val nearButton: LinearLayout = findViewById(R.id.near_button)
         nearButton.setOnClickListener {
-            val intent = Intent(this, NearActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, NearActivity::class.java))
         }
 
-        // 장소 검색 버튼
         val searchButton: LinearLayout = findViewById(R.id.search_button)
         searchButton.setOnClickListener {
-            val intent = Intent(this, ToiletFilterSearchActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ToiletFilterSearchActivity::class.java))
         }
 
-        // 화장실 등록 버튼
         val plusToiletButton: LinearLayout = findViewById(R.id.toiletplus_button)
         plusToiletButton.setOnClickListener {
-            val intent = Intent(this, ToiletPlusActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ToiletPlusActivity::class.java))
         }
 
         drawerLayout = findViewById(R.id.drawer_layout_login)
         val navigationView: NavigationView = findViewById(R.id.nav_view)
 
-        //NavigationView 너비를 화면의 80%로 설정
-        val displayMetrics = resources.displayMetrics
-        val screenWidth = displayMetrics.widthPixels
-        val layoutParams = navigationView.layoutParams
-        layoutParams.width =  (screenWidth * 0.3).toInt()
-        navigationView.layoutParams = layoutParams
-
-
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_mypage -> {
-                    Toast.makeText(this, "mypage 아이템", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MyPageActivity::class.java)  // MyPageActivity로 이동
-                    startActivity(intent)
-                    drawerLayout.closeDrawers()  // Drawer 닫기
+                    startActivity(Intent(this, MyPageActivity::class.java))
+                    drawerLayout.closeDrawers()
                     true
                 }
                 else -> false
             }
-            drawerLayout.closeDrawers()
-            true
         }
 
-        val menuIcon = findViewById<ImageView>(R.id.menu_icon_login)
-        menuIcon.setOnClickListener {
+        findViewById<ImageView>(R.id.menu_icon_login).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
-        }
-
-        //로그아웃
-        val headerView : View = navigationView.getHeaderView(0)
-        val navLogoutButton : LinearLayout = headerView.findViewById(R.id.login_nav_logout_button)
-        navLogoutButton.setOnClickListener {
-            signOut()
         }
     }
 
     private fun signOut() {
         firebaseAuth.signOut()
-        Toast.makeText(this, "로그아웃되었습니다.", Toast.LENGTH_SHORT).show()
-        updateUI(null)
-    }
-
-    private fun updateUI(user: FirebaseUser?) {
-        if (user == null) {
-            val intent = Intent(this, NonloginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this, NonloginActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        })
+        finish()
     }
 }

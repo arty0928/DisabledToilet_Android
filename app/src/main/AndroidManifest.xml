@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.disabledtoilet_android">
+    package="com.example.disabledtoilet_android" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -20,16 +20,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DisabledToilet_Android"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+        <activity
+            android:name=".StartActivity"
+            android:exported="true"
+            android:label="@string/title_activity_start"
+            android:theme="@style/Theme.DisabledToilet_Android" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:host="oauth"
+
+                <data
+                    android:host="oauth"
                     android:scheme="ce27585c8cc7c468ac7c46901d87199d" />
             </intent-filter>
         </activity>
@@ -38,13 +51,11 @@
             android:name="com.kakao.vectormap.APP_KEY"
             android:value="ce27585c8cc7c468ac7c46901d87199d" />
 
-
         <activity
             android:name=".ToiletPlus.InputPlusToiletInputPageActivity"
             android:exported="false"
             android:label="@string/title_activity_plus_toilet"
             android:theme="@style/Theme.DisabledToilet_Android" />
-
         <activity
             android:name=".ToiletPlus.ToiletInfoInputActivity"
             android:exported="false" />
@@ -53,17 +64,15 @@
             android:exported="false" />
         <activity
             android:name=".ToiletSearch.ToiletFilterSearchActivity"
-            android:windowSoftInputMode="adjustNothing"
-            android:exported="false" />
-
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".Detail.DetailPageActivity"
             android:exported="false" />
-
         <activity
             android:name=".NonloginActivity"
             android:exported="true"
-            android:theme="@style/Theme.DisabledToilet_Android">
+            android:theme="@style/Theme.DisabledToilet_Android" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -93,22 +102,21 @@
             android:exported="false"
             android:label="@string/title_activity_my_page"
             android:theme="@style/Theme.DisabledToilet_Android"
-            tools:ignore="AppLinkUrlError">
-
+            tools:ignore="AppLinkUrlError" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:host="kakaolink"
+                <data
+                    android:host="kakaolink"
                     android:scheme="ce27585c8cc7c468ac7c46901d87199d" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true" >
         </activity>
     </application>
 
