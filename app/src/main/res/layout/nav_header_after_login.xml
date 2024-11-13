@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <LinearLayout
-        android:id="@+id/login_nav_logout_button"
+        android:id="@+id/loginbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"

@@ -5,55 +5,75 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
-import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.example.disabledtoilet_android.User.MyPageActivity
+import com.example.disabledtoilet_android.Utility.Dialog.utils.GoogleHelper
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var googleSignInHelper: GoogleHelper
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        firebaseAuth = FirebaseAuth.getInstance()
+        googleSignInHelper = GoogleHelper.getInstance(this) // Singleton 인스턴스 가져오기
         initializeUI()
-
     }
 
     private fun initializeUI() {
+        updateHeader() // 헤더 UI 업데이트
+
+        setupNearButton() // '근처 화장실' 버튼 설정
+        setupSearchButton() // '화장실 검색' 버튼 설정
+        setupPlusToiletButton() // '화장실 추가' 버튼 설정
+
+        setupDrawerLayout() // DrawerLayout 및 NavigationView 설정
+        setupMenuIcon() // 메뉴 아이콘 클릭 리스너 설정
+    }
+
+    private fun setupNearButton() {
         val nearButton: LinearLayout = findViewById(R.id.near_button)
         nearButton.setOnClickListener {
             startActivity(Intent(this, NearActivity::class.java))
         }
+    }
 
+    private fun setupSearchButton() {
         val searchButton: LinearLayout = findViewById(R.id.search_button)
         searchButton.setOnClickListener {
             startActivity(Intent(this, ToiletFilterSearchActivity::class.java))
         }
+    }
 
+    private fun setupPlusToiletButton() {
         val plusToiletButton: LinearLayout = findViewById(R.id.toiletplus_button)
         plusToiletButton.setOnClickListener {
             startActivity(Intent(this, ToiletPlusActivity::class.java))
         }
+    }
 
+    private fun setupDrawerLayout() {
         drawerLayout = findViewById(R.id.drawer_layout_login)
-        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        val navigationView: NavigationView = findViewById(R.id.nav_view_after_login)
+
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val layoutParams = navigationView.layoutParams
+        layoutParams.width = (screenWidth * 0.3).toInt()
+        navigationView.layoutParams = layoutParams
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_mypage -> {
+                R.id.nav_icon1 -> {
                     startActivity(Intent(this, MyPageActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
@@ -62,17 +82,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val headerView : View = navigationView.getHeaderView(0)
+        val navLogoutButton : LinearLayout = headerView.findViewById(R.id.loginbtn)
+        navLogoutButton.setOnClickListener {
+            googleSignInHelper.signOut()
+        }
+
+        setupMenuIcon() // 메뉴 아이콘 클릭 리스너 설정
+    }
+
+    private fun setupMenuIcon() {
         findViewById<ImageView>(R.id.menu_icon_login).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
     }
 
-    private fun signOut() {
-        firebaseAuth.signOut()
-        Toast.makeText(this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
-        startActivity(Intent(this, NonloginActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        })
-        finish()
+    private fun updateHeader() {
+        val navigationView: NavigationView = findViewById(R.id.nav_view_after_login)
+        val headerView = navigationView.getHeaderView(0)
+
+        val loginImageView = headerView.findViewById<ImageView>(R.id.login_icon)
+        val loginTextView = headerView.findViewById<TextView>(R.id.login_text)
+
+        loginImageView.setImageResource(R.drawable.logout)
+        loginTextView.text = "로그아웃" // 로그인 상태일 때
     }
 }

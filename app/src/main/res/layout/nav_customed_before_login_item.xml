@@ -7,7 +7,7 @@
     >
 
     <ImageView
-        android:id="@+id/nav_plusitem_icon"
+        android:id="@+id/nav_icon1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
@@ -16,7 +16,7 @@
         android:contentDescription="화장실등록" />
 
     <TextView
-        android:id="@+id/nav_plusItem_txt"
+        android:id="@+id/nav_txt1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
