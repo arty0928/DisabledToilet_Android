@@ -1,5 +1,6 @@
 package com.example.disabledtoilet_android.ToiletSearch.SearchFilter
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +23,12 @@ class FilterSearchDialog : DialogFragment() {
      */
     companion object{
         fun newInstance() = FilterSearchDialog()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        return dialog
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

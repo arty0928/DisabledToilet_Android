@@ -11,8 +11,8 @@
     <FrameLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -34,34 +34,124 @@
             android:gravity="center_horizontal|center_vertical"
             android:text="화장실 등록"
             android:textColor="@color/black"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
     </FrameLayout>
 
     <ScrollView
-        android:fillViewport="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_height="0dp"
+        android:layout_weight="10"
+        android:background="@android:color/white">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- 화장실 이름 입력 -->
             <TextView
-                android:text="화장실 이름"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="화장실 이름" />
 
             <EditText
+                android:id="@+id/edtBathroomName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@android:drawable/edit_text"
                 android:hint="화장실 이름 (20자 이내)"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:maxLength="20"
+                android:padding="12dp" />
 
+            <!-- 층 선택 스피너 -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="층 구분 (선택)" />
+            <LinearLayout
+                android:background="@drawable/filter_button_around"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Spinner
+                    android:id="@+id/spinnerFloor"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"/>
+            </LinearLayout>
+
+
+            <!-- 화장실 상태 선택 섹션 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="화장실 상태 선택"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/status_select_6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/filter_button_around"
+                android:text="휠체어 출입 가능 여부" />
+
+            <Button
+                android:id="@+id/status_select_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/filter_button_around"
+                android:text="장애인 화장실 유무" />
+
+            <Button
+                android:id="@+id/status_select_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/filter_button_around"
+                android:text="남녀 구분" />
+
+            <Button
+                android:id="@+id/status_select_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/filter_button_around"
+                android:text="입구 CCTV 유무" />
+
+            <Button
+                android:id="@+id/status_select_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/filter_button_around"
+                android:text="개방화장실 여부" />
+
+            <Button
+                android:id="@+id/status_select_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/filter_button_around"
+                android:text="공중화장실 여부" />
         </LinearLayout>
 
     </ScrollView>
 
+
+    <!-- 등록 버튼 -->
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/holo_blue_dark"
+        android:padding="12dp"
+        android:text="화장실 등록"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
 </LinearLayout>
