@@ -75,6 +75,7 @@ class MapManager(private val context: Context) {
         if (latitude.toInt() != 0 && longitude.toInt() != 0) {
             val toiletPosition = LatLng.from(latitude, longitude)
             kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(toiletPosition, 16))
+            Log.d("test log", "화장실 위치로 이동")
         } else {
             Toast.makeText(context, "위치데이터 준비 중 입니다.", Toast.LENGTH_SHORT).show()
         }
@@ -90,6 +91,7 @@ class MapManager(private val context: Context) {
             val cachedPosition = LatLng.from(cachedLatitude, cachedLongitude)
             kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16))
             addMarkerToMapCur(cachedPosition)
+            Log.d("test log", "현재 위치로 이동")
             Toast.makeText(context, "캐시된 현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "캐시된 현재 위치가 없습니다.", Toast.LENGTH_SHORT).show()

@@ -2,6 +2,7 @@ package com.example.disabledtoilet_android.ToiletSearch
 
 import ToiletModel
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import kotlinx.coroutines.tasks.await
@@ -17,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.disabledtoilet_android.MainActivity
+import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterViewModel
@@ -26,6 +28,7 @@ import com.example.disabledtoilet_android.databinding.ActivityToiletFilterSearch
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.kakao.vectormap.LatLng
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,7 +65,10 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
             // 전처리 한번 해서 toiletList 생성
             toiletList = removeEmptyData(ToiletData.cachedToiletList!!.toMutableList())
         }
-        setUi()
+        // 권한이 있으면 바로 UI 세팅
+        if (getLocationPermission()){
+            setUi()
+        }
     }
     /**
      * UI 세팅
@@ -73,7 +79,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         loadingDialog.show(supportFragmentManager, loadingDialog.tag)
         // 리사이클러뷰 어댑터는 비동기로 세팅
         CoroutineScope(Dispatchers.IO).launch {
-            val userLocation: LatLng? = getUserLocation()
+            val userLocation: LatLng? = getUserLocation(context)
             toiletListViewAdapter = ToiletListViewAdapter(context, userLocation)
             Log.d("test log", "toiletListViewAdapter 생성")
             toiletListViewAdapter.updateList(
@@ -202,7 +208,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 유저 위치 정보 받아 오기
      * 코루틴에서 비동기 처리
      */
-    private suspend fun getUserLocation(): LatLng? {
+    private suspend fun getUserLocation(context: Context): LatLng? {
         var currentPosition: LatLng? = null
         // 권한부터 확인
         if (ActivityCompat.checkSelfPermission(
@@ -225,8 +231,55 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
                 Toast.makeText(this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
             }
         } else {
+            // 권한 확인
             Log.e("test log", "Location permission not granted")
         }
+        Log.d("test log", "현재 위치: $currentPosition")
         return currentPosition
+    }
+    /**
+     * 권한 받기 실행 함수
+     */
+    private fun getLocationPermission(): Boolean{
+        var isGranted = false
+        // 권한이 기존에 있는지 확인
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 권한이 기존에 없으면 받음
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1000
+            )
+        } else {
+            isGranted = true
+        }
+        return isGranted
+    }
+    /**
+     * 위치 권한 받았을 때 콜백
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            1000 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // 권한 승인
+                    setUi()
+                } else {
+                    // 권한 미승인
+                    onBackPressed()
+                }
+                return
+            }
+        }
     }
 }

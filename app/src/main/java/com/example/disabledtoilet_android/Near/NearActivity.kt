@@ -87,10 +87,10 @@ class NearActivity : AppCompatActivity() {
                     mapManager.moveCameraToToilet(searchingToilet!!)
                     bottomSheetHelper.initializeBottomSheet(searchingToilet!!)
                 } else {
-                    Log.e("NearActivity", "parcelable data type is not matched")
+                    Log.e("test log", "parcelable data type is not matched")
                 }
             }
-            else -> Log.d("NearActivity", "root activity data is null")
+            else -> Log.d("test log", "root activity data is null")
         }
     }
 
