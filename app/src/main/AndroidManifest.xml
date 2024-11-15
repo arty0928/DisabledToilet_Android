@@ -44,7 +44,6 @@
             android:exported="false"
             android:label="@string/title_activity_plus_toilet"
             android:theme="@style/Theme.DisabledToilet_Android" />
-
         <activity
             android:name=".ToiletPlus.ToiletInfoInputActivity"
             android:exported="false" />
@@ -77,10 +76,6 @@
 
         <activity
             android:name=".Detail.DetailBottomSheet"
-            android:exported="false"
-            android:theme="@style/Theme.DisabledToilet_Android" />
-        <activity
-            android:name=".ToiletSearch.SearchActivity"
             android:exported="false"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity

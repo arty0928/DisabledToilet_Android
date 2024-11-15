@@ -65,11 +65,10 @@ class NonloginActivity : AppCompatActivity() {
         binding = ActivityNonloginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         Log.d("MyApplication", "Initializing ToiletRepository...")
-        loadingDialog.show(supportFragmentManager, loadingDialog.tag)
-
 
         // 비동기 처리해도 현재 파이어베이스에서 read하는 작업이 UI thread를 블록하고 있음
         CoroutineScope(Dispatchers.IO).launch {
+            loadingDialog.show(supportFragmentManager, loadingDialog.tag)
             val initResult = ToiletData.initialize()
             withContext(Dispatchers.Main){
                 if (initResult) {

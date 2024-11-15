@@ -4,12 +4,9 @@ import ToiletModel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.example.disabledtoilet_android.ToiletSearch.SearchFilter.FilterViewModel
-import org.apache.commons.lang3.mutable.Mutable
+import com.example.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 /**
  * 화장실 데이터 처리 클래스

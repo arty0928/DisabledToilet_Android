@@ -102,6 +102,7 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.compilercommon)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -138,4 +139,11 @@ dependencies {
 
     //카카오 네비
     implementation ("com.kakao.sdk:v2-navi:2.13.0")
+
+    // 코루틴 테스트 코드
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    //UI 테스트
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    testImplementation ("org.mockito:mockito-core:4.0.0")
 }

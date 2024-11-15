@@ -28,7 +28,6 @@ data class ToiletModel(
     val safety_management_facility_installed: String = "",
     val emergency_bell_installed: String = "",
 
-
     val diaper_change_table_available: String = "",
     val diaper_change_table_location: String = "",
     val data_reference_date: String = "",

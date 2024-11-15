@@ -61,7 +61,9 @@ class ToiletPlusActivity : AppCompatActivity() {
         // UI 세팅
         setUi()
     }
-
+    /**
+     * Request 요청 시, 요청 결과 확인
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -69,7 +71,17 @@ class ToiletPlusActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-
+            Log.d("test log", "위치 권한 확인")
+            lifecycleScope.launch(Dispatchers.Main) {
+                // 로딩
+                showLoadingDialog()
+                // suspend 하면서 위치 정보 받아오기
+                val userLocation = getUserLocation()
+                // 위치 받기 끝나면 로딩 끄기
+                dismissLoadingDialog()
+                // 카메라 위치 유저로
+                moveMapCameraToUser(userLocation)
+            }
         }
     }
     /**
@@ -85,20 +97,18 @@ class ToiletPlusActivity : AppCompatActivity() {
         //카카오맵 세팅될 떄까지 로딩화면
         showLoadingDialog()
         // 로딩 화면 보여질 동안 카카오맵 셍팅
-        lifecycleScope.launch {
-            // IO 작업
-            withContext(Dispatchers.IO) {
-                // suspend 하면서 카카오맵 세팅
-                setKakaoMap()
-            }
+        lifecycleScope.launch(Dispatchers.IO) {
+            // suspend 하면서 카카오맵 세팅
+            setKakaoMap()
             // UI 작업
             withContext(Dispatchers.Main) {
                 // suspend 하면서 위치 정보 받아오기
                 val userLocation = getUserLocation()
-                // 카메라 위치 유저로
-                moveMapCameraToUser(userLocation)
                 // 카카오맵 세팅 끝나면 로딩 끄기
                 dismissLoadingDialog()
+                // 카메라 위치 유저로
+                moveMapCameraToUser(userLocation)
+
             }
         }
     }
@@ -109,7 +119,7 @@ class ToiletPlusActivity : AppCompatActivity() {
         val checkBtn = binding.plusToiletCheckButton
         checkBtn.setOnClickListener {
             val aimLocation = getToiletLocation()
-            if (aimLocation != null){
+            if (aimLocation != null) {
                 goToToiletInfoInputActivity(
                     aimLocation.latitude,
                     aimLocation.longitude
@@ -146,6 +156,7 @@ class ToiletPlusActivity : AppCompatActivity() {
                 override fun onMapDestroy() {
                     Log.d(Tag, "MapView destroyed")
                 }
+
                 override fun onMapError(error: Exception) {
                     Log.e(Tag, "Map error: ${error.message}")
                     isSuccess.completeExceptionally(error)
@@ -187,7 +198,6 @@ class ToiletPlusActivity : AppCompatActivity() {
             // 권한 있음
             Log.d("test log", "LocationPermission Granted")
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-            // Exception 위험 있는 작업
             try {
                 // 로케이션 받아올때까지 await()
                 val location = fusedLocationClient.getCurrentLocation(
@@ -241,20 +251,20 @@ class ToiletPlusActivity : AppCompatActivity() {
      */
     private fun moveMapCameraToUser(location: LatLng?) {
         // null값 확인부터
-        if (location != null){
+        if (location != null) {
             // 지도의 중심을 화장실 위치로 이동
-            if (::kakaoMap.isInitialized){
+            if (::kakaoMap.isInitialized) {
                 // 여기 비동기 처리하면 바꿔줄 것
                 kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(location, 16))
-            } else{
-                Log.d("test log","kakaoMap is not initailized")
+            } else {
+                Log.d("test log", "kakaoMap is not initailized")
             }
         }
     }
     /**
      * 지도 가운데 지리 좌표 반환
      */
-    private fun makeAimOnMap(): LatLng?{
+    private fun makeAimOnMap(): LatLng? {
         val mapView = binding.mapView
         // 맵뷰의 가운대 스크린 좌표 구하기
         val centerX = mapView.left + mapView.width / 2
@@ -266,8 +276,8 @@ class ToiletPlusActivity : AppCompatActivity() {
     /**
      * 좌표 받아서 화장실 추가 상세 화면으로 넘겨주기
      */
-    private fun goToToiletInfoInputActivity(latitude: Double, longitude: Double){
-        val intent = Intent(this, ToiletInfoInputActivity::class.java)
+    private fun goToToiletInfoInputActivity(latitude: Double, longitude: Double) {
+        val intent = Intent(this, InputPlusToiletInputPageActivity::class.java)
         // 좌표 값 넣어서 intent
         intent.putExtra("latitude", latitude)
         intent.putExtra("longitude", longitude)
