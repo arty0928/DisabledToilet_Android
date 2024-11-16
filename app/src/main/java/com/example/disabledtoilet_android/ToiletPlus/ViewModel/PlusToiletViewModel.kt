@@ -81,6 +81,6 @@ class PlusToiletViewModel(): ViewModel() {
      */
     fun updateToiletStatusSelectList(statusList: List<ToiletStatusModel>, index: Int, isChecked: Boolean){
         statusList[index].status = isChecked
-        toiletStatusList.value = statusList
+        toiletStatusList.value = statusList 
     }
 }
