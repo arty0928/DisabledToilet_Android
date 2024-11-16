@@ -13,6 +13,7 @@ import com.kakao.sdk.template.model.Content
 import com.kakao.sdk.template.model.FeedTemplate
 import com.kakao.sdk.template.model.Link
 
+
 class KakaoShareHelper(private val context: Context) {
 
     // 카카오 맵 공유 함수
@@ -24,6 +25,11 @@ class KakaoShareHelper(private val context: Context) {
         val kakaoMapWebUrl = "https://map.kakao.com/link/map/${toiletLatitude},${toiletLongitude}"
         val kakaoMapAppUrl = "kakaomap://look?p=${toiletLatitude},${toiletLongitude}"
         val kakaoMapRouteWebUrl = "https://map.kakao.com/link/to/${toiletAddress},${toiletLatitude},${toiletLongitude}"
+        val locationParams = mapOf(
+            "address" to "서울시 강남구 삼성동",
+            "latitude" to "37.5642135",
+            "longitude" to "127.0016985"
+        )
 
         val defaultFeed = FeedTemplate(
             content = Content(
@@ -32,7 +38,9 @@ class KakaoShareHelper(private val context: Context) {
                 imageUrl = "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
                 link = Link(
                     webUrl = kakaoMapWebUrl,
-                    mobileWebUrl = kakaoMapWebUrl
+                    mobileWebUrl = kakaoMapWebUrl,
+                    androidExecutionParams = locationParams
+
                 )
             ),
             buttons = listOf(
@@ -40,14 +48,17 @@ class KakaoShareHelper(private val context: Context) {
                     "위치 보기",
                     Link(
                         webUrl = kakaoMapWebUrl,
-                        mobileWebUrl = kakaoMapAppUrl
+                        mobileWebUrl = kakaoMapAppUrl,
+                        androidExecutionParams = locationParams
                     )
                 ),
                 Button(
                     "길찾기",
                     Link(
                         webUrl = kakaoMapRouteWebUrl,
-                        mobileWebUrl = kakaoMapRouteWebUrl
+                        mobileWebUrl = kakaoMapRouteWebUrl,
+                        androidExecutionParams = locationParams
+
                     )
                 )
             )

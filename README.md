@@ -5,3 +5,4 @@
 비동기 처리 코르틴
 googleHelper를 싱글톤으로 만들어 앱 전역에서 접근
 
+sharedPreference를 통한 사용자 현재 위치, 로그인 상태 처리 

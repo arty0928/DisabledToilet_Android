@@ -2,6 +2,7 @@ package com.example.disabledtoilet_android.Utility.Dialog.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -15,9 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 class GoogleHelper private constructor(private val context: Context) {
 
@@ -32,9 +30,13 @@ class GoogleHelper private constructor(private val context: Context) {
         }
     }
 
-    lateinit var googleSignInClient: GoogleSignInClient
-    val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val TAG = "GoogleHelper"
+
+    // SharedPreferences 키
+    private val PREFS_NAME = "UserPrefs"
+    private val KEY_IS_LOGGED_IN = "isLoggedIn"
 
     suspend fun initializeGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -59,6 +61,7 @@ class GoogleHelper private constructor(private val context: Context) {
             val account = completedTask.getResult(ApiException::class.java)
             if (account != null) {
                 onSuccess(account)
+                saveLoginState(true) // 로그인 성공 시 상태 저장
             }
         } catch (e: ApiException) {
             Log.e(TAG, "Google sign in failed: ${e.message}", e)
@@ -112,9 +115,23 @@ class GoogleHelper private constructor(private val context: Context) {
     fun signOut() {
         googleSignInClient.signOut().addOnCompleteListener {
             Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
+            saveLoginState(false) // 로그아웃 시 상태 초기화
             context.startActivity(Intent(context, NonloginActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             })
         }
+    }
+
+    private fun saveLoginState(isLoggedIn: Boolean) {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putBoolean(KEY_IS_LOGGED_IN, isLoggedIn)
+            apply()
+        }
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false)
     }
 }

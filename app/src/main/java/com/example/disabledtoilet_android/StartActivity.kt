@@ -8,6 +8,7 @@ import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.Utility.Dialog.utils.GoogleHelper
 import com.google.firebase.auth.FirebaseAuth
+import com.kakao.sdk.common.KakaoSdk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ class StartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        KakaoSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
 
         firebaseAuth = FirebaseAuth.getInstance()
         googleHelper = GoogleHelper.getInstance(this)
