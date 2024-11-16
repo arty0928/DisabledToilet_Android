@@ -1,11 +1,15 @@
 package com.example.disabledtoilet_android.ToiletPlus
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletPlus.ViewModel.PlusToiletViewModel
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.Utility.KaKaoAPI.KakaoApiRepository
@@ -24,6 +28,8 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
     lateinit var addressNameModel: AddressNameModel
     // 뷰모델
     lateinit var viewModel: PlusToiletViewModel
+    // 화장실 상태 선택 버튼 리스트
+    lateinit var statusButtonList: List<TextView>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +37,17 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         setContentView(binding.root)
         // 뷰모델 받기
         viewModel = ViewModelProvider(this)[PlusToiletViewModel::class.java]
+        // 화장실 상태 선택 버튼 리스트 초기화
+        statusButtonList = listOf<TextView>(
+            binding.filter1,
+            binding.filter2,
+            binding.filter3,
+            binding.filter4,
+            binding.filter5,
+            binding.filter6,
+            binding.filter7,
+            binding.filter8,
+        )
         // 좌표 받아서 주소로 변환 비동기 처리
         lifecycleScope.launch(Dispatchers.Main){
             // 받아오는 동안 로딩
@@ -39,9 +56,10 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
                 // 인텐트에서 좌표받아서 바로 주소로 변환
                 addressNameModel = getRoadAddressFromCoordinate(getCoordinateFromIntent())
             }
-            dismissLoading()
             // UI 세팅
             setUi()
+            // 로딩 제거
+            dismissLoading()
         }
     }
     /**
@@ -52,8 +70,12 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         binding.backButton.setOnClickListener {
             onBackPressed()
         }
-        // 주소값 넣어 주기
-        binding.toiletAddressEdit.setText(getAddressName(addressNameModel))
+        // 주소값 넣어 주기, textWatcher 세팅
+        setAddressEditText(getAddressName(addressNameModel))
+        // 이름 EditText 세팅
+        setToiletNameEditTxt()
+        // 화장실 상태 선택 세팅
+        setToiletStatusSelect(statusButtonList)
     }
     /**
      * intet에서 좌표값 갖고 오기
@@ -118,5 +140,69 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
             result = addressNameModel.roadAddressName
         }
         return result
+    }
+    /**
+     *  주소 EditText 세팅
+     */
+    private fun setAddressEditText(address: String){
+        binding.toiletAddressEdit.setText(address)
+        viewModel.setToiletAddress(address)
+        binding.toiletAddressEdit.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // 텍스트 값 바뀌면 바로 뷰모델에 적용
+                viewModel.setToiletAddress(
+                    binding.toiletAddressEdit.text.toString()
+                )
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
+    }
+    /**
+     * 화장실 이름 EditText 세팅
+     */
+    private fun setToiletNameEditTxt(){
+        binding.plusToiletInput.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // 텍스트 값 바뀌면 바로 뷰모델에 적용
+                viewModel.setToiletAddress(
+                    binding.toiletAddressEdit.text.toString()
+                )
+            }
+            override fun afterTextChanged(p0: Editable?) {}
+        })
+    }
+    /**
+     * 화장실 상태 선택 세팅
+     */
+    private fun setToiletStatusSelect(buttonList: List<TextView>){
+        val clicked = R.drawable.filter_button_selected
+        val unClicked = R.drawable.toilet_status_nonselected_button
+        // UI 버튼 개수와 뷰모델 실제 버튼 개수 비교
+        if (buttonList.size == viewModel.statusStringList.size){
+            // 개수 비교 통과 시, 한번에 뷰모델, 버튼 연결
+            for (i in buttonList.indices){
+                // UI 버튼 텍스트 세팅
+                buttonList[i].text = viewModel.statusStringList[i]
+                val viewModelToiletList = viewModel.toiletStatusList.value!!
+                // UI 클릭 시, 뷰모델 데이터 변경
+                buttonList[i].setOnClickListener{
+                    if (viewModelToiletList.get(i).status){
+                        viewModelToiletList.get(i).status = false
+                    } else{
+                        viewModelToiletList.get(i).status = true
+                    }
+                }
+                // 뷰모델 데이터 변경 시, UI 세팅
+                viewModel.toiletStatusList.observe(this){
+                    if (viewModelToiletList.get(i).status){
+                        buttonList[i].setBackgroundResource(clicked)
+                    } else{
+                        buttonList[i].setBackgroundResource(unClicked)
+                    }
+                }
+            }
+        }
     }
 }
