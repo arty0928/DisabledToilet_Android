@@ -10,7 +10,7 @@ class KakaoApiRepository {
      * RestApi 중 로컬
      */
     class KakaoLocalRepository {
-        val KAKAO_API_KEY = "d70974b0d69927a794891ec94883c6ca"
+        val KAKAO_API_KEY = "aad7f57f316e4302e5fb94b61b7a811c"
         private val retrofit = Retrofit.Builder()
             .baseUrl("https://dapi.kakao.com/")
             .addConverterFactory(GsonConverterFactory.create())
