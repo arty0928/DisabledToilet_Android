@@ -48,20 +48,21 @@ class NearActivity : AppCompatActivity() {
             val mapInitialized = mapManager.initializeMapView()
             if (mapInitialized) {
                 locationHelper.checkLocationPermission {
+                    fetchToiletDataAndDisplay()
                     // 현재 위치를 지도에 표시
                     locationHelper.setMapToCurrentLocation { currentPosition ->
                         if (currentPosition != null) {
-                            mapManager.moveCameraToCachedLocation()
+                            // Intent 처리
+                            if (handleIntent() != "ToiletFilterSearchActivity"){
+                                // 안넘어온거 확인 후 카메라 옮기기
+                                mapManager.moveCameraToCachedLocation()
+                            }
 //                            Toast.makeText(this@NearActivity, "현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
                         } else {
 //                            Toast.makeText(this@NearActivity, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                         }
                     }
-                    fetchToiletDataAndDisplay()
                 }
-
-                // Intent 처리
-                handleIntent()
 
                 // 버튼 설정
                 setupButtons()
@@ -77,7 +78,7 @@ class NearActivity : AppCompatActivity() {
 
 
     // Intent 데이터를 처리하는 함수
-    private fun handleIntent() {
+    private fun handleIntent(): String? {
         val rootActivity = intent.getStringExtra("rootActivity")
         when (rootActivity) {
             "ToiletFilterSearchActivity" -> {
@@ -87,11 +88,12 @@ class NearActivity : AppCompatActivity() {
                     mapManager.moveCameraToToilet(searchingToilet!!)
                     bottomSheetHelper.initializeBottomSheet(searchingToilet!!)
                 } else {
-                    Log.e("NearActivity", "parcelable data type is not matched")
+                    Log.e("test log", "parcelable data type is not matched")
                 }
             }
-            else -> Log.d("NearActivity", "root activity data is null")
+            else -> Log.d("test log", "root activity data is null")
         }
+        return rootActivity
     }
 
     // 버튼 설정 함수

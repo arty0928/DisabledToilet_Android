@@ -89,10 +89,6 @@
             android:exported="false"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity
-            android:name=".ToiletSearch.SearchActivity"
-            android:exported="false"
-            android:theme="@style/Theme.DisabledToilet_Android" />
-        <activity
             android:name=".Near.NearActivity"
             android:exported="false"
             android:label="@string/title_activity_near"

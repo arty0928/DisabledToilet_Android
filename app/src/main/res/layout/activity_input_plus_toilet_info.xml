@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <!-- Top Layout with overlay -->
     <FrameLayout
@@ -14,33 +14,34 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/notosanskr_bold"
             android:gravity="center_horizontal"
             android:text="화장실 정보 입력"
-            android:fontFamily="@font/notosanskr_bold"
             android:textColor="@color/black"
             android:textSize="25dp" />
 
         <!-- Back button positioned on top of the text -->
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_marginLeft="10dp"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="start|center_vertical"
+            android:layout_marginLeft="10dp"
             android:background="@android:color/transparent"
-            android:src="@drawable/back_button"
+            android:contentDescription="Back Button"
             android:scaleType="fitCenter"
-            android:contentDescription="Back Button" />
+            android:src="@drawable/back_button" />
 
     </FrameLayout>
 
+
     <!-- Main Layout below the top section -->
     <FrameLayout
-        android:background="@color/background"
-        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="10">
+        android:layout_weight="10"
+        android:background="@color/background"
+        android:padding="20dp">
 
         <LinearLayout
 
@@ -62,16 +63,16 @@
                     android:layout_height="wrap_content"
                     android:text="화장실 이름"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:textSize="18dp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
                     android:id="@+id/plus_toilet_input"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/search_bar_background"
                     android:hint="화장실 이름 (20자 이내)"
                     android:padding="12dp"
@@ -79,8 +80,43 @@
                     android:textColorHint="@color/greyColor"
                     android:textSize="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/toilet_name_txt"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/toilet_name_txt" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/white_round_box"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="10dp">
+
+
+                <TextView
+                    android:id="@+id/toilet_address_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="화장실 주소"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/toilet_address_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/search_bar_background"
+                    android:hint="화장실 주소"
+                    android:padding="12dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/greyColor"
+                    android:textSize="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/toilet_address_txt" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -98,19 +134,19 @@
                     android:layout_height="wrap_content"
                     android:text="층 구분 (선택)"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:textSize="18dp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/operating"
                     android:id="@+id/updown_select"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     app:layout_constraintHorizontal_weight="1"
-                    android:orientation="horizontal">
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/operating">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -134,23 +170,22 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="15dp"
-                            android:textSize="16dp"
                             android:text="지하"
                             android:textColor="@color/black"
-                            app:layout_constraintStart_toEndOf="@id/operatingCircle1"
-                            />
+                            android:textSize="16dp"
+                            app:layout_constraintStart_toEndOf="@id/operatingCircle1" />
+
                         <ImageButton
-                            android:layout_marginLeft="30dp"
                             android:id="@+id/operatingCircle2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
                             android:layout_marginTop="19dp"
                             android:layout_marginRight="5dp"
                             android:background="@color/white"
                             android:src="@drawable/check_circle"
                             app:layout_constraintEnd_toStartOf="@id/operatingText2"
-                            app:layout_constraintTop_toBottomOf="@id/operating"
-                            />
+                            app:layout_constraintTop_toBottomOf="@id/operating" />
 
                         <TextView
                             android:id="@+id/operatingText2"
@@ -158,9 +193,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:text="지상"
-                            android:textSize="16dp"
                             android:textColor="@color/black"
-                            />
+                            android:textSize="16dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -173,12 +207,11 @@
                             android:id="@+id/floor_spinner"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:layout_constraintHorizontal_weight="1"
                             android:layout_marginStart="10dp"
                             android:layout_marginTop="15dp"
                             android:background="@drawable/search_bar_background"
                             android:entries="@array/floor_array"
-                            />
+                            app:layout_constraintHorizontal_weight="1" />
 
                     </LinearLayout>
 
@@ -200,26 +233,25 @@
                     android:layout_height="wrap_content"
                     android:text="화장실 상태 선택"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
                     android:textSize="18dp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/toilet_status_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/white_round_box"
                     android:orientation="vertical"
-                    >
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/toilet_status_txt">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        >
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -229,26 +261,26 @@
 
                             <TextView
                                 android:id="@+id/filter1"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
                                 android:text="남녀구분"
-                                android:layout_margin="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
 
                             <TextView
                                 android:id="@+id/filter2"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
-                                android:layout_margin="5dp"
                                 android:text="손잡이"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
@@ -264,26 +296,26 @@
 
                             <TextView
                                 android:id="@+id/filter3"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
                                 android:text="남녀구분"
-                                android:layout_margin="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
 
                             <TextView
                                 android:id="@+id/filter4"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
-                                android:layout_margin="5dp"
                                 android:text="손잡이"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
@@ -299,26 +331,26 @@
 
                             <TextView
                                 android:id="@+id/filter5"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
                                 android:text="남녀구분"
-                                android:layout_margin="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
 
                             <TextView
                                 android:id="@+id/filter6"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
-                                android:layout_margin="5dp"
                                 android:text="손잡이"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
@@ -334,34 +366,33 @@
 
                             <TextView
                                 android:id="@+id/filter7"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
                                 android:text="남녀구분"
-                                android:layout_margin="5dp"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
 
                             <TextView
                                 android:id="@+id/filter8"
-                                android:layout_gravity="center"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:background="@drawable/toilet_status_nonselected_button"
                                 android:gravity="center"
-                                android:layout_margin="5dp"
                                 android:text="손잡이"
                                 android:textColor="@color/black"
                                 android:textSize="17dp" />
 
 
-                        </LinearLayout>                    </LinearLayout>
-
-
+                        </LinearLayout>
+                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -376,13 +407,13 @@
             android:id="@+id/plus_toilet_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginHorizontal="30dp"
             android:background="@drawable/maincolor_rounded"
-            android:layout_gravity="bottom"
+            android:fontFamily="@font/notosanskr_bold"
             android:text="화장실 등록"
-            android:textSize="17dp"
             android:textColor="@color/white"
-            android:fontFamily="@font/notosanskr_bold" />
+            android:textSize="17dp" />
 
     </FrameLayout>
 </LinearLayout>
