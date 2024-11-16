@@ -175,13 +175,15 @@
 
     </LinearLayout>
 
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/nav_view_after_login"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header_after_login"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_before_login"
         android:background="@drawable/rightside_background_rounded"
-        app:menu="@menu/after_login_drawer_item" />
+        app:menu="@menu/before_login_drawer_item" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

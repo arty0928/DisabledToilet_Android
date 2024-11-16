@@ -5,102 +5,106 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
-import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.example.disabledtoilet_android.User.MyPageActivity
+import com.example.disabledtoilet_android.Utility.Dialog.utils.GoogleHelper
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var googleSignInHelper: GoogleHelper
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        firebaseAuth = FirebaseAuth.getInstance()
-
         setContentView(R.layout.activity_main)
 
-        // 내 주변 버튼
+        googleSignInHelper = GoogleHelper.getInstance(this) // Singleton 인스턴스 가져오기
+        initializeUI()
+    }
+
+    private fun initializeUI() {
+        updateHeader() // 헤더 UI 업데이트
+
+        setupNearButton() // '근처 화장실' 버튼 설정
+        setupSearchButton() // '화장실 검색' 버튼 설정
+        setupPlusToiletButton() // '화장실 추가' 버튼 설정
+
+        setupDrawerLayout() // DrawerLayout 및 NavigationView 설정
+        setupMenuIcon() // 메뉴 아이콘 클릭 리스너 설정
+    }
+
+    private fun setupNearButton() {
         val nearButton: LinearLayout = findViewById(R.id.near_button)
         nearButton.setOnClickListener {
-            val intent = Intent(this, NearActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, NearActivity::class.java))
         }
+    }
 
-        // 장소 검색 버튼
+    private fun setupSearchButton() {
         val searchButton: LinearLayout = findViewById(R.id.search_button)
         searchButton.setOnClickListener {
-            val intent = Intent(this, ToiletFilterSearchActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ToiletFilterSearchActivity::class.java))
         }
+    }
 
-        // 화장실 등록 버튼
+    private fun setupPlusToiletButton() {
         val plusToiletButton: LinearLayout = findViewById(R.id.toiletplus_button)
         plusToiletButton.setOnClickListener {
-            val intent = Intent(this, ToiletPlusActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ToiletPlusActivity::class.java))
         }
+    }
 
+    private fun setupDrawerLayout() {
         drawerLayout = findViewById(R.id.drawer_layout_login)
-        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        val navigationView: NavigationView = findViewById(R.id.nav_view_after_login)
 
-        //NavigationView 너비를 화면의 80%로 설정
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val layoutParams = navigationView.layoutParams
-        layoutParams.width =  (screenWidth * 0.3).toInt()
+        layoutParams.width = (screenWidth * 0.3).toInt()
         navigationView.layoutParams = layoutParams
-
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_mypage -> {
-                    Toast.makeText(this, "mypage 아이템", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MyPageActivity::class.java)  // MyPageActivity로 이동
-                    startActivity(intent)
-                    drawerLayout.closeDrawers()  // Drawer 닫기
+                R.id.nav_icon1 -> {
+                    startActivity(Intent(this, MyPageActivity::class.java))
+                    drawerLayout.closeDrawers()
                     true
                 }
                 else -> false
             }
-            drawerLayout.closeDrawers()
-            true
         }
 
-        val menuIcon = findViewById<ImageView>(R.id.menu_icon_login)
-        menuIcon.setOnClickListener {
+        val headerView : View = navigationView.getHeaderView(0)
+        val navLogoutButton : LinearLayout = headerView.findViewById(R.id.loginbtn)
+        navLogoutButton.setOnClickListener {
+            googleSignInHelper.signOut()
+        }
+
+        setupMenuIcon() // 메뉴 아이콘 클릭 리스너 설정
+    }
+
+    private fun setupMenuIcon() {
+        findViewById<ImageView>(R.id.menu_icon_login).setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
         }
-
-        //로그아웃
-        val headerView : View = navigationView.getHeaderView(0)
-        val navLogoutButton : LinearLayout = headerView.findViewById(R.id.login_nav_logout_button)
-        navLogoutButton.setOnClickListener {
-            signOut()
-        }
     }
 
-    private fun signOut() {
-        firebaseAuth.signOut()
-        Toast.makeText(this, "로그아웃되었습니다.", Toast.LENGTH_SHORT).show()
-        updateUI(null)
-    }
+    private fun updateHeader() {
+        val navigationView: NavigationView = findViewById(R.id.nav_view_after_login)
+        val headerView = navigationView.getHeaderView(0)
 
-    private fun updateUI(user: FirebaseUser?) {
-        if (user == null) {
-            val intent = Intent(this, NonloginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+        val loginImageView = headerView.findViewById<ImageView>(R.id.login_icon)
+        val loginTextView = headerView.findViewById<TextView>(R.id.login_text)
+
+        loginImageView.setImageResource(R.drawable.logout)
+        loginTextView.text = "로그아웃" // 로그인 상태일 때
     }
 }

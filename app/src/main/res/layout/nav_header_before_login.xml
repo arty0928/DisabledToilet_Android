@@ -9,7 +9,7 @@
     <!-- 로그인 아이콘 ImageView -->
     <LinearLayout
         android:paddingTop="20dp"
-        android:id="@+id/login_nav_login_button"
+        android:id="@+id/loginbtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
