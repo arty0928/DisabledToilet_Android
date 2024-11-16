@@ -57,7 +57,7 @@ class ToiletPlusActivity : AppCompatActivity() {
             getLocationPermission()
         }
         //카카오SDK 초기화 이거 앱키 나중에 ignore 작업 해주기
-        KakaoMapSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
+        KakaoMapSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
         // UI 세팅
         setUi()
     }

@@ -22,7 +22,7 @@ class StartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        KakaoSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
+        KakaoSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
 
         firebaseAuth = FirebaseAuth.getInstance()
         googleHelper = GoogleHelper.getInstance(this)
