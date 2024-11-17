@@ -56,4 +56,8 @@ class UserRepository {
             callback(null) // 로그인된 사용자가 없음
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> origin/xmlDev

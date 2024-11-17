@@ -24,7 +24,6 @@
         <activity
             android:name=".StartActivity"
             android:exported="true"
-            android:label="@string/title_activity_start"
             android:theme="@style/Theme.DisabledToilet_Android" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -25,8 +25,11 @@ class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         KakaoSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
+<<<<<<< HEAD
         var keyHash = Utility.getKeyHash(this)
         Log.d("key" , keyHash)
+=======
+>>>>>>> origin/xmlDev
 
         firebaseAuth = FirebaseAuth.getInstance()
         googleHelper = GoogleHelper.getInstance(this)
