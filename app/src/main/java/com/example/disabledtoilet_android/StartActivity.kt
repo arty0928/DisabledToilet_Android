@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.kakao.sdk.common.util.Utility
+import android.util.Log
 
 class StartActivity : AppCompatActivity() {
 
@@ -22,7 +24,9 @@ class StartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        KakaoSdk.init(this, "ce27585c8cc7c468ac7c46901d87199d")
+        KakaoSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
+        var keyHash = Utility.getKeyHash(this)
+        Log.d("key" , keyHash)
 
         firebaseAuth = FirebaseAuth.getInstance()
         googleHelper = GoogleHelper.getInstance(this)
