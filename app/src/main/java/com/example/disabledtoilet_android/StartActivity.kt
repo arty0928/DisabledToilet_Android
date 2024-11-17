@@ -15,21 +15,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.kakao.sdk.common.util.Utility
 import android.util.Log
+import com.example.disabledtoilet_android.User.UserRepository
 
 class StartActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private var loadingDialog = LoadingDialog()
     private lateinit var googleHelper: GoogleHelper
+    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         KakaoSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
-<<<<<<< HEAD
-        var keyHash = Utility.getKeyHash(this)
-        Log.d("key" , keyHash)
-=======
->>>>>>> origin/xmlDev
 
         firebaseAuth = FirebaseAuth.getInstance()
         googleHelper = GoogleHelper.getInstance(this)
@@ -43,12 +40,15 @@ class StartActivity : AppCompatActivity() {
 
                 // 초기화 작업 (예: 데이터 로드)
                 val initResult = initializeApp()
+                Log.d("GoogleHelper start", initResult.toString())
 
                 withContext(Dispatchers.Main) {
                     loadingDialog.dismiss() // 로딩 다이얼로그 종료
                     if (initResult) {
                         // 로그인 상태 확인
-                        val currentUser = firebaseAuth.currentUser
+                        val currentUser = userRepository.currentUser
+                        Log.d("GoogleHelper start", currentUser.toString())
+
                         if (currentUser != null) {
                             // 로그인 상태일 경우 MainActivity로 이동
                             startActivity(Intent(this@StartActivity, MainActivity::class.java))
