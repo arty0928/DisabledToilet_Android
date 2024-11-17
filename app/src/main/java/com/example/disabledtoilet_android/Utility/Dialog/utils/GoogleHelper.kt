@@ -10,8 +10,9 @@ import androidx.lifecycle.lifecycleScope
 import com.example.disabledtoilet_android.MainActivity
 import com.example.disabledtoilet_android.NonloginActivity
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.User.User
-import com.example.disabledtoilet_android.User.UserRepository
+import com.example.disabledtoilet_android.User.getLoggedInUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -29,7 +30,6 @@ import kotlinx.coroutines.Job
 class GoogleHelper private constructor(private val context: Context) {
 
     private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     companion object {
         @Volatile
@@ -45,7 +45,6 @@ class GoogleHelper private constructor(private val context: Context) {
     private lateinit var googleSignInClient: GoogleSignInClient
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val TAG = "GoogleHelper"
-    private val userRepository = UserRepository()
 
     // SharedPreferences 키
     private val PREFS_NAME = "UserPrefs"
@@ -58,7 +57,7 @@ class GoogleHelper private constructor(private val context: Context) {
     suspend fun initializeGoogleSignIn(): Boolean {
         val isSuccess = CompletableDeferred<Boolean>()
 
-        scope.launch(Dispatchers.IO) {
+        withContext(Dispatchers.IO) {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -72,9 +71,10 @@ class GoogleHelper private constructor(private val context: Context) {
             }
             
             //로그인한 상태인지 확인후, 사용자 정보 업데이트
-            fetchUserData()
+            val success = fetchUserData()
 
-            isSuccess.complete(true)
+            isSuccess.complete(success)
+
         }
         return isSuccess.await()
     }
@@ -91,7 +91,9 @@ class GoogleHelper private constructor(private val context: Context) {
         return if (email != null) {
             // Firebase에서 사용자 데이터 가져오기
             val deferred = CompletableDeferred<Boolean>()
-            userRepository.getLoggedInUser(email) { success ->
+
+
+            getLoggedInUser(email) { success ->
                 Log.d("GoogleHelper fetch", success.toString())
                 if (success) {
                     deferred.complete(true)
@@ -190,9 +192,8 @@ class GoogleHelper private constructor(private val context: Context) {
             Toast.makeText(context, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show()
 
             //UserRepository에 저장된 currentUser 초기화
-            userRepository.clearCurrentUser()
+            ToiletData.clearCurrentUser()
             saveLoginState(null) // 로그아웃 시 상태 초기화
-            Log.d(TAG, "SIGNOUT , ${userRepository.currentUser}")
 
             context.startActivity(Intent(context, NonloginActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

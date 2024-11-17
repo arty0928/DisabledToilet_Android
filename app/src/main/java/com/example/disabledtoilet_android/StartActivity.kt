@@ -15,14 +15,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.kakao.sdk.common.util.Utility
 import android.util.Log
-import com.example.disabledtoilet_android.User.UserRepository
 
 class StartActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private var loadingDialog = LoadingDialog()
     private lateinit var googleHelper: GoogleHelper
-    private val userRepository = UserRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,15 +38,15 @@ class StartActivity : AppCompatActivity() {
 
                 // 초기화 작업 (예: 데이터 로드)
                 val initResult = initializeApp()
-                Log.d("GoogleHelper start", initResult.toString())
+                Log.d("GoogleHelper start1", initResult.toString())
 
                 withContext(Dispatchers.Main) {
                     loadingDialog.dismiss() // 로딩 다이얼로그 종료
                     if (initResult) {
                         // 로그인 상태 확인
-                        val currentUser = userRepository.getCurretnUser()
+                        val currentUser = ToiletData.getCurretnUser()
 
-                        Log.d("GoogleHelper start", currentUser.toString())
+                        Log.d("GoogleHelper start2", currentUser.toString())
 
                         if (currentUser != null) {
                             // 로그인 상태일 경우 MainActivity로 이동

@@ -3,6 +3,7 @@ package com.example.disabledtoilet_android.ToiletSearch
 import ToiletModel
 import android.content.SharedPreferences
 import android.util.Log
+import com.example.disabledtoilet_android.User.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.database.FirebaseDatabase
@@ -20,6 +21,10 @@ object ToiletData {
         FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
     var toiletListInit = false
     var cachedToiletList: List<ToiletModel>? = listOf()
+
+    //사용자
+    var currentUser : User? = null
+
 
     suspend fun initialize(): Boolean = suspendCoroutine { continuation ->
         // Firestore에서 데이터 로드
@@ -61,5 +66,18 @@ object ToiletData {
     fun getToiletAllData() : List<ToiletModel>? {
         return ToiletData.cachedToiletList
     }
+
+
+    fun getCurretnUser() : User?{
+        return currentUser
+    }
+
+    /**
+     * 로그아웃 -> 저장된 사용자 데이터 삭제
+     */
+    fun clearCurrentUser(){
+        currentUser = null
+    }
+
 
 }
