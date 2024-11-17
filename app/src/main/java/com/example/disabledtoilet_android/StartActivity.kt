@@ -46,7 +46,8 @@ class StartActivity : AppCompatActivity() {
                     loadingDialog.dismiss() // 로딩 다이얼로그 종료
                     if (initResult) {
                         // 로그인 상태 확인
-                        val currentUser = userRepository.currentUser
+                        val currentUser = userRepository.getCurretnUser()
+
                         Log.d("GoogleHelper start", currentUser.toString())
 
                         if (currentUser != null) {

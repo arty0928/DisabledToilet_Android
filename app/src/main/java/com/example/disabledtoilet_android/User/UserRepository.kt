@@ -1,8 +1,10 @@
 package com.example.disabledtoilet_android.User
 
 import ToiletModel
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.delay
 
 
 /**
@@ -50,6 +52,7 @@ class UserRepository {
 
                     // currentUser에 저장
                     currentUser = user
+                    Log.d("GoogleHelper" , currentUser.toString())
                     callback(true)
                 } else {
                     callback(false) // 문서가 없음
@@ -58,6 +61,11 @@ class UserRepository {
             .addOnFailureListener {
                 callback(false) // 오류 발생
             }
+    }
+
+    suspend fun getCurretnUser() : User?{
+        delay(1000)
+        return currentUser
     }
 
     /**

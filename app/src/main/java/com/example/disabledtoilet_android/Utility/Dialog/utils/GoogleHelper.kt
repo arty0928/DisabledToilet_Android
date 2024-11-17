@@ -92,6 +92,7 @@ class GoogleHelper private constructor(private val context: Context) {
             // Firebase에서 사용자 데이터 가져오기
             val deferred = CompletableDeferred<Boolean>()
             userRepository.getLoggedInUser(email) { success ->
+                Log.d("GoogleHelper fetch", success.toString())
                 if (success) {
                     deferred.complete(true)
                 } else {
