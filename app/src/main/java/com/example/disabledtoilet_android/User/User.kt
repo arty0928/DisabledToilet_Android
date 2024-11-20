@@ -10,7 +10,7 @@ data class User(
     val name : String,
     val photoURL : String,
 
-    val likedToilets : List<ToiletModel>,
-    val recentlyViewedToilets : List<ToiletModel>
+    var likedToilets : MutableList<ToiletModel>  = mutableListOf(),
+    var recentlyViewedToilets : MutableList<ToiletModel> = mutableListOf()
 
 )

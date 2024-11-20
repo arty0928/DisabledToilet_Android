@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.databinding.ActivityMypageBinding
 import com.example.disabledtoilet_android.User.Model.Recent_viewed_toilet
 
@@ -24,6 +25,8 @@ class MyPageActivity : AppCompatActivity() {
         binding.backButton.setOnClickListener {
             onBackPressed() // 이전 화면으로 돌아가기
         }
+
+        binding.mypageSaveCountTxt.text = ToiletData.currentUser?.recentlyViewedToilets?.size.toString()
 
         // 최근 본 화장실 데이터 목록 생성
         val toiletList = listOf(

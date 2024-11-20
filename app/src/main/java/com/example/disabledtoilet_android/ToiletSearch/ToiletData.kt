@@ -3,6 +3,7 @@ package com.example.disabledtoilet_android.ToiletSearch
 import ToiletModel
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.disabledtoilet_android.User.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -17,6 +18,11 @@ object ToiletData {
     private val PREFS_NAME = "ToiletCache"
     private val TOILETS_KEY = "ToiletList"
 
+    //좋아요 데이터 변동 감지
+    private val _save = MutableLiveData<Int>()
+    val save : MutableLiveData<Int> get() = _save
+
+
     val database: FirebaseDatabase =
         FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
     var toiletListInit = false
@@ -24,7 +30,6 @@ object ToiletData {
 
     //사용자
     var currentUser : User? = null
-
 
     suspend fun initialize(): Boolean = suspendCoroutine { continuation ->
         // Firestore에서 데이터 로드
@@ -47,6 +52,12 @@ object ToiletData {
             }
     }
 
+    // save 값 업데이트 (전체 값에 대한 업데이트)
+    fun updateSaveValueForToilet(toiletNumber: Int, newSaveValue: Int) {
+        // 해당 화장실 찾기
+        val toilet = cachedToiletList?.find { it.number == toiletNumber }
+        toilet?.save = newSaveValue // 해당 화장실의 save 값을 업데이트
+    }
 
 
     /**

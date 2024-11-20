@@ -10,10 +10,13 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.disabledtoilet_android.Detail.BottomSheetHelper
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.Map.MapManager
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.User.ViewModel.UserViweModel
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
 import com.example.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
@@ -31,6 +34,7 @@ class NearActivity : AppCompatActivity() {
     private val loadingDialog = LoadingDialog()
     val mapManager by lazy { MapManager(this) }
 
+    lateinit var userViewModel : UserViweModel
 
     private val locationHelper by lazy { LocationHelper(this) }
     val bottomSheetHelper by lazy { BottomSheetHelper(this) }
@@ -42,6 +46,8 @@ class NearActivity : AppCompatActivity() {
         KakaoMapSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
 
         setContentView(binding.root)
+
+        userViewModel = ViewModelProvider(this)[UserViweModel::class.java]
 
         // 초기화 작업
         CoroutineScope(Dispatchers.Main).launch {

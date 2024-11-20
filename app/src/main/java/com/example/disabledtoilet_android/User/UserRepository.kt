@@ -36,8 +36,8 @@ fun getLoggedInUser(email: String, callback: (Boolean) -> Unit) {
                     email = email,
                     name = name,
                     photoURL = photoURL,
-                    likedToilets = likedToilets,
-                    recentlyViewedToilets = recentlyViewedToilets
+                    likedToilets = likedToilets.toMutableList(),
+                    recentlyViewedToilets = recentlyViewedToilets.toMutableList()
                 )
 
                 // currentUser에 저장

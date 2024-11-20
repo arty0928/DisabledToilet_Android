@@ -10,9 +10,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
+import com.example.disabledtoilet_android.User.ViewModel.UserViweModel
 import com.example.disabledtoilet_android.Utility.Dialog.SaveManager
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 //import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
@@ -33,9 +35,11 @@ class DetailOptionFragment : Fragment() {
     private lateinit var saveManager: SaveManager
     val loadingDialog = LoadingDialog()
     private lateinit var scrollViewContainer: LinearLayout
+    lateinit var userViewModel : UserViweModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        userViewModel = ViewModelProvider(requireActivity())[UserViweModel::class.java]
     }
 
     override fun onCreateView(
