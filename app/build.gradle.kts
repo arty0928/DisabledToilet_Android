@@ -10,6 +10,9 @@ if (localPropertiesFile.exists()) {
 
 // Kakao scheme을 읽어옵니다.
 val kakaoScheme = localProperties.getProperty("KAKAO_SCHEME")
+val kakaoRestAPI = localProperties.getProperty("KAKAO_REST_API")
+val firebaseLink = localProperties.getProperty("FIREBASE")
+
 
 plugins {
     alias(libs.plugins.android.application)
@@ -36,6 +39,8 @@ android {
 
         manifestPlaceholders["KAKAO_SCHEME"] = kakaoScheme
         buildConfigField("String", "KAKAO_SCHEME", "\"$kakaoScheme\"")
+        buildConfigField("String", "KAKAO_REST_API", "\"$kakaoRestAPI\"")
+        buildConfigField("String", "FIREBASE", "\"$firebaseLink\"")
 
     }
 

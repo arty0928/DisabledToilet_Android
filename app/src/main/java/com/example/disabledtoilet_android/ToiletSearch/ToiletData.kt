@@ -4,6 +4,7 @@ import ToiletModel
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.disabledtoilet_android.BuildConfig
 import com.example.disabledtoilet_android.User.User
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -24,7 +25,7 @@ object ToiletData {
 
 
     val database: FirebaseDatabase =
-        FirebaseDatabase.getInstance("https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app")
+        FirebaseDatabase.getInstance(BuildConfig.FIREBASE)
     var toiletListInit = false
     var cachedToiletList: List<ToiletModel>? = listOf()
 
