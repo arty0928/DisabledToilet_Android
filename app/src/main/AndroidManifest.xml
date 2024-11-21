@@ -71,10 +71,6 @@
             android:theme="@style/Theme.DisabledToilet_Android" >
         </activity>
 
-        <meta-data
-            android:name="com.kakao.vectormap.APP_KEY"
-            android:value="0da87b34c4becc2c67033fb4c1561bdf" />
-
         <activity
             android:name=".Detail.DetailBottomSheet"
             android:exported="false"

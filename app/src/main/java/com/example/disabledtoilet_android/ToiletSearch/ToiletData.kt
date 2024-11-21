@@ -61,11 +61,10 @@ object ToiletData {
 
 
     /**
-     * 현재 지도 화면에 보이는 영역 내의 화장실을 필터링하여 반환합니다.
-     *
-     * @param southWest 남서쪽 경도/위도
-     * @param northEast 북동쪽 경도/위도
-     * @return 현재 화면 내에 위치한 화장실의 리스트
+     *          현재 지도 화면에 보이는 영역 내의 화장실을 필터링하여 반환합니다.
+     *          @param southWest 남서쪽 경도/위도
+     *          @param northEast 북동쪽 경도/위도
+     *          @return 현재 화면 내에 위치한 화장실의 리스트
      */
     fun getToiletsWithinBounds(southWestLatitude: Double, southWestLongitude: Double, northEastLatitude: Double, northEastLongitude: Double): List<ToiletModel> {
         return ToiletData.cachedToiletList!!.filter { toilet ->
