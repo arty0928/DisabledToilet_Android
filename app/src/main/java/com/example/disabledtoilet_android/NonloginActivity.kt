@@ -39,7 +39,8 @@ class NonloginActivity : AppCompatActivity() {
             startActivity(Intent(this, ToiletFilterSearchActivity::class.java))
         }
 
-        setupNavigationDrawer() // 내비게이션 드로어 설정
+        //TODO: 출시 전 로그인 막기
+//        setupNavigationDrawer() // 내비게이션 드로어 설정
     }
 
     private fun setupNavigationDrawer() {

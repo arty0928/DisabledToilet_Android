@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import android.util.Log
 import com.example.disabledtoilet_android.Near.NearActivity
 import com.example.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
 import com.example.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
@@ -82,7 +83,8 @@ class MainActivity : AppCompatActivity() {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.nav_icon1 -> {
-                    startActivity(Intent(this, MyPageActivity::class.java))
+                    Log.d("NAV",R.id.nav_icon1.toString())
+                    startActivity(Intent(this, ToiletPlusActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
