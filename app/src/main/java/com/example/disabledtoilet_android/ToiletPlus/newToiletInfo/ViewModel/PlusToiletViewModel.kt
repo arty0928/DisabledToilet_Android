@@ -1,5 +1,6 @@
-package com.example.disabledtoilet_android.ToiletPlus.ViewModel
+package com.example.disabledtoilet_android.ToiletPlus.newToiletInfo.ViewModel
 
+import ToiletModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.tools.build.jetifier.core.utils.Log
@@ -82,5 +83,11 @@ class PlusToiletViewModel(): ViewModel() {
     fun updateToiletStatusSelectList(statusList: List<ToiletStatusModel>, index: Int, isChecked: Boolean){
         statusList[index].status = isChecked
         toiletStatusList.value = statusList 
+    }
+    /**
+     * 화장실 등록 버튼 선택 시
+     */
+    fun registerToilet(){
+
     }
 }

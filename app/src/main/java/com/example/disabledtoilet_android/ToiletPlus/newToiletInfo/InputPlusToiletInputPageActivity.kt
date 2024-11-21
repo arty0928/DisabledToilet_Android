@@ -1,16 +1,15 @@
-package com.example.disabledtoilet_android.ToiletPlus
+package com.example.disabledtoilet_android.ToiletPlus.newToiletInfo
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.disabledtoilet_android.R
-import com.example.disabledtoilet_android.ToiletPlus.ViewModel.PlusToiletViewModel
+import com.example.disabledtoilet_android.ToiletPlus.newToiletInfo.ViewModel.PlusToiletViewModel
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.Utility.KaKaoAPI.KakaoApiRepository
 import com.example.disabledtoilet_android.Utility.KaKaoAPI.Model.AddressNameModel
