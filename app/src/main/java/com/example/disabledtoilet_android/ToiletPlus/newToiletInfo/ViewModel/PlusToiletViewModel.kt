@@ -1,6 +1,8 @@
 package com.example.disabledtoilet_android.ToiletPlus.newToiletInfo.ViewModel
 
 import ToiletModel
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.tools.build.jetifier.core.utils.Log
@@ -88,6 +90,6 @@ class PlusToiletViewModel(): ViewModel() {
      * 화장실 등록 버튼 선택 시
      */
     fun registerToilet(){
-
+        // 화장실 등록 로직
     }
 }

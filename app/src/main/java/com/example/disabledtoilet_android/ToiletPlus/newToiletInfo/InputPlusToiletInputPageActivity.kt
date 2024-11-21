@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -62,7 +63,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         }
     }
     /**
-     * Ui 세팅
+     *      Ui 세팅
      */
     private fun setUi(){
         // 뒤로 가기
@@ -75,9 +76,13 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         setToiletNameEditTxt()
         // 화장실 상태 선택 세팅
         setToiletStatusSelect(statusButtonList)
+        // 화장실 등록 버튼
+        binding.plusToiletButton.setOnClickListener{
+            Toast.makeText(this, "아직 지원하지 않습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
     /**
-     * intet에서 좌표값 갖고 오기
+     *      intet에서 좌표값 갖고 오기
      */
     private fun getCoordinateFromIntent(): LatLng {
         val latitude = intent.getDoubleExtra("latitude", 0.0)
@@ -85,7 +90,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         return LatLng.from(latitude, longitude)
     }
     /**
-     * 좌표 값으로 주소 구하기
+     *       좌표 값으로 주소 구하기
      */
     private suspend fun getRoadAddressFromCoordinate(location: LatLng): AddressNameModel{
         val kakaoRepository = KakaoApiRepository.KakaoLocalRepository()
@@ -117,19 +122,19 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         return AddressNameModel(roadAddressName, lotAddressName)
     }
     /**
-     * 로딩 표시
+     *      로딩 표시
      */
     private fun showLoading(){
         loadingDialog.show(supportFragmentManager, loadingDialog.tag)
     }
     /**
-     * 로딩 끄기
+     *      로딩 끄기
      */
     private fun dismissLoading(){
         loadingDialog.dismiss()
     }
     /**
-     * AddressNameModel에서 있는 값 사용
+     *      AddressNameModel에서 있는 값 사용
      */
     private fun getAddressName(addressNameModel: AddressNameModel): String{
         var result = ""
@@ -141,7 +146,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         return result
     }
     /**
-     *  주소 EditText 세팅
+     *      주소 EditText 세팅
      */
     private fun setAddressEditText(address: String){
         binding.toiletAddressEdit.setText(address)
@@ -158,7 +163,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         })
     }
     /**
-     * 화장실 이름 EditText 세팅
+     *      화장실 이름 EditText 세팅
      */
     private fun setToiletNameEditTxt(){
         binding.plusToiletInput.addTextChangedListener(object : TextWatcher{
@@ -173,7 +178,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         })
     }
     /**
-     * 화장실 상태 선택 세팅
+     *     화장실 상태 선택 세팅
      */
     private fun setToiletStatusSelect(buttonList: List<TextView>){
         val clicked = R.drawable.filter_button_selected
