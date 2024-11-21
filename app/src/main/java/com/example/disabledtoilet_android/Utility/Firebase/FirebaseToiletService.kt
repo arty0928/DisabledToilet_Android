@@ -3,12 +3,13 @@ package com.example.disabledtoilet_android.Utility.Firebase
 import ToiletModel
 import android.util.Log
 import androidx.concurrent.futures.await
+import com.example.disabledtoilet_android.BuildConfig
 import com.google.firebase.database.FirebaseDatabase
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class FirebaseToiletService {
-    private val firebaseUrl = "https://dreamhyoja-default-rtdb.asia-southeast1.firebasedatabase.app"
+    private val firebaseUrl = BuildConfig.FIREBASE
     /**
      *     ToiletModel을 통해서 Firebase에 데이터를 업로드
      */

@@ -1,5 +1,6 @@
 package com.example.disabledtoilet_android.Utility.KaKaoAPI
 
+import com.example.disabledtoilet_android.BuildConfig
 import com.example.disabledtoilet_android.Utility.KaKaoAPI.Model.AddressDocument
 import com.example.disabledtoilet_android.Utility.KaKaoAPI.Model.KakaoApiResponse
 import retrofit2.Retrofit
@@ -10,7 +11,7 @@ class KakaoApiRepository {
      * RestApi 중 로컬
      */
     class KakaoLocalRepository {
-        val KAKAO_API_KEY = "aad7f57f316e4302e5fb94b61b7a811c"
+        val KAKAO_API_KEY =  BuildConfig.KAKAO_REST_API
         private val retrofit = Retrofit.Builder()
             .baseUrl("https://dapi.kakao.com/")
             .addConverterFactory(GsonConverterFactory.create())
