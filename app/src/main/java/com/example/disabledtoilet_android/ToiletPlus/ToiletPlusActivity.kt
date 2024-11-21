@@ -1,23 +1,19 @@
 package com.example.disabledtoilet_android.ToiletPlus
 
-import android.Manifest
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.disabledtoilet_android.BuildConfig
 import com.example.disabledtoilet_android.R
+import com.example.disabledtoilet_android.ToiletPlus.newToiletInfo.InputPlusToiletInputPageActivity
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
-import com.example.disabledtoilet_android.databinding.ActivityInputPlusToiletInfoBinding
 import com.example.disabledtoilet_android.databinding.ActivityPlusToiletBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -29,7 +25,6 @@ import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

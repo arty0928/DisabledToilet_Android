@@ -51,13 +51,10 @@
             android:value="${KAKAO_SCHEME}" />
 
         <activity
-            android:name=".ToiletPlus.InputPlusToiletInputPageActivity"
+            android:name=".ToiletPlus.newToiletInfo.InputPlusToiletInputPageActivity"
             android:exported="false"
             android:label="@string/title_activity_plus_toilet"
             android:theme="@style/Theme.DisabledToilet_Android" />
-        <activity
-            android:name=".ToiletPlus.ToiletInfoInputActivity"
-            android:exported="false" />
         <activity
             android:name=".ToiletPlus.ToiletPlusActivity"
             android:exported="false" />
