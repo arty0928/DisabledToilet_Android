@@ -8,7 +8,7 @@ import com.example.disabledtoilet_android.Utility.Firebase.FirebaseToiletService
  */
 class NewToiletInputUseCase() {
     /**
-     *      새로운 화장실을 등록하는 경우 사용
+     *      새로운 화장실을 등록하는 경우 사용, return isSuccess
      */
     suspend fun registerToilet(toiletModel: ToiletModel): Boolean{
         var isSuccess: Boolean = false
