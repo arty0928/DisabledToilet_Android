@@ -5,15 +5,19 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletSearch.ToiletData
 import com.example.disabledtoilet_android.databinding.ActivityMypageBinding
 import com.example.disabledtoilet_android.User.Model.Recent_viewed_toilet
+import com.example.disabledtoilet_android.User.ViewModel.UserViweModel
 
 class MyPageActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMypageBinding
+
+    lateinit var userViewModel : UserViweModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,25 +25,50 @@ class MyPageActivity : AppCompatActivity() {
         binding = ActivityMypageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        userViewModel = ViewModelProvider(this)[UserViweModel::class.java]
+
         // 뒤로 가기 버튼 클릭 리스너 설정
         binding.backButton.setOnClickListener {
             onBackPressed() // 이전 화면으로 돌아가기
         }
 
+        //좋아요 화장실 갯수
         binding.mypageSaveCountTxt.text = ToiletData.currentUser?.recentlyViewedToilets?.size.toString()
 
-        // 최근 본 화장실 데이터 목록 생성
-        val toiletList = listOf(
-            Recent_viewed_toilet("화장실 1", "https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg"),
-            Recent_viewed_toilet("화장실 2", "https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg"),
-            Recent_viewed_toilet("화장실 3", "https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg"),
-            Recent_viewed_toilet("화장실 1", "https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg"),
-            Recent_viewed_toilet("화장실 2", "https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg"),
-            Recent_viewed_toilet("화장실 3", "https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg")
-        )
+        //등록한 화장실 갯수
+        binding.mypageRegisterCountTxt.text = ToiletData.currentUser?.registedToilets?.size.toString()
 
-        // 최근 본 화장실 뷰 추가
+        //사용자 이름
+        binding.mypageUsernameTxt.text = ToiletData.currentUser!!.name!!.split("@")[0]
+
+
+        // 최근 본 화장실 데이터 목록 생성
+        val recentViewedToilet = ToiletData.currentUser!!.recentlyViewedToilets
+        val toiletList = mutableListOf<Recent_viewed_toilet>()
+
+        for(toilet in recentViewedToilet){
+            toiletList.add(
+                Recent_viewed_toilet(
+                    name = toilet.restroom_name,
+                    imageUrl = "toilet.restroom_name, \"https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg\""
+                )
+            )
+        }
         addToiletViews(toiletList, binding.recentViewedSectionLinear)
+
+        //찜한 화장실 뷰 추가
+        val likedToilets = ToiletData.currentUser!!.likedToilets
+        val likedToiletList = mutableListOf<Recent_viewed_toilet>()
+
+        for(toilet in likedToilets){
+            likedToiletList.add(
+                Recent_viewed_toilet(
+                    name = toilet.restroom_name,
+                    imageUrl = "toilet.restroom_name, \"https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg\""
+                )
+            )
+        }
+        addToiletViews(likedToiletList, binding.recentViewedSectionLinear)
 
     }
 

@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
         setupNearButton() // '근처 화장실' 버튼 설정
         setupSearchButton() // '화장실 검색' 버튼 설정
         setupPlusToiletButton() // '화장실 추가' 버튼 설정
+        setupMyPageButton() // '내 장소' 버튼 설정
 
         setupDrawerLayout() // DrawerLayout 및 NavigationView 설정
         setupMenuIcon() // 메뉴 아이콘 클릭 리스너 설정
@@ -58,6 +59,13 @@ class MainActivity : AppCompatActivity() {
         val plusToiletButton: LinearLayout = findViewById(R.id.toiletplus_button)
         plusToiletButton.setOnClickListener {
             startActivity(Intent(this, ToiletPlusActivity::class.java))
+        }
+    }
+
+    private fun setupMyPageButton() {
+        val mypageButton: LinearLayout = findViewById(R.id.my_toilet_button)
+        mypageButton.setOnClickListener {
+            startActivity(Intent(this, MyPageActivity::class.java))
         }
     }
 

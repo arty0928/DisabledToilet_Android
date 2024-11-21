@@ -11,6 +11,8 @@ data class User(
     val photoURL : String,
 
     var likedToilets : MutableList<ToiletModel>  = mutableListOf(),
-    var recentlyViewedToilets : MutableList<ToiletModel> = mutableListOf()
+    var recentlyViewedToilets : MutableList<ToiletModel> = mutableListOf(),
+
+    var registedToilets : MutableList<ToiletModel> = mutableListOf()
 
 )

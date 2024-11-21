@@ -46,6 +46,27 @@ class UserViweModel : ViewModel() {
         updateUser(currentUser)
     }
 
+    /**
+     * 등록한 화장실 추가
+     */
+    fun addRegisteredToilets(toilet: ToiletModel){
+        val currentUser = _currentUser.value ?: return
+        val registeredToilets = currentUser!!.registedToilets
+
+        val index = registeredToilets.indexOfFirst { it.number == toilet.number }
+        if(index!= -1){
+            registeredToilets.removeAt(index)
+        }else{
+            registeredToilets.add(toilet)
+        }
+
+        if (registeredToilets != null) {
+            currentUser.registedToilets = registeredToilets
+        }
+        updateUser(currentUser)
+
+    }
+
 
     /**
      * currentUser.saveList에 좋아요한 화장실 추가 및 삭제

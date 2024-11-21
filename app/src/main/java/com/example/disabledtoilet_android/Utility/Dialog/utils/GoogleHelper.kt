@@ -158,7 +158,8 @@ class GoogleHelper private constructor(private val context: Context) {
             "email" to account.email,
             "photoURL" to account.photoUrl.toString(),
             "likedToilets" to listOf<String>(),
-            "recentlyViewedToilets" to listOf<String>()
+            "recentlyViewedToilets" to listOf<String>(),
+            "registeredToilets" to listOf<String>()
         )
 
         val db = FirebaseFirestore.getInstance()
