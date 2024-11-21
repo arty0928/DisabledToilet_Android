@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.disabledtoilet_android.BuildConfig
 import com.example.disabledtoilet_android.Detail.BottomSheetHelper
 import com.example.disabledtoilet_android.Detail.DetailPageActivity
 import com.example.disabledtoilet_android.Map.MapManager
@@ -43,7 +44,7 @@ class NearActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNearBinding.inflate(layoutInflater)
-        KakaoMapSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
+        KakaoMapSdk.init(this, BuildConfig.KAKAO_SCHEME)
 
         setContentView(binding.root)
 

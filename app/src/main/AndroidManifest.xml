@@ -42,13 +42,13 @@
 
                 <data
                     android:host="oauth"
-                    android:scheme="0da87b34c4becc2c67033fb4c1561bdf" />
+                    android:scheme="${KAKAO_SCHEME}" />
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="com.kakao.vectormap.APP_KEY"
-            android:value="0da87b34c4becc2c67033fb4c1561bdf" />
+            android:value="${KAKAO_SCHEME}" />
 
         <activity
             android:name=".ToiletPlus.newToiletInfo.InputPlusToiletInputPageActivity"
@@ -70,6 +70,10 @@
             android:exported="true"
             android:theme="@style/Theme.DisabledToilet_Android" >
         </activity>
+
+        <meta-data
+            android:name="com.kakao.vectormap.APP_KEY"
+            android:value="${KAKAO_SCHEME}" />
 
         <activity
             android:name=".Detail.DetailBottomSheet"
@@ -94,7 +98,7 @@
 
                 <data
                     android:host="kakaolink"
-                    android:scheme="0da87b34c4becc2c67033fb4c1561bdf" />
+                    android:scheme="${KAKAO_SCHEME}" />
             </intent-filter>
         </activity>
         <activity

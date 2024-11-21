@@ -2,6 +2,15 @@
 import java.util.Properties
 import java.io.FileInputStream
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+// Kakao scheme을 읽어옵니다.
+val kakaoScheme = localProperties.getProperty("KAKAO_SCHEME")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -24,6 +33,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["KAKAO_SCHEME"] = kakaoScheme
+        buildConfigField("String", "KAKAO_SCHEME", "\"$kakaoScheme\"")
 
     }
 

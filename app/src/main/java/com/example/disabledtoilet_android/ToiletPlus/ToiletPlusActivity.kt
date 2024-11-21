@@ -10,11 +10,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.disabledtoilet_android.BuildConfig
+import com.example.disabledtoilet_android.R
 import com.example.disabledtoilet_android.ToiletPlus.newToiletInfo.InputPlusToiletInputPageActivity
 import com.example.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.example.disabledtoilet_android.databinding.ActivityPlusToiletBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.Marker
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.KakaoMapSdk
@@ -50,7 +53,7 @@ class ToiletPlusActivity : AppCompatActivity() {
             getLocationPermission()
         }
         //카카오SDK 초기화 이거 앱키 나중에 ignore 작업 해주기
-        KakaoMapSdk.init(this, "0da87b34c4becc2c67033fb4c1561bdf")
+        KakaoMapSdk.init(this, BuildConfig.KAKAO_SCHEME)
         // UI 세팅
         setUi()
     }
