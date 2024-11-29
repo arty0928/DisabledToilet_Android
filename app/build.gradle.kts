@@ -12,6 +12,7 @@ if (localPropertiesFile.exists()) {
 val kakaoScheme = localProperties.getProperty("KAKAO_SCHEME")
 val kakaoRestAPI = localProperties.getProperty("KAKAO_REST_API")
 val firebaseLink = localProperties.getProperty("FIREBASE")
+val webClientId = localProperties.getProperty("WEB_CLIENT_ID")
 
 
 plugins {
@@ -22,14 +23,14 @@ plugins {
 }
 
 android {
-    namespace = "com.example.disabledtoilet_android"
+    namespace = "com.dream.disabledtoilet_android"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.disabledtoilet_android"
+        applicationId = "com.dream.disabledtoilet_android"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
+        versionCode = 4
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +42,7 @@ android {
         buildConfigField("String", "KAKAO_SCHEME", "\"$kakaoScheme\"")
         buildConfigField("String", "KAKAO_REST_API", "\"$kakaoRestAPI\"")
         buildConfigField("String", "FIREBASE", "\"$firebaseLink\"")
-
+        buildConfigField("String","WEB_CLIENT_ID", "\"$webClientId\"")
     }
 
     // 여기에 buildFeatures 블록 추가
