@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.disabledtoilet_android" >
+    package="com.dream.disabledtoilet_android" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
-            android:name=".StartActivity"
+            android:name="com.dream.disabledtoilet_android.StartActivity"
             android:exported="true"
             android:theme="@style/Theme.DisabledToilet_Android" >
             <intent-filter>
@@ -51,22 +51,22 @@
             android:value="${KAKAO_SCHEME}" />
 
         <activity
-            android:name=".ToiletPlus.newToiletInfo.InputPlusToiletInputPageActivity"
+            android:name="com.dream.disabledtoilet_android.ToiletPlus.newToiletInfo.InputPlusToiletInputPageActivity"
             android:exported="false"
             android:label="@string/title_activity_plus_toilet"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity
-            android:name=".ToiletPlus.ToiletPlusActivity"
+            android:name="com.dream.disabledtoilet_android.ToiletPlus.ToiletPlusActivity"
             android:exported="false" />
         <activity
-            android:name=".ToiletSearch.ToiletFilterSearchActivity"
+            android:name="com.dream.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".Detail.DetailPageActivity"
+            android:name="com.dream.disabledtoilet_android.Detail.DetailPageActivity"
             android:exported="false" />
         <activity
-            android:name=".NonloginActivity"
+            android:name="com.dream.disabledtoilet_android.NonloginActivity"
             android:exported="true"
             android:theme="@style/Theme.DisabledToilet_Android" >
         </activity>
@@ -76,16 +76,16 @@
             android:value="${KAKAO_SCHEME}" />
 
         <activity
-            android:name=".Detail.DetailBottomSheet"
+            android:name="com.dream.disabledtoilet_android.Detail.DetailBottomSheet"
             android:exported="false"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity
-            android:name=".Near.NearActivity"
+            android:name="com.dream.disabledtoilet_android.Near.NearActivity"
             android:exported="false"
             android:label="@string/title_activity_near"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity
-            android:name=".User.MyPageActivity"
+            android:name="com.dream.disabledtoilet_android.User.MyPageActivity"
             android:exported="false"
             android:label="@string/title_activity_my_page"
             android:theme="@style/Theme.DisabledToilet_Android"
@@ -98,11 +98,11 @@
 
                 <data
                     android:host="kakaolink"
-                    android:scheme="${KAKAO_SCHEME}" />
+                    android:scheme="0da87b34c4becc2c67033fb4c1561bdf" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.dream.disabledtoilet_android.MainActivity"
             android:exported="true" >
         </activity>
     </application>

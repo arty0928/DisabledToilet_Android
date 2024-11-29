@@ -16,6 +16,7 @@
 
         <!-- ImageView와 그 외 요소들 -->
         <ImageView
+            android:visibility="invisible"
             android:id="@+id/menu_icon"
             android:layout_width="70dp"
             android:layout_height="50dp"
