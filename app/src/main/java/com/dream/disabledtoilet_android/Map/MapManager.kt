@@ -7,7 +7,6 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.dream.disabledtoilet_android.Near.NearActivity
-import com.dream.disabledtoilet_android.R
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.Label
@@ -19,6 +18,7 @@ import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.dream.disabledtoilet_android.R
 
 class MapManager(private val context: Context) {
 
@@ -87,8 +87,10 @@ class MapManager(private val context: Context) {
         val sharedPreferences = context.getSharedPreferences("LocationCache", Context.MODE_PRIVATE)
         val cachedLatitude = sharedPreferences.getString("latitude", null)?.toDoubleOrNull()
         val cachedLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
+
         if (cachedLatitude != null && cachedLongitude != null) {
             val cachedPosition = LatLng.from(cachedLatitude, cachedLongitude)
+
             kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16))
             addMarkerToMapCur(cachedPosition)
             Log.d("test log", "현재 위치로 이동")

@@ -14,7 +14,6 @@ import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.User.ViewModel.UserViweModel
 import com.dream.disabledtoilet_android.Utility.Dialog.SaveManager
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
-//import com.example.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.dream.disabledtoilet_android.databinding.FragmentDetailOptionBinding
 
 class DetailOptionFragment : Fragment() {

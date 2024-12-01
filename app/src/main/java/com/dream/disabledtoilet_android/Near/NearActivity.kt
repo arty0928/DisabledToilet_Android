@@ -1,24 +1,34 @@
 package com.dream.disabledtoilet_android.Near
 
 import ToiletModel
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Detail.BottomSheetHelper
 import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.R
+import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.dream.disabledtoilet_android.User.ViewModel.UserViweModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.kakao.vectormap.KakaoMapSdk
+import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class NearActivity : AppCompatActivity() {
@@ -43,38 +53,46 @@ class NearActivity : AppCompatActivity() {
 
         userViewModel = ViewModelProvider(this)[UserViweModel::class.java]
 
-        // 초기화 작업
         CoroutineScope(Dispatchers.Main).launch {
+            // 로딩 다이얼로그 표시
+            if (supportFragmentManager.findFragmentByTag(loadingDialog.tag) == null) {
+                loadingDialog.show(supportFragmentManager, loadingDialog.tag)
+            }
+
+            // 맵 초기화
             val mapInitialized = mapManager.initializeMapView()
             if (mapInitialized) {
-                locationHelper.checkLocationPermission {
+                // 위치 권한 확인 및 사용자 위치 가져오기
+                val position = locationHelper.getUserLocation() // getUserLocation 호출은 이제 suspend로 처리됨
+
+                if (position != null) {
                     fetchToiletDataAndDisplay()
-                    // 현재 위치를 지도에 표시
-                    locationHelper.setMapToCurrentLocation { currentPosition ->
-                        if (currentPosition != null) {
-                            // Intent 처리
-                            if (handleIntent() != "ToiletFilterSearchActivity"){
-                                // 안넘어온거 확인 후 카메라 옮기기
-                                mapManager.moveCameraToCachedLocation()
-                            }
-//                            Toast.makeText(this@NearActivity, "현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
-                        } else {
-//                            Toast.makeText(this@NearActivity, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
-                        }
+
+                    if (handleIntent() != "ToiletFilterSearchActivity"){
+                        // 안넘어온거 확인 후 카메라 옮기기
+                        mapManager.moveCameraToCachedLocation()
                     }
+
+                    // 버튼 설정
+                    setupButtons()
+                } else {
+                    Log.e("NearActivity", "Failed to get user location")
+                    Toast.makeText(this@NearActivity, "위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
                 }
 
-                // 버튼 설정
-                setupButtons()
+                loadingDialog.dismiss()
             } else {
                 Log.e("NearActivity", "Map initialization failed")
+                loadingDialog.dismiss()
             }
         }
     }
 
+
     companion object {
         const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
+
 
 
     // Intent 데이터를 처리하는 함수

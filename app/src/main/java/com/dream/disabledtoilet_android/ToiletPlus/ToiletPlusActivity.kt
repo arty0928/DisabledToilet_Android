@@ -181,7 +181,7 @@ class ToiletPlusActivity : AppCompatActivity() {
     /**
      * 현재 위치 비동기로 받아오기
      */
-    private suspend fun getUserLocation(): LatLng? {
+    suspend fun getUserLocation(): LatLng? {
         var currentPosition: LatLng? = null
         // 권한부터 확인
         if (ActivityCompat.checkSelfPermission(

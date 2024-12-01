@@ -9,8 +9,8 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="com.example.disabledtoilet_android" />
-                  <option name="mobileSdkAppId" value="1:737108612220:android:345e4690707e88866ea5f9" />
+                  <option name="appId" value="com.dream.disabledtoilet_android" />
+                  <option name="mobileSdkAppId" value="1:737108612220:android:2c72b7c18bdb5fce6ea5f9" />
                   <option name="projectId" value="dreamhyoja" />
                   <option name="projectNumber" value="737108612220" />
                 </ConnectionSetting>

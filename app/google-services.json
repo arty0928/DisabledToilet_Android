@@ -39,7 +39,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:737108612220:android:345e4690707e88866ea5f9",
         "android_client_info": {
-          "package_name": "com.example.disabledtoilet_android"
+          "package_name": "com.dream.disabledtoilet_android"
         }
       },
       "oauth_client": [
@@ -47,7 +47,7 @@
           "client_id": "737108612220-k5v5rpo0gda4iqku3o6kk8g00kpeo7fs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.disabledtoilet_android",
+            "package_name": "com.dream.disabledtoilet_android",
             "certificate_hash": "311664e47e9aebe0d68aca5d492db31fb0e74971"
           }
         },
@@ -55,7 +55,7 @@
           "client_id": "737108612220-p44a96i1rhlevgagded27pv74bars2li.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.disabledtoilet_android",
+            "package_name": "com.dream.disabledtoilet_android",
             "certificate_hash": "622ffdb03a913e98d035d8991b2b26b969c97ada"
           }
         },
