@@ -22,14 +22,17 @@ class KakaoShareHelper(private val context: Context) {
         val toiletLatitude = toilet.wgs84_latitude
         val toiletLongitude = toilet.wgs84_longitude
 
-        val kakaoMapWebUrl = "https://map.kakao.com/link/map/${toiletLatitude},${toiletLongitude}"
-        val kakaoMapAppUrl = "kakaomap://look?p=${toiletLatitude},${toiletLongitude}"
-        val kakaoMapRouteWebUrl = "https://map.kakao.com/link/to/${toiletAddress},${toiletLatitude},${toiletLongitude}"
+        val kakaoMapWebUrl = "https://map.kakao.com/link/map/${toiletLatitude ?: 0.0},${toiletLongitude ?: 0.0}"
+        val kakaoMapAppUrl = "kakaomap://look?p=${toiletLatitude ?: 0.0},${toiletLongitude ?: 0.0}"
+
         val locationParams = mapOf(
-            "address" to "서울시 강남구 삼성동",
-            "latitude" to "37.5642135",
-            "longitude" to "127.0016985"
+            "latitude" to toiletLatitude.toString(),
+            "longitude" to toiletLongitude.toString()
         )
+
+        Log.d("KakaoShareHelper", "Kakao Map Web URL: $kakaoMapWebUrl")
+        Log.d("KakaoShareHelper", "Kakao Map App URL: $kakaoMapAppUrl")
+
 
         val defaultFeed = FeedTemplate(
             content = Content(
@@ -38,8 +41,8 @@ class KakaoShareHelper(private val context: Context) {
                 imageUrl = "https://mud-kage.kakao.com/dn/Q2iNx/btqgeRgV54P/VLdBs9cvyn8BJXB3o7N8UK/kakaolink40_original.png",
                 link = Link(
                     webUrl = kakaoMapWebUrl,
-                    mobileWebUrl = kakaoMapWebUrl,
-                    androidExecutionParams = locationParams
+                    mobileWebUrl = kakaoMapAppUrl,
+//                    androidExecutionParams = locationParams
 
                 )
             ),
@@ -49,18 +52,19 @@ class KakaoShareHelper(private val context: Context) {
                     Link(
                         webUrl = kakaoMapWebUrl,
                         mobileWebUrl = kakaoMapAppUrl,
-                        androidExecutionParams = locationParams
-                    )
-                ),
-                Button(
-                    "길찾기",
-                    Link(
-                        webUrl = kakaoMapRouteWebUrl,
-                        mobileWebUrl = kakaoMapRouteWebUrl,
-                        androidExecutionParams = locationParams
-
+//                        androidExecutionParams = locationParams
                     )
                 )
+                //                ,
+//                Button(
+//                    "길찾기",
+//                    Link(
+//                        webUrl = kakaoMapRouteWebUrl,
+//                        mobileWebUrl = kakaoMapRouteWebUrl,
+//                        androidExecutionParams = locationParams
+//
+//                    )
+//                )
             )
         )
 

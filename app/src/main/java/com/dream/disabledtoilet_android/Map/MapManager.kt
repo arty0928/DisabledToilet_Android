@@ -55,7 +55,10 @@ class MapManager(private val context: Context) {
     }
 
 
-    // 지도 클릭 리스너 설정 함수
+    /**
+     * 지도 클릭 리스너 설정 함수
+     */
+
     private fun setupMapClickListener() {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
             val toilet = labelToToiletMap[clickedLabel]
