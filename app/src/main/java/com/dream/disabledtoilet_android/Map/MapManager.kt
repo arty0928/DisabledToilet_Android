@@ -116,18 +116,25 @@ class MapManager(private val context: Context) {
     }
 
     // 화장실 데이터 가져와 지도에 표시하는 함수
-    fun fetchAndDisplayToiletData() {
+    suspend fun fetchAndDisplayToiletData() : Boolean {
         val toilets = ToiletData.getToiletAllData()
-        if (toilets!!.isNotEmpty()) {
-            toilets.forEach { toilet ->
-                val pos = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
-                if (toilet.wgs84_latitude != 0.0 && toilet.wgs84_longitude != 0.0) {
-                    addMarkerToMapToilet(pos, toilet)
+        val isSuccess = CompletableDeferred<Boolean>()
+
+        withContext(Dispatchers.Main){
+            if (toilets!!.isNotEmpty()) {
+                toilets.forEach { toilet ->
+                    val pos = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
+                    if (toilet.wgs84_latitude != 0.0 && toilet.wgs84_longitude != 0.0) {
+                        addMarkerToMapToilet(pos, toilet)
+                    }
                 }
+                isSuccess.complete(true)
+            } else {
+                Log.e("MapManager", "No toilet data found in ToiletRepository.")
+                isSuccess.complete(false)
             }
-        } else {
-            Log.e("MapManager", "No toilet data found in ToiletRepository.")
         }
+        return isSuccess.await()
     }
 
     // 화장실 위치 마커 추가 함수

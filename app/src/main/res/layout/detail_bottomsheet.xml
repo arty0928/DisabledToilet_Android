@@ -45,7 +45,6 @@
                 />
 
             <LinearLayout
-                android:visibility="invisible"
                 android:id="@+id/save_btn1"
                 android:layout_gravity="center"
                 android:layout_width="0dp"
@@ -168,7 +167,6 @@
         android:gravity="center">
 
         <LinearLayout
-            android:visibility="invisible"
             android:id="@+id/save_btn2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -198,7 +196,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="invisible"
             android:id="@+id/share_btn"
             android:layout_width="0dp"
             android:layout_height="match_parent"

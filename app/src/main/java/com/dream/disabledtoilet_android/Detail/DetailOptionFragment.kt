@@ -94,9 +94,10 @@ class DetailOptionFragment : Fragment() {
             save_count.text = "저장 (${toilet.save})"
 
             //TODO: 사용자가 좋아요 눌렀으면 TOGGLE 좋아요 표시
-            val save_icon = binding.iconToggle
+            val save_btn = binding.saveBtn3
 
             if(toilet.save > 0){
+                val save_icon = binding.iconToggle
                 save_icon.setImageResource(R.drawable.saved_star_icon)
             }
 
@@ -104,7 +105,7 @@ class DetailOptionFragment : Fragment() {
             saveManager = SaveManager(requireContext()) // requireContext()로 초기화
 
             // Save 버튼 클릭 리스너 추가
-            save_icon.setOnClickListener {
+            save_btn.setOnClickListener {
                 Log.d(TAG, "눌림")
                 saveManager.toggleIcon2(binding.root, toilet) // ToiletManager의 toggleIcon 호출
             }

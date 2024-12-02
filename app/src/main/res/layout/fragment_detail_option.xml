@@ -54,6 +54,7 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/save_btn3"
                         android:gravity="center|right"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

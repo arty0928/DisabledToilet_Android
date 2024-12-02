@@ -70,17 +70,13 @@ class BottomSheetHelper(private val context: Context) {
 
         })
 
-
-        // 좋아요 버튼 클릭 리스너
-        val saveClickListener = View.OnClickListener {
-            (context as NearActivity).userViewModel.toggleLikedToilet(toilet)
-            Log.d(TAG, "Save button clicked for toilet: ${toilet.restroom_name}")
-            saveCount.text = "저장 ${toilet.save}"
-        }
-
         //좋아요 아이콘, 좋아요 갯수 업데이트
-        bottomSheetView.findViewById<ImageView>(R.id.save_icon1).setOnClickListener(saveClickListener)
-        bottomSheetView.findViewById<ImageView>(R.id.save_icon2).setOnClickListener(saveClickListener)
+        bottomSheetView.findViewById<LinearLayout>(R.id.save_btn1).setOnClickListener{
+            saveManager.toggleIcon(bottomSheetView, toilet)
+        }
+        bottomSheetView.findViewById<LinearLayout>(R.id.save_btn2).setOnClickListener {
+            saveManager.toggleIcon(bottomSheetView, toilet)
+        }
 
         // 상세 페이지로 이동
         bottomSheetView.findViewById<TextView>(R.id.more_button).setOnClickListener {
