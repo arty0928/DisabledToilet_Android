@@ -42,6 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <EditText
+            android:fontFamily="@font/notosanskr_medium"
+            android:includeFontPadding="false"
             android:id="@+id/search_bar"
             android:layout_marginVertical="10dp"
             android:layout_marginHorizontal="10dp"
@@ -68,6 +70,7 @@
                 app:layout_constraintVertical_bias="0.1">
 
                 <TextView
+                    android:paddingRight="7dp"
                     android:id="@+id/filter"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -76,6 +79,7 @@
                     android:text="거리순"
                     android:textColor="@color/black"
                     android:textStyle="bold"
+                    android:fontFamily="@font/notosanskr_bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -90,20 +94,24 @@
                     app:layout_constraintStart_toEndOf="@id/filter"
                     app:layout_constraintTop_toTopOf="@id/filter" />
 
+
                 <Button
                     android:id="@+id/filterButton"
-                    android:textColor="@color/white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginVertical="3dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/filter_button"
-                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_marginRight="10dp"
                     android:text="조건 적용"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/notosanskr_bold"
+                    android:background="@drawable/filter_button"
+                    android:layout_width="100dp"
+                    android:minHeight="0dp"
+                    android:textSize="15sp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|center_horizontal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View

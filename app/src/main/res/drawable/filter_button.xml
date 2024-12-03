@@ -4,11 +4,6 @@
         <shape android:shape="rectangle">
             <!-- Background color -->
             <solid android:color="@color/mainColor" />
-            <!-- Border -->
-            <stroke
-                android:width="3dp"
-                android:color="@color/redColor" />
-            <!-- Optional: You can also set the corner radius -->
             <corners android:radius="15dp" />
         </shape>
     </item>

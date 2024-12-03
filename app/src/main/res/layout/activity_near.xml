@@ -53,29 +53,30 @@
 <!--            android:visibility="gone"/> &lt;!&ndash; 이 버튼이 필요한 경우, 위치를 수정하거나 visible로 설정 &ndash;&gt;-->
 
         <Button
-            android:paddingHorizontal="10dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:text="조건 적용"
+            android:gravity="center"
             android:textColor="@color/white"
             android:fontFamily="@font/notosanskr_bold"
-            android:textSize="18dp"
             android:background="@drawable/filter_button"
             android:layout_width="100dp"
+            android:minHeight="0dp"
+            android:textSize="15sp"
             android:layout_height="wrap_content"
             android:layout_gravity="end|top" />
 
         <ImageButton
             android:id="@+id/map_return_cur_pos_btn"
             android:layout_marginRight="20dp"
-            android:layout_marginBottom="40dp"
-            android:padding="10dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:elevation="15dp"
-            android:background="@drawable/custom_button_round"
+            android:background="@android:color/transparent"
             android:src="@drawable/location"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true" />
     </FrameLayout>
 </LinearLayout>

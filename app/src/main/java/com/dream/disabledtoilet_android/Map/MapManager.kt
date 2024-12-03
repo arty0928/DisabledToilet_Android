@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.dream.disabledtoilet_android.Near.NearActivity
 import com.kakao.vectormap.*
@@ -25,6 +26,10 @@ class MapManager(private val context: Context) {
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
     private val labelToToiletMap = mutableMapOf<Label, ToiletModel>()
+
+    // 이전에 클릭된 화장실을 추적하기 위한 변수
+    private var lastClickedToilet: Label? = null
+
 
     // 지도 초기화 함수
     suspend fun initializeMapView(): Boolean {
@@ -63,12 +68,61 @@ class MapManager(private val context: Context) {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
             val toilet = labelToToiletMap[clickedLabel]
             if (toilet != null) {
-                (context as NearActivity).bottomSheetHelper.initializeBottomSheet(toilet)
+
+                // 이전에 클릭된 화장실의 레이블을 원래 상태로 복원
+                lastClickedToilet?.let {
+                    restoreLabelToOriginal(it)
+                }
+
+                // 클릭된 마커를 로고로 변경
+                changeLabelToClicked(clickedLabel)
+
+                //BottomSheet 초기화
+                val activity = context as NearActivity
+                activity.bottomSheetHelper.initializeBottomSheet(toilet)
                 true
             } else {
                 false
             }
         }
+    }
+
+    // 클릭된 마커를 로고로 변경
+    private fun changeLabelToClicked(label: Label) {
+        // 기존 레이블 스타일을 저장
+        lastClickedToilet = label
+
+        val newStyles = kakaoMap.labelManager?.addLabelStyles(
+            LabelStyles.from(
+                LabelStyle.from(R.drawable.saved_star_icon) // 로고 이미지 리소스를 사용
+            )
+        )
+//        label.setStyles(newStyles)
+        label.setStyles(newStyles)
+
+        Log.d("MapManager changeLabelToClicked lastClickedToilet", lastClickedToilet.toString())
+
+        Log.d("MapManager changeLabelToClicked", label.toString())
+
+        Log.d("MapManager", "Label changed to logo")
+
+    }
+
+    // 마커를 원래 스타일로 복원
+    private fun restoreLabelToOriginal(label : Label) {
+        val originalStyles = kakaoMap.labelManager?.addLabelStyles(
+            LabelStyles.from(
+                LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
+                LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
+                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
+                LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
+            )
+        )
+
+        // 레이블이 클릭된 경우, 해당 레이블을 원래 스타일로 복원
+        label.setStyles(originalStyles)
+
+        Log.d("MapManager", "Label restored to original")
     }
 
     // 화장실 위치로 카메라 이동 함수
@@ -97,9 +151,9 @@ class MapManager(private val context: Context) {
             kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16))
             addMarkerToMapCur(cachedPosition)
             Log.d("test log", "현재 위치로 이동")
-            Toast.makeText(context, "캐시된 현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "캐시된 현재 위치가 없습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "현재 위치를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
