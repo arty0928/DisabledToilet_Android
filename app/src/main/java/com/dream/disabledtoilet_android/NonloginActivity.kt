@@ -1,12 +1,15 @@
 package com.dream.disabledtoilet_android
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.dream.disabledtoilet_android.Near.NearActivity
@@ -27,7 +30,58 @@ class NonloginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         googleSignInHelper = GoogleHelper.getInstance(this) // Singleton 인스턴스 가져오기
-        initializeUI() // UI 초기화
+
+
+//        initializeUI() // UI 초기화
+        if(getLocationPermission()){
+            initializeUI()
+        }
+    }
+
+    /**
+     * 권한 받기 실행 함수
+     */
+    private fun getLocationPermission(): Boolean{
+        var isGranted = false
+        // 권한이 기존에 있는지 확인
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // 권한이 기존에 없으면 받음
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1000
+            )
+        } else {
+            isGranted = true
+        }
+        return isGranted
+    }
+    /**
+     * 위치 권한 받았을 때 콜백
+     */
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            1000 -> {
+                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    // 권한 승인
+                    initializeUI()
+                } else {
+                    // 권한 미승인
+                    onBackPressed()
+                }
+                return
+            }
+        }
     }
 
     private fun initializeUI() {

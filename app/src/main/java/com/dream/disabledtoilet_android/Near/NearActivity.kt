@@ -59,6 +59,7 @@ class NearActivity : AppCompatActivity() {
 
             // 맵 초기화
             val mapInitialized = mapManager.initializeMapView()
+
             if (mapInitialized) {
                 // 위치 권한 확인 및 사용자 위치 가져오기
                 val position = locationHelper.getUserLocation() // getUserLocation 호출은 이제 suspend로 처리됨

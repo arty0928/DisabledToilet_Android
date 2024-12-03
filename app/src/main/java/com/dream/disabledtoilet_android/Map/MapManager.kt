@@ -145,6 +145,8 @@ class MapManager(private val context: Context) {
         val cachedLatitude = sharedPreferences.getString("latitude", null)?.toDoubleOrNull()
         val cachedLongitude = sharedPreferences.getString("longitude", null)?.toDoubleOrNull()
 
+        Log.d("위치 moveCameraToCachedLocation" , sharedPreferences.toString())
+
         if (cachedLatitude != null && cachedLongitude != null) {
             val cachedPosition = LatLng.from(cachedLatitude, cachedLongitude)
 

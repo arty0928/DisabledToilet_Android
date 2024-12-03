@@ -23,19 +23,19 @@ class LocationHelper(private val context: Context) {
         LocationServices.getFusedLocationProviderClient(context)
     }
 
-    // 위치 권한을 확인하고 설정하는 함수
-    fun checkLocationPermission(onLocationReady: () -> Unit) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                context as NearActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                NearActivity.LOCATION_PERMISSION_REQUEST_CODE
-            )
-        } else {
-            onLocationReady()
-        }
-    }
+//    // 위치 권한을 확인하고 설정하는 함수
+//    fun checkLocationPermission(onLocationReady: () -> Unit) {
+//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+//            != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(
+//                context as NearActivity,
+//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+//                NearActivity.LOCATION_PERMISSION_REQUEST_CODE
+//            )
+//        } else {
+//            onLocationReady()
+//        }
+//    }
 
     // 캐시된 위치 가져오기 함수
     fun getCachedLocation(): LatLng? {
@@ -86,6 +86,7 @@ class LocationHelper(private val context: Context) {
 //
 //        return currentPosition
 //    }
+
     suspend fun getUserLocation(): LatLng? {
         var currentPosition: LatLng? = null
         // 권한부터 확인
@@ -119,6 +120,7 @@ class LocationHelper(private val context: Context) {
 
     // 캐시 업데이트 함수
     fun updateLocationCache(currentPosition: LatLng) {
+        Log.d("위치" , currentPosition.toString())
         val sharedPreferences = context.getSharedPreferences("LocationCache", Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
             putString("latitude", currentPosition.latitude.toString())
