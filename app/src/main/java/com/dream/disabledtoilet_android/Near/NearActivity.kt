@@ -21,8 +21,6 @@ import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import com.kakao.vectormap.KakaoMapSdk
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.CoroutineScope
@@ -70,6 +68,8 @@ class NearActivity : AppCompatActivity() {
 
                     if (handleIntent() != "ToiletFilterSearchActivity"){
                         // 안넘어온거 확인 후 카메라 옮기기
+//                        mapManager.moveCameraToCachedLocation()
+                        locationHelper.updateLocationCache(position)
                         mapManager.moveCameraToCachedLocation()
                     }
 
