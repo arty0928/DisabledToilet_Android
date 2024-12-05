@@ -129,6 +129,7 @@
                         android:textStyle="bold" />
 
                     <ImageButton
+                        android:id="@+id/copy_address_icon"
                         android:layout_marginLeft="5dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
@@ -223,6 +224,11 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:autoLink="phone"
+                        android:textColorLink="@color/mainColor"
+
                         android:paddingLeft="12dp"
                         android:id="@+id/toilet_manageOffice_number"
                         android:layout_width="match_parent"
