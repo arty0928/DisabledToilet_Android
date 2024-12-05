@@ -20,6 +20,9 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.dream.disabledtoilet_android.R
+import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class MapManager(private val context: Context) {
 
@@ -29,6 +32,7 @@ class MapManager(private val context: Context) {
 
     // 이전에 클릭된 화장실을 추적하기 위한 변수
     private var lastClickedToilet: Label? = null
+    private val locationHelper by lazy { LocationHelper(context) }
 
 
     // 지도 초기화 함수
@@ -221,22 +225,42 @@ class MapManager(private val context: Context) {
 
     // 카카오맵을 통해 화장실 위치를 보여주는 함수
     fun showKakaoMap(toilet: ToiletModel) {
-        val toiletLatitude = toilet.wgs84_latitude
-        val toiletLongitude = toilet.wgs84_longitude
+        // 코루틴 스코프 내에서 실행
+        CoroutineScope(Dispatchers.Main).launch {
+            // 현재 위치 가져오기
+            val currentLocation = locationHelper.getUserLocation()
+            if (currentLocation != null) {
+                // 출발지 (현재 위치)
+                val startLatitude = currentLocation.latitude
+                val startLongitude = currentLocation.longitude
 
-        val uri = Uri.parse("kakaomap://route?" +
-                "sp=${toiletLatitude},${toiletLongitude}" +
-                "&ep=${toilet.wgs84_latitude},${toilet.wgs84_longitude}" +
-                "&by=FOOT")
+                // 목적지 (화장실 위치)
+                val toiletLatitude = toilet.wgs84_latitude
+                val toiletLongitude = toilet.wgs84_longitude
 
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        intent.addCategory(Intent.CATEGORY_BROWSABLE)
+                // 카카오맵 URI 생성
+                val uri = Uri.parse(
+                    "kakaomap://route?" +
+                            "sp=$startLatitude,$startLongitude" +
+                            "&ep=$toiletLatitude,$toiletLongitude" +
+                            "&by=FOOT"
+                )
 
-        try {
-            context.startActivity(intent)
-        } catch (e: Exception) {
-            Toast.makeText(context, "카카오맵 앱이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+                // 인텐트 생성 및 실행
+                val intent = Intent(Intent.ACTION_VIEW, uri).apply {
+                    addCategory(Intent.CATEGORY_BROWSABLE)
+                }
+
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(context, "카카오맵 앱이 설치되어 있지 않습니다.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(context, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
 
 }
