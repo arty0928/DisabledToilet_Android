@@ -107,7 +107,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * 조건 검색 다이얼로그 UI 표출 옵저버
      */
-    private fun setFilterDialogObserver() {
+    fun setFilterDialogObserver() {
         filterViewModel.isDialogDismissed.observe(this) { isDismissed ->
             if (isDismissed) {
                 applyFilter()
@@ -117,7 +117,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * UI상의 버튼 리스너 세팅
      */
-    private fun setButtonsListener() {
+    fun setButtonsListener() {
         binding.filterButton.setOnClickListener {
             showFilter()
         }
@@ -139,7 +139,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 검색데이터 존재 시, editText에서 값 받아옴
      * updatelist로 바로 화장실 검색결과 업데이트
      */
-    private fun setSearchKeyWordListener() {
+    fun setSearchKeyWordListener() {
         // 검색창에 textChange 리스너 세팅
         binding.searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -164,13 +164,13 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * sortDialog show
      */
-    private fun showSortDialog() {
+    fun showSortDialog() {
         sortDialog.show(supportFragmentManager, loadingDialog.tag)
     }
     /**
      * 필터 다이얼로그 생성
      */
-    private fun showFilter() {
+    fun showFilter() {
         filterSearchDialog = FilterSearchDialog.newInstance()
         filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
         filterViewModel.isDialogDismissed.value = false
@@ -179,7 +179,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 조건 적용 다이얼로그 꺼지면 실행되는 함수
      * 다이얼로그 꺼지면 필터내용 바로 적용
      */
-    private fun applyFilter() {
+    fun applyFilter() {
         Log.d("test log", "[applyFilter]: dismissed")
         toiletRepository.setFilter(filterViewModel, toiletList.toList())
         toiletListViewAdapter.updateList(
@@ -193,7 +193,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 비어있는 데이터는 삭제
      * 여기에 들어가야할 값은 현재 액티비티에 있는 toiletData
      */
-    private fun removeEmptyData(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel> {
+    fun removeEmptyData(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel> {
         for (i in toiletList.size - 1 downTo 0) {
             val toiletName = toiletList[i].restroom_name
             if (toiletName == "") {
@@ -207,7 +207,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 유저 위치 정보 받아 오기
      * 코루틴에서 비동기 처리
      */
-    private suspend fun getUserLocation(context: Context): LatLng? {
+    suspend fun getUserLocation(context: Context): LatLng? {
         var currentPosition: LatLng? = null
         // 권한부터 확인
         if (ActivityCompat.checkSelfPermission(
@@ -239,7 +239,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * 권한 받기 실행 함수
      */
-    private fun getLocationPermission(): Boolean{
+    fun getLocationPermission(): Boolean{
         var isGranted = false
         // 권한이 기존에 있는지 확인
         if (ActivityCompat.checkSelfPermission(

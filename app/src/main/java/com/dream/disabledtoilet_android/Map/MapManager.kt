@@ -5,24 +5,22 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import com.dream.disabledtoilet_android.Near.NearActivity
+import com.dream.disabledtoilet_android.R
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
-import com.kakao.vectormap.LatLng
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import com.dream.disabledtoilet_android.R
-import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MapManager(private val context: Context) {
 
@@ -72,9 +70,9 @@ class MapManager(private val context: Context) {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
             val toilet = labelToToiletMap[clickedLabel]
             if (toilet != null) {
-
                 // 이전에 클릭된 화장실의 레이블을 원래 상태로 복원
                 lastClickedToilet?.let {
+                    Log.d("지도 클릭", it.toString())
                     restoreLabelToOriginal(it)
                 }
 
@@ -92,25 +90,29 @@ class MapManager(private val context: Context) {
     }
 
     // 클릭된 마커를 로고로 변경
+    // 클릭된 마커를 로고로 변경
     private fun changeLabelToClicked(label: Label) {
-        // 기존 레이블 스타일을 저장
         lastClickedToilet = label
+        val currentZoomLevel = kakaoMap.cameraPosition?.zoomLevel
+
+        // 현재 줌 레벨에 따라 아이콘을 설정
+        val iconResId = when (currentZoomLevel) {
+            10 -> R.drawable.aim_icon2
+            13 -> R.drawable.aim_icon3
+            16 -> R.drawable.aim_icon4
+            else -> R.drawable.aim_icon4 // 기본값을 설정 (필요에 따라 변경)
+        }
 
         val newStyles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(
-                LabelStyle.from(R.drawable.saved_star_icon) // 로고 이미지 리소스를 사용
+                LabelStyle.from(iconResId)
             )
         )
-//        label.setStyles(newStyles)
-        label.setStyles(newStyles)
 
-        Log.d("MapManager changeLabelToClicked lastClickedToilet", lastClickedToilet.toString())
-
-        Log.d("MapManager changeLabelToClicked", label.toString())
-
-        Log.d("MapManager", "Label changed to logo")
-
+        // 스타일 변경 적용
+        label.changeStyles(newStyles)
     }
+
 
     // 마커를 원래 스타일로 복원
     private fun restoreLabelToOriginal(label : Label) {
@@ -124,8 +126,7 @@ class MapManager(private val context: Context) {
         )
 
         // 레이블이 클릭된 경우, 해당 레이블을 원래 스타일로 복원
-        label.setStyles(originalStyles)
-
+        label.changeStyles(originalStyles)
         Log.d("MapManager", "Label restored to original")
     }
 

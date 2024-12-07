@@ -1,32 +1,26 @@
 package com.dream.disabledtoilet_android.Near
 
 import ToiletModel
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Detail.BottomSheetHelper
 import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.R
-import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.dream.disabledtoilet_android.User.ViewModel.UserViweModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
 import com.kakao.vectormap.KakaoMapSdk
-import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class NearActivity : AppCompatActivity() {
@@ -122,6 +116,10 @@ class NearActivity : AppCompatActivity() {
         }
         findViewById<ImageButton>(R.id.back_button).setOnClickListener {
             onBackPressed()
+        }
+//        TODO : 조건 적용 버튼 클릭, 조건 필터
+        findViewById<Button>(R.id.filterButton_near).setOnClickListener {
+//            showFilter()
         }
     }
 

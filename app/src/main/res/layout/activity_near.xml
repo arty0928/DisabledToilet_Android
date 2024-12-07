@@ -45,14 +45,8 @@
             android:background="@color/greyColor"
             android:layout_height="match_parent" />
 
-
-<!--        <ImageButton-->
-<!--            android:id="@+id/map_icon"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:visibility="gone"/> &lt;!&ndash; 이 버튼이 필요한 경우, 위치를 수정하거나 visible로 설정 &ndash;&gt;-->
-
         <Button
+            android:id="@+id/filterButton_near"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
             android:text="조건 적용"
