@@ -182,8 +182,41 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_before_login"
         android:background="@drawable/rightside_background_rounded"
-        app:menu="@menu/after_login_drawer_item" />
+        app:menu="@menu/after_login_drawer_item"
+        app:headerLayout="@layout/nav_header_before_login"
+        >
+
+<!--        Footer 추가 -->
+        <LinearLayout
+            android:id="@+id/nav_footer"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="bottom"
+            android:padding="16dp"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@+id/nav_delete_account_icon"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                android:src="@drawable/mypage_main"
+                android:scaleType="fitCenter"
+                android:contentDescription="회원탈퇴" />
+
+            <TextView
+                android:id="@+id/nav_delete_account_txt"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="회원탈퇴"
+                android:textColor="@color/black"
+                android:fontFamily="@font/notosanskr_semibold" />
+    </LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

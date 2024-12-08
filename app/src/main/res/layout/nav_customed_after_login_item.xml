@@ -26,3 +26,4 @@
         android:textColor="@color/black"
         android:fontFamily="@font/notosanskr_semibold" />
 </LinearLayout>
+
