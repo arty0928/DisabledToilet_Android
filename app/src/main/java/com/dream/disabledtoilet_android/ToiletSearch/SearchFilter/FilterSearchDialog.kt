@@ -13,6 +13,9 @@ import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.databinding.FilterSearchDialogBinding
 
+/**
+ * 뷰모델 MVVM으로 적용 시켜야 함
+ */
 class FilterSearchDialog : DialogFragment() {
     lateinit var binding: FilterSearchDialogBinding
     lateinit var viewModel: FilterViewModel
@@ -134,6 +137,12 @@ class FilterSearchDialog : DialogFragment() {
         binding.operating2.setOnClickListener {
             viewModel.isToiletOperating.value = true
         }
+        binding.operatingCircle1.setOnClickListener {
+            viewModel.isToiletOperating.value = false
+        }
+        binding.operatingCircle2.setOnClickListener {
+            viewModel.isToiletOperating.value = true
+        }
     }
     /**
      * 현재 운영 데이터 옵저버
@@ -186,6 +195,22 @@ class FilterSearchDialog : DialogFragment() {
                 viewModel.filterString.toiletCheckHalfYear
         }
         binding.recentCheck4.setOnClickListener {
+            viewModel.toiletRecentCheck.value =
+                viewModel.filterString.toiletCheckInMonth
+        }
+        binding.circle1.setOnClickListener{
+            viewModel.toiletRecentCheck.value =
+                viewModel.filterString.toiletCheckNever
+        }
+        binding.circle2.setOnClickListener {
+            viewModel.toiletRecentCheck.value =
+                viewModel.filterString.toiletCheckInYear
+        }
+        binding.circle3.setOnClickListener {
+            viewModel.toiletRecentCheck.value =
+                viewModel.filterString.toiletCheckHalfYear
+        }
+        binding.circle4.setOnClickListener {
             viewModel.toiletRecentCheck.value =
                 viewModel.filterString.toiletCheckInMonth
         }
