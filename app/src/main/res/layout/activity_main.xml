@@ -184,6 +184,6 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_before_login"
         android:background="@drawable/rightside_background_rounded"
-        app:menu="@menu/before_login_drawer_item" />
+        app:menu="@menu/after_login_drawer_item" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

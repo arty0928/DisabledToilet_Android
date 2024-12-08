@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -91,7 +92,6 @@ class NonloginActivity : AppCompatActivity() {
             startActivity(Intent(this, ToiletFilterSearchActivity::class.java))
         }
 
-        //TODO: 출시 전 로그인 막기
         setupNavigationDrawer() // 내비게이션 드로어 설정
     }
 
@@ -106,13 +106,9 @@ class NonloginActivity : AppCompatActivity() {
         navigationView.layoutParams = layoutParams
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_icon1 -> {
-                    googleSignInHelper.startLoginGoogle(googleLoginResult) // 구글 로그인 시작
-                    true
-                }
-                else -> false
-            }
+            Log.d("nonlogin", "Menu item clicked: ${menuItem.itemId}")
+            googleSignInHelper.startLoginGoogle(googleLoginResult) // 구글 로그인 시작
+            true
         }
 
         val headerView: View = navigationView.getHeaderView(0)

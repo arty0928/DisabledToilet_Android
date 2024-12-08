@@ -81,13 +81,18 @@ class MainActivity : AppCompatActivity() {
         navigationView.layoutParams = layoutParams
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
+
+            Log.d("nonlogin", "Menu item clicked: ${menuItem.itemId}")
+
             when (menuItem.itemId) {
-                R.id.nav_icon1 -> {
-                    Log.d("NAV",R.id.nav_icon1.toString())
-                    startActivity(Intent(this, ToiletPlusActivity::class.java))
+                R.id.nav_mypage -> {
+                    Log.d("login NAV",R.id.nav_icon1.toString())
+                    startActivity(Intent(this, MyPageActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
                 }
+
+
                 else -> false
             }
         }
