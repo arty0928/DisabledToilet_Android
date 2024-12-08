@@ -90,7 +90,7 @@ class GoogleHelper private constructor(private val context: Context) {
 
 
             getLoggedInUser(email) { success ->
-                Log.d("GoogleHelper fetch", success.toString())
+                Log.d(TAG, success.toString())
                 if (success) {
                     deferred.complete(true)
                 } else {
@@ -107,6 +107,7 @@ class GoogleHelper private constructor(private val context: Context) {
      * 구글 로그인 시작
      */
     fun startLoginGoogle(activityResultLauncher: ActivityResultLauncher<Intent>) {
+        Log.d(TAG, "startLoginGoogle")
         activityResultLauncher.launch(googleSignInClient.signInIntent)
     }
 
@@ -115,6 +116,8 @@ class GoogleHelper private constructor(private val context: Context) {
      */
     fun handleSignInResult(data: Intent?, onSuccess: (GoogleSignInAccount) -> Unit) {
         try {
+            Log.d(TAG + "handleSignInResult",BuildConfig.WEB_CLIENT_ID)
+
             val completedTask = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = completedTask.getResult(ApiException::class.java)
             if (account != null) {
@@ -219,6 +222,48 @@ class GoogleHelper private constructor(private val context: Context) {
     fun getUserEmail(): String? {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getString(KEY_USER_EMAIL, null)
+    }
+
+    /**
+     * 사용자 탈퇴 (Firebase Auth 및 Firestore에서 삭제)
+     */
+    suspend fun deleteUser(): Boolean {
+        val email = getUserEmail()
+        if (email == null) {
+            Log.e(TAG, "사용자가 로그인되어 있지 않습니다.")
+            return false
+        }
+
+        return withContext(Dispatchers.IO) {
+            try {
+                // Firestore에서 사용자 데이터 삭제
+                val db = FirebaseFirestore.getInstance()
+                val userDoc = db.collection("users").document(email)
+
+                userDoc.delete().addOnSuccessListener {
+                    Log.d(TAG, "Firestore에서 사용자 데이터 삭제 성공")
+                }.addOnFailureListener { e ->
+                    Log.e(TAG, "Firestore에서 사용자 데이터 삭제 실패", e)
+                }
+
+                // FirebaseAuth에서 사용자 삭제
+                firebaseAuth.currentUser?.delete()?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "Firebase Auth에서 사용자 삭제 성공")
+                        Toast.makeText(context, "회원 탈퇴가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        signOut() // 로그아웃 처리
+                    } else {
+                        Log.e(TAG, "Firebase Auth에서 사용자 삭제 실패", task.exception)
+                        Toast.makeText(context, "회원 탈퇴에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                true // 탈퇴 처리가 완료되었음을 나타냄
+            } catch (e: Exception) {
+                Log.e(TAG, "사용자 탈퇴 처리 중 예외 발생", e)
+                false
+            }
+        }
     }
 
 }

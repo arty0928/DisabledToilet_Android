@@ -31,8 +31,6 @@ class NonloginActivity : AppCompatActivity() {
 
         googleSignInHelper = GoogleHelper.getInstance(this) // Singleton 인스턴스 가져오기
 
-
-//        initializeUI() // UI 초기화
         if(getLocationPermission()){
             initializeUI()
         }

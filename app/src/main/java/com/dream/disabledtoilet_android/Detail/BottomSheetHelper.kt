@@ -19,7 +19,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 class BottomSheetHelper(private val context: Context) {
 
     private val TAG = "BottomSheetHelper"
-    private val saveManager = SaveManager(context) // ToiletManager 인스턴스 생성
+    private val saveManager = SaveManager(context)
+    //ToiletManager 인스턴스 생성
     lateinit var userViweModel: UserViweModel
 
     /**
