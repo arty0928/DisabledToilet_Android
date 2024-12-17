@@ -243,10 +243,6 @@ class GoogleHelper private constructor(private val context: Context) {
      */
     fun getUserEmail(): String? {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-//        Log.d(TAG + "getUserEmail", sharedPreferences.getString(KEY_USER_EMAIL,
-//            Context.MODE_PRIVATE.toString()
-//        ).toString())
-//        Log.d(TAG + "key" , sharedPreferences.getString(KEY_USER_EMAIL, null).toString())
         return sharedPreferences.getString(KEY_USER_EMAIL, null)
     }
 

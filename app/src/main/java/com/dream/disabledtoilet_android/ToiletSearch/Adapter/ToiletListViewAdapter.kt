@@ -96,6 +96,8 @@ class ToiletListViewAdapter(
             // 넘겨준 Activity 명시
             intent.putExtra("rootActivity", "ToiletFilterSearchActivity")
             context.startActivity(intent)
+
+
         }
     }
 

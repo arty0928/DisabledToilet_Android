@@ -4,13 +4,17 @@ import ToiletModel
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.dream.disabledtoilet_android.Near.NearActivity
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.kakao.vectormap.*
+import com.kakao.vectormap.camera.CameraAnimation
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelOptions
@@ -27,6 +31,7 @@ class MapManager(private val context: Context) {
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
     private val labelToToiletMap = mutableMapOf<Label, ToiletModel>()
+    private var isFirst = true
 
     // 이전에 클릭된 화장실을 추적하기 위한 변수
     private var lastClickedToilet: Label? = null
@@ -49,6 +54,7 @@ class MapManager(private val context: Context) {
                     isSuccess.completeExceptionally(error)
                 }
             }, object : KakaoMapReadyCallback() {
+                @RequiresApi(Build.VERSION_CODES.O)
                 override fun onMapReady(map: KakaoMap) {
                     kakaoMap = map
                     Log.d("MapManager", "KakaoMap is ready")
@@ -61,11 +67,76 @@ class MapManager(private val context: Context) {
         return isSuccess.await()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    /**
+     * ToiletRepository의 finalResult를 기반으로 마커를 추가하는 함수
+     */
+    suspend fun fetchAndDisplayFilteredToilets(filteredToilets : MutableList<ToiletModel>): Boolean {
+        val isSuccess = CompletableDeferred<Boolean>()
+
+        Log.d("MapManager 00", filteredToilets.toString())
+
+        withContext(Dispatchers.IO) {
+
+            withContext(Dispatchers.Main) {
+
+                Log.d("MapManager 01 " , filteredToilets.toString())
+                if (filteredToilets.isNotEmpty()) {
+                    Log.d("MapManager 1", isFirst.toString())
+
+                    // 새 레이블 추가
+                    if(isFirst){
+                        Log.d("MapManager 2", isFirst.toString())
+                        filteredToilets.forEach { toilet ->
+                            val pos = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
+                            if (toilet.wgs84_latitude != 0.0 && toilet.wgs84_longitude != 0.0) {
+                                addMarkerToMapToilet(pos, toilet)
+
+                            }
+
+                        }
+                        isFirst = false
+                    }
+
+                    else{
+                        // 필터된 화장실에 속하는 레이블은 labelsToShow에, 아니면 labelsToRemove에 추가
+                        val labelsToShow = labelToToiletMap.filter { (_, toilet) ->
+                            toilet in filteredToilets
+                        }.keys
+
+                        val labelsToRemove = labelToToiletMap.filter { (_, toilet) ->
+                            toilet !in filteredToilets
+                        }.keys
+
+                        Log.d("MapManager", labelsToShow.size.toString())
+                        Log.d("MapManager", labelsToRemove.size.toString())
+
+
+                        labelsToShow.forEach { label ->
+                            label.show(true)
+                        }
+
+                        labelsToRemove.forEach{ label ->
+                            label.show(false)
+                        }
+                    }
+                    isSuccess.complete(true)
+                } else {
+                    Log.e("MapManager", "No filtered toilet data found.")
+                    isSuccess.complete(false)
+                }
+            }
+        }
+
+        return isSuccess.await()
+    }
+
 
     /**
      * 지도 클릭 리스너 설정 함수
      */
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupMapClickListener() {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
             val toilet = labelToToiletMap[clickedLabel]
@@ -131,16 +202,9 @@ class MapManager(private val context: Context) {
     }
 
     // 화장실 위치로 카메라 이동 함수
-    fun moveCameraToToilet(toiletData: ToiletModel) {
-        val latitude = toiletData.wgs84_latitude
-        val longitude = toiletData.wgs84_longitude
-        if (latitude.toInt() != 0 && longitude.toInt() != 0) {
-            val toiletPosition = LatLng.from(latitude, longitude)
-            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(toiletPosition, 16))
-            Log.d("test log", "화장실 위치로 이동")
-        } else {
-            Toast.makeText(context, "위치데이터 준비 중 입니다.", Toast.LENGTH_SHORT).show()
-        }
+    fun moveCameraToToilet(position : LatLng) {
+        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(position, 19), CameraAnimation.from(500, true, true))
+        Log.d("test log", "화장실 위치로 이동")
     }
 
 
@@ -155,7 +219,7 @@ class MapManager(private val context: Context) {
         if (cachedLatitude != null && cachedLongitude != null) {
             val cachedPosition = LatLng.from(cachedLatitude, cachedLongitude)
 
-            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16))
+            kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(cachedPosition, 16), CameraAnimation.from(500, true, true))
             addMarkerToMapCur(cachedPosition)
             Log.d("test log", "현재 위치로 이동")
             Toast.makeText(context, "현재 위치로 이동합니다.", Toast.LENGTH_SHORT).show()
@@ -165,12 +229,22 @@ class MapManager(private val context: Context) {
     }
 
     // 현재 위치 마커 추가 함수
-    private fun addMarkerToMapCur(position: LatLng): Label? {
-        val styles = kakaoMap.labelManager?.addLabelStyles(
-            LabelStyles.from(
-                LabelStyle.from(R.drawable.cur2)
+    fun addMarkerToMapCur(position: LatLng, icon: String? = null): Label? {
+        // styles 변수를 함수 시작 부분에서 선언
+        val styles = if (icon == "search") {
+            kakaoMap.labelManager?.addLabelStyles(
+                LabelStyles.from(
+                    LabelStyle.from(R.drawable.aim_icon3)
+                )
             )
-        )
+        } else {
+            kakaoMap.labelManager?.addLabelStyles(
+                LabelStyles.from(
+                    LabelStyle.from(R.drawable.cur2)
+                )
+            )
+        }
+
         val options = LabelOptions.from(position)
             .setStyles(styles)
             .setClickable(true)
@@ -178,6 +252,7 @@ class MapManager(private val context: Context) {
         val layer = kakaoMap.labelManager?.layer
         return layer?.addLabel(options)
     }
+
 
     // 화장실 데이터 가져와 지도에 표시하는 함수
     suspend fun fetchAndDisplayToiletData() : Boolean {
@@ -222,6 +297,7 @@ class MapManager(private val context: Context) {
             labelToToiletMap[label] = toilet
             Log.d("MapManager", "Added to map - Label: $label, Toilet: ${toilet.restroom_name}")
         }
+
     }
 
     // 카카오맵을 통해 화장실 위치를 보여주는 함수

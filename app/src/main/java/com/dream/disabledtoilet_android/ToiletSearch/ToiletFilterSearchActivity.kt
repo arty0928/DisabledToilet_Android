@@ -50,6 +50,8 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        instance = this
+
         binding = ActivityToiletFilterSearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // 조건 적용 다이얼로그에서 사용할 뷰모델

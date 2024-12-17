@@ -4,11 +4,13 @@ import ToiletModel
 import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import com.dream.disabledtoilet_android.Near.NearActivity
 import com.dream.disabledtoilet_android.R
@@ -26,6 +28,7 @@ class BottomSheetHelper(private val context: Context) {
     /**
      * BottomSheet 초기화 함수
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun initializeBottomSheet(toilet: ToiletModel) {
         Log.d(TAG, "Initializing BottomSheet for toilet: ${toilet.restroom_name}")
         val bottomSheetView = (context as NearActivity).layoutInflater.inflate(R.layout.detail_bottomsheet, null)
@@ -42,6 +45,7 @@ class BottomSheetHelper(private val context: Context) {
     /**
      * BottomSheet UI 설정
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupBottomSheetUI(bottomSheetView: View, toilet: ToiletModel) {
         // UI 요소 초기화
         val toiletName: TextView = bottomSheetView.findViewById(R.id.toilet_name)
