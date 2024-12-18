@@ -124,9 +124,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
             showFilter()
         }
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, NonloginActivity::class.java)
-            startActivity(intent)
-            finish()
+            onBackPressed()
         }
         binding.filter.setOnClickListener {
             showSortDialog()
