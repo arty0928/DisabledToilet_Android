@@ -143,9 +143,8 @@ class NearActivity : AppCompatActivity() {
                 val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
                 if (parcelableData is ToiletModel) {
                     searchingToilet = parcelableData
-//                    mapManager.moveCameraToToilet(searchingToilet!!)
-
                     val position = LatLng.from(searchingToilet!!.wgs84_latitude, searchingToilet!!.wgs84_longitude)
+
                     mapManager.addMarkerToMapCur(position, "search")
                     //애니메이션 효과를 적용하면서 지도 이동
                     mapManager.moveCameraToToilet(position)

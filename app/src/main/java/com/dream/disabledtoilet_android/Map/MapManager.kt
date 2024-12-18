@@ -117,7 +117,8 @@ class MapManager(private val context: Context) {
                         }
 
                         labelsToRemove.forEach{ label ->
-                            label.show(false)
+//                            label.show(false)
+                            label.remove()
                         }
                     }
                     isSuccess.complete(true)
@@ -137,7 +138,7 @@ class MapManager(private val context: Context) {
      */
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun setupMapClickListener() {
+    fun setupMapClickListener() {
         kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
             val toilet = labelToToiletMap[clickedLabel]
             if (toilet != null) {
