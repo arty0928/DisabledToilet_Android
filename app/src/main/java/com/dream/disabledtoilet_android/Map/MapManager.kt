@@ -113,12 +113,11 @@ class MapManager(private val context: Context) {
 
 
                         labelsToShow.forEach { label ->
-                            label.show(true)
+                            label.show()
                         }
 
                         labelsToRemove.forEach{ label ->
-//                            label.show(false)
-                            label.remove()
+                            label.hide()
                         }
                     }
                     isSuccess.complete(true)
