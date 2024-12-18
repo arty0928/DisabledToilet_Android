@@ -21,7 +21,7 @@ import com.dream.disabledtoilet_android.MainActivity
 import com.dream.disabledtoilet_android.NonloginActivity
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
-import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.SortDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.databinding.ActivityToiletFilterSearchBinding

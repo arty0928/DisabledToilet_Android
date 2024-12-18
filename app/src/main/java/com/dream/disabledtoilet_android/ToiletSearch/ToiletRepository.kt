@@ -4,7 +4,7 @@ import ToiletModel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -170,10 +170,6 @@ class ToiletRepository {
         isFilteredListInit = true
         return resultToiletList.toList()
     }
-    /**
-     * 조건 필터링 로직
-     */
-
     /**
      * 장애인 소변기가 1개 이상인 데이터 추출
      */

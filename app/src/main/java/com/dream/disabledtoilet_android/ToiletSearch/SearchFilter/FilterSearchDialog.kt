@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.dream.disabledtoilet_android.R
-import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.databinding.FilterSearchDialogBinding
 
 /**

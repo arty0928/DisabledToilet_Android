@@ -1,4 +1,4 @@
-package com.dream.disabledtoilet_android.ToiletSearch.ViewModel
+package com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
