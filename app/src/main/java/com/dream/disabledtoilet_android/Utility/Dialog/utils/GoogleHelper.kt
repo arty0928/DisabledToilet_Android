@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -90,7 +91,7 @@ class GoogleHelper private constructor(private val context: Context) {
 
 
             getLoggedInUser(email) { success ->
-                Log.d("GoogleHelper fetch", success.toString())
+                Log.d(TAG, success.toString())
                 if (success) {
                     deferred.complete(true)
                 } else {
@@ -107,6 +108,7 @@ class GoogleHelper private constructor(private val context: Context) {
      * 구글 로그인 시작
      */
     fun startLoginGoogle(activityResultLauncher: ActivityResultLauncher<Intent>) {
+        Log.d(TAG, "startLoginGoogle")
         activityResultLauncher.launch(googleSignInClient.signInIntent)
     }
 
@@ -115,9 +117,13 @@ class GoogleHelper private constructor(private val context: Context) {
      */
     fun handleSignInResult(data: Intent?, onSuccess: (GoogleSignInAccount) -> Unit) {
         try {
+            Log.d(TAG + "handleSignInResult", BuildConfig.WEB_CLIENT_ID)
+
             val completedTask = GoogleSignIn.getSignedInAccountFromIntent(data)
             val account = completedTask.getResult(ApiException::class.java)
             if (account != null) {
+                // Firebase 인증을 통해 로그인된 사용자로 설정
+                firebaseAuthWithGoogle(account)
                 onSuccess(account)
                 saveLoginState(account.email!!) // 로그인 성공 시 상태 저장
             }
@@ -125,6 +131,25 @@ class GoogleHelper private constructor(private val context: Context) {
             Log.e(TAG, "Google sign in failed: ${e.message}", e)
         }
     }
+
+    /**
+     * Firebase에 Google 인증 정보 전달
+     * @param account GoogleSignInAccount
+     */
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // 로그인 성공 시, firebaseAuth.currentUser를 로그인한 사용자로 설정
+                    val user = firebaseAuth.currentUser
+                    Log.d(TAG, "Firebase authentication successful, user: ${user?.email}")
+                } else {
+                    Log.e(TAG, "Firebase authentication failed", task.exception)
+                }
+            }
+    }
+
 
     /**
      * Firestore에서 사용자 존재 여부 확인
@@ -219,6 +244,66 @@ class GoogleHelper private constructor(private val context: Context) {
     fun getUserEmail(): String? {
         val sharedPreferences: SharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getString(KEY_USER_EMAIL, null)
+    }
+
+    /**
+     * Google 계정 탈퇴 처리
+     */
+    suspend fun deleteGoogleAccount(): Boolean {
+        val user = firebaseAuth.currentUser
+        val email = getUserEmail()
+
+        Log.d(TAG + " user", user.toString())
+
+        if ( user == null || email == null) {
+            Log.e(TAG, "사용자가 로그인되어 있지 않습니다.")
+            return false
+        }
+
+        return withContext(Dispatchers.IO) {
+            try {
+                // Firestore에서 사용자 데이터 삭제
+                val db = FirebaseFirestore.getInstance()
+                val userDoc = db.collection("users").document(email)
+
+                Log.d(TAG + "1", userDoc.toString())
+
+                userDoc.delete().addOnSuccessListener {
+                    Log.d(TAG + "2", "Firestore에서 사용자 데이터 삭제 성공")
+                }.addOnFailureListener { e ->
+                    Log.e(TAG + "3", "Firestore에서 사용자 데이터 삭제 실패", e)
+                }
+
+                // FirebaseAuth에서 사용자 삭제
+                val deletionSuccess = CompletableDeferred<Boolean>()
+
+                user.delete().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG + "4", "Firebase Auth에서 사용자 삭제 성공")
+                        deletionSuccess.complete(true)
+                    } else {
+                        Log.e(TAG + "5", "Firebase Auth에서 사용자 삭제 실패", task.exception)
+                        deletionSuccess.complete(false)
+                    }
+                }
+
+                val result = deletionSuccess.await()
+                if (result) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "회원 탈퇴가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                    signOut() // 로그아웃 처리 (초기화, NonLogin 으로 다시 이동)
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "회원 탈퇴에 실패했습니다. 다시 시도해주세요.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                result
+            } catch (e: Exception) {
+                Log.e(TAG + "6", "Google 계정 탈퇴 처리 중 예외 발생", e)
+                false
+            }
+        }
     }
 
 }

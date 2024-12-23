@@ -36,6 +36,7 @@ class ToiletRepository {
             // 넘겨준 리스트로 applyQuery
             finalResult = applyQuery(toiletList, keyword)
         }
+        Log.d("filtered near", finalResult.toString() )
         return finalResult
     }
     /**

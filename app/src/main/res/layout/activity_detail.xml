@@ -1,20 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
 
     <!-- Top Layout with overlay -->
     <FrameLayout
         android:background="@color/darkerGrey"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="230dp"
         >
 
         <com.kakao.vectormap.MapView
             android:id="@+id/map_view_detailpage"
             android:layout_width="match_parent"
-            android:background="@color/greyColor"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            />
 
         <!-- Back button positioned on top of the text -->
         <ImageButton
@@ -31,17 +33,21 @@
 
     </FrameLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@android:color/transparent">-->
+
 
         <!-- Fragment container instead of include -->
         <FrameLayout
-            android:background="@drawable/rounded_corner_background"
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_corner_background"
+            android:layout_marginTop="-30dp"
+            />
 
-    </ScrollView>
+<!--    </ScrollView>-->
 
 </LinearLayout>

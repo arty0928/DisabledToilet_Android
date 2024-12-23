@@ -4,4 +4,5 @@
         android:id="@+id/nav_mypage"
         android:title="@null"
         app:actionLayout="@layout/nav_customed_after_login_item" />
+
 </menu>

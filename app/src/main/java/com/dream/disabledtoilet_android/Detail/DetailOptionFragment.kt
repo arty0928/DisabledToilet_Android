@@ -1,13 +1,21 @@
 package com.dream.disabledtoilet_android.Detail
 
 import ToiletModel
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dream.disabledtoilet_android.R
@@ -109,6 +117,45 @@ class DetailOptionFragment : Fragment() {
                 Log.d(TAG, "눌림")
                 saveManager.toggleIcon2(binding.root, toilet) // ToiletManager의 toggleIcon 호출
             }
+
+            //주소 복사
+            val copyIcon : ImageButton = binding.copyAddressIcon
+            copyIcon.setOnClickListener {
+
+                //클립 보드 매니저 가져오기
+                val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+                //복사할 텍스트 생성
+                val clip = ClipData.newPlainText("address", toilet.address_road)
+
+                // 클립보드에 텍스트 복사
+                clipboard.setPrimaryClip(clip)
+
+                Log.d(TAG, clip.toString())
+                Toast.makeText(context, "주소가 복사되었습니다!", Toast.LENGTH_SHORT).show()
+
+            }
+
+            // 관리기관 전화번호 클릭시 키패드 연결
+            val copyPhoneNumber : TextView = binding.toiletManageOfficeNumber
+            copyPhoneNumber.setOnClickListener {
+                val number = copyPhoneNumber.text.toString()
+
+                try{
+                    // 전화 앱으로 연ㄱ려
+                    val dialIntent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:$number")
+                    }
+
+                    startActivity(dialIntent)
+
+                }catch (e: Exception){
+                    Toast.makeText(requireContext(), "전화 앱을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+
         }
 
         return binding.root

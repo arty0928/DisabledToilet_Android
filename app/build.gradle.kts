@@ -14,7 +14,6 @@ val kakaoRestAPI = localProperties.getProperty("KAKAO_REST_API")
 val firebaseLink = localProperties.getProperty("FIREBASE")
 val webClientId = localProperties.getProperty("WEB_CLIENT_ID")
 
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
