@@ -15,10 +15,9 @@ import com.dream.disabledtoilet_android.Detail.BottomSheetHelper
 import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
-import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.User.ViewModel.UserViweModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
@@ -26,11 +25,6 @@ import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
 import com.kakao.vectormap.KakaoMapSdk
 import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.camera.CameraAnimation
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -128,12 +122,9 @@ class NearActivity : AppCompatActivity() {
         setFilterDialogObserver()
     }
 
-
     companion object {
         const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
-
-
 
     // Intent 데이터를 처리하는 함수
     private fun handleIntent(): String? {
