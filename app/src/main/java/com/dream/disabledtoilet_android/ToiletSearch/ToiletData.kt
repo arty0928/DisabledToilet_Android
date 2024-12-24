@@ -12,17 +12,9 @@ import kotlin.coroutines.suspendCoroutine
 
 object ToiletData {
     private val TAG = "[ToiletData]"
-    private val COLLECTION_NAME = "dreamhyoja" // Firebase Firestore의 컬렉션 이름
-    private val PREFS_NAME = "ToiletCache"
-    private val TOILETS_KEY = "ToiletList"
 
     //좋아요 데이터 변동 감지
     private val _save = MutableLiveData<Int>()
-    val save : MutableLiveData<Int> get() = _save
-
-
-    val database: FirebaseDatabase =
-        FirebaseDatabase.getInstance(BuildConfig.FIREBASE)
     var toiletListInit = false
     var cachedToiletList: List<ToiletModel>? = listOf()
 
@@ -41,6 +33,7 @@ object ToiletData {
                 }
                 // 데이터 로드 성공 시 true 반환
                 toiletListInit = true
+
                 continuation.resume(true)
             }
             .addOnFailureListener { exception ->

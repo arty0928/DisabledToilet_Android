@@ -5,11 +5,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.Near.NearActivity
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.databinding.ToiletListItemBinding
 import com.kakao.vectormap.LatLng
 /**
@@ -24,6 +27,8 @@ class ToiletListViewAdapter(
      * updateList()에서 clearAll하고 파라미터의 list addAll함
      */
     private var itemList: MutableList<ToiletModel> = mutableListOf()
+    @RequiresApi(Build.VERSION_CODES.O)
+    val toiletRepository = ToiletRepository()
 
     inner class ItemViewHolder(
         val binding: ToiletListItemBinding
@@ -31,6 +36,7 @@ class ToiletListViewAdapter(
         /**
          * bind
          */
+        @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n")
         fun bind(toiletListItem: ToiletModel) {
             binding.toiletName.text = toiletListItem.restroom_name
@@ -46,7 +52,9 @@ class ToiletListViewAdapter(
                 handleItemDataToNearPage(toiletListItem)
             }
             // 거리정보
-            binding.distance.text ="${calculateDistance(toiletListItem)}"
+//            binding.distance.text ="${calculateDistance(toiletListItem)}"
+            binding.distance.text = toiletRepository.calculateDistance(toiletListItem,userLocation!!)
+
         }
         /**
          * 거리 계산
@@ -96,8 +104,6 @@ class ToiletListViewAdapter(
             // 넘겨준 Activity 명시
             intent.putExtra("rootActivity", "ToiletFilterSearchActivity")
             context.startActivity(intent)
-
-
         }
     }
 
@@ -111,16 +117,30 @@ class ToiletListViewAdapter(
         return itemList.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         return holder.bind(itemList[position])
     }
     /**
      * 리사이클러뷰 업데이트
+     * 
+     * 거리순 오름차순 정렬
      */
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(updatedList: MutableList<ToiletModel>) {
+        // 거리 계산 후 Pair로 저장
+
+        // 거리 값을 로그로 출력
+        updatedList.forEach { toilet ->
+            Log.d("ToiletDistance", "Toilet Name: ${toilet.restroom_name}, Distance: ${toilet.distance}")
+        }
+
+        // -1.0 거리 제외, 거리 기준으로 오름차순 정렬
+        val sortedList = updatedList.filter{it.distance != -1.0}.sortedBy { it.distance }
+
         itemList.clear()
-        itemList.addAll(updatedList)
+        itemList.addAll(sortedList)
         notifyDataSetChanged()
     }
+
 }

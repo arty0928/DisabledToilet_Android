@@ -26,11 +26,6 @@ import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
 import com.kakao.vectormap.KakaoMapSdk
 import com.kakao.vectormap.LatLng
-import com.kakao.vectormap.camera.CameraAnimation
-import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.kakao.vectormap.label.LabelOptions
-import com.kakao.vectormap.label.LabelStyle
-import com.kakao.vectormap.label.LabelStyles
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -100,11 +95,7 @@ class NearActivity : AppCompatActivity() {
 
                 if (position != null) {
 
-//                    fetchToiletDataAndDisplay()
-
                     if (handleIntent() != "ToiletFilterSearchActivity"){
-                        // 안넘어온거 확인 후 카메라 옮기기
-//                        mapManager.moveCameraToCachedLocation()
                         fetchToiletDataAndDisplay()
                         locationHelper.updateLocationCache(position)
                         mapManager.moveCameraToCachedLocation()
@@ -128,13 +119,6 @@ class NearActivity : AppCompatActivity() {
         setFilterDialogObserver()
     }
 
-
-    companion object {
-        const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-    }
-
-
-
     // Intent 데이터를 처리하는 함수
     private fun handleIntent(): String? {
         val rootActivity = intent.getStringExtra("rootActivity")
@@ -146,7 +130,6 @@ class NearActivity : AppCompatActivity() {
                     val position = LatLng.from(searchingToilet!!.wgs84_latitude, searchingToilet!!.wgs84_longitude)
 
                     mapManager.addMarkerToMapCur(position, "search")
-                    //애니메이션 효과를 적용하면서 지도 이동
                     mapManager.moveCameraToToilet(position)
                     bottomSheetHelper.initializeBottomSheet(searchingToilet!!)
                 } else {
@@ -166,7 +149,6 @@ class NearActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.back_button).setOnClickListener {
             onBackPressed()
         }
-//        TODO : 조건 적용 버튼 클릭, 조건 필터
         findViewById<Button>(R.id.filterButton_near).setOnClickListener {
             showFilterDialog()
         }

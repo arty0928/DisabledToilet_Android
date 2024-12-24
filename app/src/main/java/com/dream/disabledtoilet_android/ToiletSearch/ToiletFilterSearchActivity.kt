@@ -2,6 +2,7 @@ package com.dream.disabledtoilet_android.ToiletSearch
 
 import ToiletModel
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +12,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dream.disabledtoilet_android.MainActivity
 import com.dream.disabledtoilet_android.NonloginActivity
+import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
@@ -27,6 +30,7 @@ import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.databinding.ActivityToiletFilterSearchBinding
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +39,7 @@ import kotlinx.coroutines.withContext
 
 @RequiresApi(Build.VERSION_CODES.O)
 class ToiletFilterSearchActivity : AppCompatActivity() {
+
     lateinit var binding: ActivityToiletFilterSearchBinding
     val toiletRepository = ToiletRepository()
     lateinit var toiletListViewAdapter: ToiletListViewAdapter
@@ -48,9 +53,10 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     lateinit var filterSearchDialog: FilterSearchDialog
     lateinit var filterViewModel: FilterViewModel
 
+    private lateinit var fabScrollToTop : FloatingActionButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        instance = this
 
         binding = ActivityToiletFilterSearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -70,6 +76,15 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         if (getLocationPermission()){
             setUi()
         }
+
+        //RecyclerView 맨 위로 스크롤
+        fabScrollToTop = findViewById(R.id.fab_scroll_to_top)
+        fabScrollToTop.setOnClickListener{
+            binding.toiletRecyclerView.smoothScrollToPosition(0)
+        }
+
+        //애니메이션 시작
+        startBounceAnimation()
     }
     /**
      * UI 세팅
@@ -81,8 +96,13 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         // 리사이클러뷰 어댑터는 비동기로 세팅
         CoroutineScope(Dispatchers.IO).launch {
             val userLocation: LatLng? = getUserLocation(context)
+            
+            //사용자 위치 기반 거리 업데이트
+            if (userLocation != null) {
+                toiletRepository.updateDistance(userLocation)
+            }
+            
             toiletListViewAdapter = ToiletListViewAdapter(context, userLocation)
-            Log.d("test log", "toiletListViewAdapter 생성")
             toiletListViewAdapter.updateList(
                 toiletRepository.getToiletWithSearchKeyword(
                     toiletList,
@@ -106,6 +126,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         // 조건 적용 다이얼로그 사라지면 필터 적용
         setFilterDialogObserver()
     }
+
     /**
      * 조건 검색 다이얼로그 UI 표출 옵저버
      */
@@ -161,12 +182,14 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
             }
         })
     }
+
     /**
      * sortDialog show
      */
     fun showSortDialog() {
         sortDialog.show(supportFragmentManager, loadingDialog.tag)
     }
+
     /**
      * 필터 다이얼로그 생성
      */
@@ -175,6 +198,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
         filterViewModel.isDialogDismissed.value = false
     }
+
     /**
      * 조건 적용 다이얼로그 꺼지면 실행되는 함수
      * 다이얼로그 꺼지면 필터내용 바로 적용
@@ -189,6 +213,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
             )
         )
     }
+
     /**
      * 비어있는 데이터는 삭제
      * 여기에 들어가야할 값은 현재 액티비티에 있는 toiletData
@@ -203,6 +228,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         }
         return toiletList
     }
+
     /**
      * 유저 위치 정보 받아 오기
      * 코루틴에서 비동기 처리
@@ -236,6 +262,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         Log.d("test log", "현재 위치: $currentPosition")
         return currentPosition
     }
+
     /**
      * 권한 받기 실행 함수
      */
@@ -258,6 +285,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         }
         return isGranted
     }
+
     /**
      * 위치 권한 받았을 때 콜백
      */
@@ -280,5 +308,17 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
                 return
             }
         }
+    }
+
+    /**
+     * FloatigButton 공처럼 튕기는 Animation 효과
+     */
+    private fun startBounceAnimation(){
+        val animator = ObjectAnimator.ofFloat(fabScrollToTop, "translationY", 0f, 20f, 0f)
+        animator.duration = 600 // 애니메이션 지속 시간
+        animator.interpolator = AccelerateDecelerateInterpolator() // 애니메이션 속도 조절
+        animator.repeatCount = ObjectAnimator.INFINITE // 무한 반복
+        animator.repeatMode = ObjectAnimator.REVERSE // 원래 위치로 돌아오는 모드
+        animator.start() // 애니메이션 시작
     }
 }

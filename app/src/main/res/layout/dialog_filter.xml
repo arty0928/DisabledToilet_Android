@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingRight="40dp"
+            android:textSize="25sp"
             android:text="장소 정렬 기준"
             android:textColor="@color/black"
             android:textStyle="bold" />
@@ -26,6 +27,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingVertical="5dp"
         android:background="@drawable/bottomline">
 
         <TextView
@@ -34,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="거리 순"
-            android:textSize="11sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/purple_200"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -55,6 +57,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:paddingVertical="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bottomline">
@@ -66,7 +69,7 @@
             android:layout_height="wrap_content"
             android:text="저장 많은 순"
             android:textColor="@color/darkerGrey"
-            android:textSize="11sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +90,7 @@
 
     <TextView
         android:textColor="@color/darkerGrey"
-        android:textSize="10sp"
+        android:textSize="20sp"
         android:layout_marginVertical="10dp"
         android:layout_marginRight="7dp"
         android:id="@+id/cancelButton"
