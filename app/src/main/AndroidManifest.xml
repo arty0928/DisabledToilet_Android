@@ -80,7 +80,7 @@
             android:exported="false"
             android:theme="@style/Theme.DisabledToilet_Android" />
         <activity
-            android:name="com.dream.disabledtoilet_android.Near.NearActivity"
+            android:name="com.dream.disabledtoilet_android.Near.UILayer.NearActivity"
             android:exported="false"
             android:label="@string/title_activity_near"
             android:theme="@style/Theme.DisabledToilet_Android" />

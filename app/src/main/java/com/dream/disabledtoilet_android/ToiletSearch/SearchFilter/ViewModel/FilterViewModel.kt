@@ -108,3 +108,9 @@ class FilterViewModel : ViewModel() {
         }
     }
 }
+
+data class FilterState(
+    val filterCheckedStates: List<Boolean> = listOf(),
+    val toiletRecentCheckValue: Int = 0,
+    val isToiletOperatingValue: Boolean = false
+)

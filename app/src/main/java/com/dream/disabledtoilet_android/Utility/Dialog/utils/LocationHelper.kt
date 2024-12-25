@@ -1,21 +1,16 @@
 package com.dream.disabledtoilet_android.Utility.Dialog.utils
 
-import android.Manifest
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.dream.disabledtoilet_android.Near.NearActivity
-import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.tasks.await
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class LocationHelper(private val context: Context) {
 

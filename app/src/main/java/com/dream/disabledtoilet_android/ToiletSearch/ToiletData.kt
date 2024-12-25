@@ -86,6 +86,4 @@ object ToiletData {
     fun clearCurrentUser(){
         currentUser = null
     }
-
-
 }

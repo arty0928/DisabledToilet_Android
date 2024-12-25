@@ -8,10 +8,9 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.dream.disabledtoilet_android.Near.NearActivity
+import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.LocationHelper
 import com.kakao.vectormap.*
 import com.kakao.vectormap.camera.CameraAnimation
@@ -152,7 +151,6 @@ class MapManager(private val context: Context) {
 
                 //BottomSheet 초기화
                 val activity = context as NearActivity
-                activity.bottomSheetHelper.initializeBottomSheet(toilet)
                 true
             } else {
                 false

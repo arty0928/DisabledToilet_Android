@@ -9,7 +9,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Map.MapManager
-import com.dream.disabledtoilet_android.Near.NearActivity
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.databinding.ActivityDetailBinding
 import com.kakao.vectormap.KakaoMap
@@ -19,7 +18,6 @@ import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.MapView
 import com.kakao.vectormap.camera.CameraAnimation
-import com.kakao.vectormap.camera.CameraUpdate
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles

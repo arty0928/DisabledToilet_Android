@@ -9,7 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.dream.disabledtoilet_android.Near.NearActivity
+import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
 import com.dream.disabledtoilet_android.databinding.ToiletListItemBinding
 import com.kakao.vectormap.LatLng
 /**
@@ -96,8 +96,6 @@ class ToiletListViewAdapter(
             // 넘겨준 Activity 명시
             intent.putExtra("rootActivity", "ToiletFilterSearchActivity")
             context.startActivity(intent)
-
-
         }
     }
 

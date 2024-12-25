@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import com.dream.disabledtoilet_android.Near.NearActivity
+import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.GoogleHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNonloginBinding

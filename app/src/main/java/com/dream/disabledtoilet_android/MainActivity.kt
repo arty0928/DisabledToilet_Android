@@ -12,7 +12,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import android.util.Log
 import android.widget.Toast
-import com.dream.disabledtoilet_android.Near.NearActivity
+import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
 import com.dream.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
 import com.dream.disabledtoilet_android.User.MyPageActivity
