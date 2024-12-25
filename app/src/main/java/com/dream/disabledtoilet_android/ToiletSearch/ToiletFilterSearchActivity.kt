@@ -4,7 +4,6 @@ import ToiletModel
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import kotlinx.coroutines.tasks.await
 import android.os.Build
@@ -19,12 +18,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dream.disabledtoilet_android.MainActivity
-import com.dream.disabledtoilet_android.NonloginActivity
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.SortViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.SortDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.databinding.ActivityToiletFilterSearchBinding
@@ -44,7 +42,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     val toiletRepository = ToiletRepository()
     lateinit var toiletListViewAdapter: ToiletListViewAdapter
     val loadingDialog = LoadingDialog()
-    val sortDialog = SortDialog()
+
     /**
      * ToiletData 한번 필터링한 리스트
      */
@@ -52,6 +50,12 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     var query = ""
     lateinit var filterSearchDialog: FilterSearchDialog
     lateinit var filterViewModel: FilterViewModel
+
+    /**
+     * 정렬 기준
+     */
+    var sortDialog = SortDialog()
+    lateinit var sortViewModel: SortViewModel
 
     private lateinit var fabScrollToTop : FloatingActionButton
 
@@ -62,6 +66,9 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         setContentView(binding.root)
         // 조건 적용 다이얼로그에서 사용할 뷰모델
         filterViewModel = ViewModelProvider(this)[FilterViewModel::class.java]
+        // 정렬 적용 다이얼로그에서 사용할 뷰모델
+        sortViewModel = ViewModelProvider(this)[SortViewModel::class.java]
+        
         // 혹시 화장실 리스트가 캐시되지 않았을 경우
         if (!ToiletData.toiletListInit) {
             Log.d("test log", "ToiletData toiletList 캐시 안됨")
@@ -107,7 +114,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
                 toiletRepository.getToiletWithSearchKeyword(
                     toiletList,
                     query
-                )
+                ), sortViewModel.SortCheck
             )
             // 메인 스레드에서
             withContext(Dispatchers.Main) {
@@ -125,6 +132,8 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         setButtonsListener()
         // 조건 적용 다이얼로그 사라지면 필터 적용
         setFilterDialogObserver()
+        // 정렬 적용 다이얼로그 사라지면 필터 적용
+        setSortDialogObserver()
     }
 
     /**
@@ -171,7 +180,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
                 if (toiletList.isNotEmpty()) {
                     // 리사이클러뷰 바로 업데이트
                     toiletListViewAdapter.updateList(
-                        toiletRepository.getToiletWithSearchKeyword(toiletList, query)
+                        toiletRepository.getToiletWithSearchKeyword(toiletList, query), sortViewModel.SortCheck
                     )
                 } else {
                     Log.d("test log", "toiletList is empty")
@@ -187,7 +196,33 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * sortDialog show
      */
     fun showSortDialog() {
+        sortDialog = SortDialog.newInstance()
         sortDialog.show(supportFragmentManager, loadingDialog.tag)
+        sortViewModel.isDialogDismissed.value = false
+    }
+    /**
+     * 정렬 검색 다이얼로그 UI 표출 옵저버
+     */
+    fun setSortDialogObserver(){
+        sortViewModel.isDialogDismissed.observe(this){isDismissed ->
+            if(isDismissed){
+                applySort()
+            }
+        }
+        sortViewModel.SortCheck.observe(this){
+            sortCheckValue ->
+            binding.filter.text = when (sortCheckValue) {
+                0 -> "거리 순"
+                1 -> "저장 순"
+                else -> "거리 순"
+            }
+        }
+    }
+    /**
+     * 정렬 조건
+     */
+    fun applySort(){
+        applyFilter()
     }
 
     /**
@@ -210,7 +245,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
             toiletRepository.getToiletWithSearchKeyword(
                 toiletList,
                 query
-            )
+            ),sortViewModel.SortCheck
         )
     }
 

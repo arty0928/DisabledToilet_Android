@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.Near.NearActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
@@ -127,7 +128,7 @@ class ToiletListViewAdapter(
      * 거리순 오름차순 정렬
      */
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(updatedList: MutableList<ToiletModel>) {
+    fun updateList(updatedList: MutableList<ToiletModel>, sort: MutableLiveData<Int>) {
         // 거리 계산 후 Pair로 저장
 
         // 거리 값을 로그로 출력
@@ -135,8 +136,24 @@ class ToiletListViewAdapter(
             Log.d("ToiletDistance", "Toilet Name: ${toilet.restroom_name}, Distance: ${toilet.distance}")
         }
 
+        val validList = updatedList.filter {it.distance != -1.0}
+        val invalidList = updatedList.filter { it.distance == -1.0 }
+
         // -1.0 거리 제외, 거리 기준으로 오름차순 정렬
-        val sortedList = updatedList.filter{it.distance != -1.0}.sortedBy { it.distance }
+        val sortedList = when (sort.value){
+            0 -> {
+                validList.sortedBy { it.distance } + invalidList.sortedByDescending { it.save }
+            }
+            1 -> {
+                updatedList.sortedWith(compareByDescending<ToiletModel> {it.save}
+                    .thenBy{it.distance}).also { sorted ->
+                        sorted.forEach { toilet ->
+                            Log.d("SortLog", "Save : ${toilet.restroom_name}, Name: ${toilet.save}")
+                        }
+                }
+            }
+            else -> updatedList
+        }
 
         itemList.clear()
         itemList.addAll(sortedList)

@@ -13,10 +13,12 @@ class FilterViewModel : ViewModel() {
     val filterString = FilterString()
     // Dialog 현재 띄워져있는지 데이터
     val isDialogDismissed = MutableLiveData<Boolean>()
+
     // 화장실 최근 점검 데이터
     val toiletRecentCheck = MutableLiveData<Int>()
     // 현재 운영 데이터
     val isToiletOperating = MutableLiveData<Boolean>()
+
     // 조건 적용 데이터 리스트
     private var filterList = mutableListOf<FilterModel>()
     // 조건 적용 데이터 라이브 데이터

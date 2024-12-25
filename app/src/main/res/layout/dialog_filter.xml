@@ -25,6 +25,7 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sortByDistance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingVertical="5dp"
@@ -57,6 +58,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sortBySaved"
         android:paddingVertical="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -97,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:text="취소" />
+        android:text="확인" />
 
 
 </LinearLayout>
