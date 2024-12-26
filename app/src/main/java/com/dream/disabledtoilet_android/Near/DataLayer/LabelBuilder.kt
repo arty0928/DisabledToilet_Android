@@ -53,7 +53,7 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
     /**
      *      맵에 화장실 레이블 생성
      */
-    private fun makeToiletLabel(toiletModel: ToiletModel): Label?{
+    fun makeToiletLabel(toiletModel: ToiletModel): Label?{
         val styles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(
                 LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),

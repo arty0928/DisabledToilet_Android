@@ -161,6 +161,13 @@ class NearViewModel: ViewModel() {
             distanceString
         )
     }
+    /**
+     * ToiletModel을 받아서 label 반환
+     */
+    fun makeLabel(toilet: ToiletModel, kakaoMap: KakaoMap): Label{
+        val labelBuilder = LabelBuilder(kakaoMap)
+        return labelBuilder.makeToiletLabel(toilet)!!
+    }
 }
 
 data class MapStatus(

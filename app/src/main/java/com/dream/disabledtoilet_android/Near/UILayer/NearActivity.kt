@@ -124,7 +124,7 @@ class NearActivity : AppCompatActivity() {
                     // 현재 위치 받아서 뷰모델에 넣기
                     viewModel.setMyLocation(getMyLocation())
                     // 현재 위치로 카메라 이동
-                    moveCameraToUser()
+                    handleIntent(kakaoMap)
                 }
 
                 // 카메라 이동 감지 리스너
@@ -326,5 +326,35 @@ class NearActivity : AppCompatActivity() {
         bottomSheetView.findViewById<LinearLayout>(R.id.share_btn).setOnClickListener {
             KakaoShareHelper(this).shareKakaoMap(toilet)
         }
+    }
+    // Intent 데이터를 처리하는 함수
+    private fun handleIntent(kakaoMap: KakaoMap): String? {
+        val rootActivity = intent.getStringExtra("rootActivity")
+        when (rootActivity) {
+            // 장소 검색에서 넘어온 경우
+            "ToiletFilterSearchActivity" -> {
+                // 인텐트 받아오기
+                val parcelableData = intent.getParcelableExtra<ToiletModel>("toiletData")
+                if (parcelableData is ToiletModel) {
+                    // 화장실 위치로 카메라 이동
+                    val toilet = parcelableData
+                    val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
+                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 17)
+                    val cameraAnimation = CameraAnimation.from(100,true,true)
+                    moveCamera(cameraUpdate,cameraAnimation)
+                    // 화장실 데이터 기반으로 레이블 생성
+                    val toiletLabel = viewModel.makeLabel(toilet, kakaoMap)
+                    viewModel.setBottomSheetStatus(toiletLabel, toilet)
+                    // 바텀시트 생성
+                    initBottomSheet(toilet, toiletLabel)
+                } else {
+                    Log.e("test log", "parcelable data type is not matched")
+                }
+            }
+            else -> {
+                moveCameraToUser()
+            }
+        }
+        return rootActivity
     }
 }
