@@ -328,7 +328,7 @@ class NearActivity : AppCompatActivity() {
         }
     }
     // Intent 데이터를 처리하는 함수
-    private fun handleIntent(kakaoMap: KakaoMap): String? {
+    private fun handleIntent(kakaoMap: KakaoMap) {
         val rootActivity = intent.getStringExtra("rootActivity")
         when (rootActivity) {
             // 장소 검색에서 넘어온 경우
@@ -355,6 +355,5 @@ class NearActivity : AppCompatActivity() {
                 moveCameraToUser()
             }
         }
-        return rootActivity
     }
 }
