@@ -1,6 +1,8 @@
 package com.dream.disabledtoilet_android.Near.DataLayer
 
 import ToiletModel
+import android.icu.number.Scale
+import androidx.compose.animation.scaleIn
 import com.android.tools.build.jetifier.core.utils.Log
 import com.dream.disabledtoilet_android.R
 import com.kakao.vectormap.KakaoMap
@@ -9,11 +11,14 @@ import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTransition
+import com.kakao.vectormap.label.Transition
 
 /**
  *      카카오맵 레이블
  */
 class LabelBuilder(val kakaoMap: KakaoMap) {
+    private var toiletLabelMap = mutableMapOf<Label, ToiletModel>()
 
     /**
      *      ToiletModel 리스트를 기반으로 Label 리스트 생성
@@ -25,6 +30,7 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
                 val toiletLabel = makeToiletLabel(toiletList.get(i))
                 if (toiletLabel != null){
                     toiletLabelList.add(toiletLabel)
+                    toiletLabelMap.put(toiletLabel, toiletList.get(i))
                 }
             }
         }
@@ -33,6 +39,16 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
         }
 
         return toiletLabelList.toList()
+    }
+    /**
+     *      Label, ToiletModel 맵 반환
+     *      반환 후, toiletLabelMap 초기화
+     */
+    fun getToiletLabelMap(): MutableMap<Label, ToiletModel> {
+        val map = toiletLabelMap
+        // 항상 get 이용하면 초기화
+        resetToiletLabelMap()
+        return map
     }
     /**
      *      맵에 화장실 레이블 생성
@@ -54,5 +70,11 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
         val layer = kakaoMap.labelManager?.layer
         val label = layer?.addLabel(options)
         return label
+    }
+    /**
+     *      toiletLabelMap 초기화
+     */
+    private fun resetToiletLabelMap(){
+        toiletLabelMap = mutableMapOf<Label, ToiletModel>()
     }
 }

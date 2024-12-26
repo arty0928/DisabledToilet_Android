@@ -2,26 +2,34 @@ package com.dream.disabledtoilet_android.Near.UILayer
 
 import ToiletModel
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.dream.disabledtoilet_android.BuildConfig
+import com.dream.disabledtoilet_android.Detail.DetailPageActivity
+import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.NearViewModel
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterState
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
+import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.KakaoMapSdk
@@ -54,6 +62,7 @@ class NearActivity : AppCompatActivity() {
         binding = ActivityNearBinding.inflate(layoutInflater)
         KakaoMapSdk.init(this, BuildConfig.KAKAO_SCHEME)
         setContentView(binding.root)
+
         // 뷰모델 받기
         viewModel = ViewModelProvider(this).get(NearViewModel::class.java)
         filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
@@ -122,6 +131,20 @@ class NearActivity : AppCompatActivity() {
                 kakaoMap.setOnCameraMoveEndListener { kakaoMap, cameraPosition, gestureType ->
                     // 이동 감지되면 카메라 포지션 뷰모델에 세팅
                     viewModel.setCurrentCameraPosition(cameraPosition)
+                }
+                // 카카오맵 클릭 리스너
+                kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
+                    val labelToToiletMap = viewModel.mapState.value!!.toiletLabelMap
+                    // 맵을 통해서 레이블의 화장실 찾기
+                    val toilet = labelToToiletMap[clickedLabel]
+                    if (toilet != null) {
+                        viewModel.setBottomSheetStatus(clickedLabel, toilet)
+                        // 바텀시트 생성
+                        initBottomSheet(toilet, clickedLabel)
+                        true
+                    } else {
+                        false
+                    }
                 }
 
                 // 뷰모델의 카메라 포지션 값 변동 시
@@ -251,5 +274,57 @@ class NearActivity : AppCompatActivity() {
         val filterSearchDialog = FilterSearchDialog.newInstance()
         filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
         filterViewModel.isDialogDismissed.value = false
+    }
+    /**
+     * BottomSheet 생성
+     */
+    private fun initBottomSheet(toilet: ToiletModel, label: Label){
+        // 카메라 화장실 위치로 이동
+        val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
+        val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 17)
+        val cameraAnimation = CameraAnimation.from(100,true,true)
+        moveCamera(cameraUpdate, cameraAnimation)
+
+        // 바텀시트 뷰 생성
+        val bottomSheetView = this.layoutInflater.inflate(R.layout.detail_bottomsheet, null)
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
+        bottomSheetDialog.setContentView(bottomSheetView)
+        setBottomSheetUI(bottomSheetView, toilet)
+        bottomSheetDialog.show()
+    }
+    /**
+     * BottomSheet UI 세팅
+     */
+    private fun setBottomSheetUI(bottomSheetView: View, toilet: ToiletModel){
+        val toiletName: TextView = bottomSheetView.findViewById(R.id.toilet_name)
+        val toiletAddress: TextView = bottomSheetView.findViewById(R.id.toilet_address)
+        val toiletOpeningHours: TextView = bottomSheetView.findViewById(R.id.toilet_opening_hours)
+        val saveIcon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
+        val saveIcon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
+        val saveCount: TextView = bottomSheetView.findViewById(R.id.toilet_save_count)
+        val calDis : TextView = bottomSheetView.findViewById(R.id.toilet_distance)
+
+        toiletName.text = toilet.restroom_name
+        toiletAddress.text = toilet.address_road ?: "-"
+        toiletOpeningHours.text = toilet.opening_hours ?: "-"
+        saveCount.text = "저장 (${toilet.save})"
+        calDis.text = viewModel.bottomSheetStatus.value!!.distanceString
+
+        // 상세 페이지로 이동
+        bottomSheetView.findViewById<TextView>(R.id.more_button).setOnClickListener {
+            val intent = Intent(this, DetailPageActivity::class.java)
+            intent.putExtra("TOILET_DATA", toilet)
+            startActivity(intent)
+        }
+
+        // 네비게이션 버튼
+        bottomSheetView.findViewById<LinearLayout>(R.id.toilet_navigation_btn).setOnClickListener {
+            MapManager(this).showKakaoMap(toilet)
+        }
+
+        // 공유 버튼
+        bottomSheetView.findViewById<LinearLayout>(R.id.share_btn).setOnClickListener {
+            KakaoShareHelper(this).shareKakaoMap(toilet)
+        }
     }
 }

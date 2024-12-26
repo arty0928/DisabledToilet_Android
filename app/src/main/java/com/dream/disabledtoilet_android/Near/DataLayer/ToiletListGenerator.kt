@@ -34,7 +34,7 @@ class ToiletListGenerator {
         return resultList
     }
 
-    private fun calculateDistance(position1: Location, position2: Location): Float {
+    fun calculateDistance(position1: Location, position2: Location): Float {
         return position1.distanceTo(position2)
     }
 }

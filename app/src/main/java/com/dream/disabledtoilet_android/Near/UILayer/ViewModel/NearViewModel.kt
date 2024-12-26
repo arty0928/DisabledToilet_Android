@@ -1,6 +1,7 @@
 package com.dream.disabledtoilet_android.Near.UILayer.ViewModel
 
 import ToiletModel
+import android.location.Location
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -39,6 +40,9 @@ class NearViewModel: ViewModel() {
     // 내 위치
     private val _myLocation = MutableLiveData<LatLng>()
     val myLocation: LiveData<LatLng> get() = _myLocation
+    // 바텀시트
+    private val _bottomSheetStatus = MutableLiveData<BottomSheetStatus>()
+    val bottomSheetStatus: LiveData<BottomSheetStatus> get() = _bottomSheetStatus
 
     init {
         val mapStatus = MapStatus(
@@ -102,7 +106,10 @@ class NearViewModel: ViewModel() {
             cameraPosition.value!!,
             mapState.value!!.filteredToiletList
         )
-        return labelBuilder.makeToiletLabelList(toiletListInCamera)
+        val resultList = labelBuilder.makeToiletLabelList(toiletListInCamera)
+        // 레이블 리스트 생성 후, 맵도 받아오기
+        _mapState.value = mapState.value!!.copy(toiletLabelMap = labelBuilder.getToiletLabelMap())
+        return resultList
     }
     /**
      * 현재 카메라 위치 받기
@@ -128,6 +135,32 @@ class NearViewModel: ViewModel() {
             filteredToiletList = filteredToiletList
         )
     }
+    /**
+     * 바텀 시트 UI 데이터 클래스 세팅
+     */
+    fun setBottomSheetStatus(label: Label, toilet: ToiletModel){
+        // 내 위치와 화장실 위치 사이의 거리 구하기
+        val myLocation = Location("").apply{
+            latitude = myLocation.value!!.getLatitude()
+            longitude = myLocation.value!!.getLongitude()
+        }
+        val toiletLocation = Location("").apply{
+            latitude = toilet.wgs84_latitude
+            longitude = toilet.wgs84_longitude
+        }
+        val distance = toiletListGenerator.calculateDistance(myLocation, toiletLocation)
+        // 구한 위치 문자열 형식 맞추기
+        val distanceString = when {
+            distance < 1000 -> "${distance.toInt()}m"
+            else -> String.format("%.1fkm", distance / 1000)
+        }
+        // status 세팅
+        _bottomSheetStatus.value = BottomSheetStatus(
+            toilet,
+            label,
+            distanceString
+        )
+    }
 }
 
 data class MapStatus(
@@ -135,10 +168,17 @@ data class MapStatus(
     val filteredToiletList: List<ToiletModel>,
     val isToiletListEmpty: Boolean,
     val toiletLabelList: List<Label>,
-    val toiletInCameraList: List<Label>
+    val toiletInCameraList: List<Label>,
+    val toiletLabelMap: MutableMap<Label, ToiletModel> = mutableMapOf()
 )
 
 data class UIStatus(
     val isLoading: Boolean,
     val isMapLoading: Boolean
+)
+
+data class BottomSheetStatus(
+    val toilet: ToiletModel,
+    val label: Label,
+    var distanceString: String
 )
