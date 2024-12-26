@@ -62,11 +62,12 @@ class ToiletRepository {
      * 필터 세팅하고 바로 필터 적용한 화장실 리스트 만든다.
      * 기본적으로 넘겨받은 toiletList로 filteredList 생성
      */
-    fun setFilter(filterViewModel: FilterViewModel, toiletList: List<ToiletModel>) {
+    fun setFilter(filterViewModel: FilterViewModel, toiletList: List<ToiletModel>): List<ToiletModel> {
         //뷰모델 받아서 세팅
         this.filterViewModel = filterViewModel
         //받은 toiletList 바로 넘김
         filteredToiletList = setFilteredToiletList(filterViewModel, toiletList.toMutableList())
+        return filteredToiletList
     }
     /**
      * 조건적용 다이얼로그 데이터를 반영한 필터 리스트 생성.

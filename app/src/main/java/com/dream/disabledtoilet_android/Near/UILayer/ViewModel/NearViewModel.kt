@@ -1,7 +1,9 @@
 package com.dream.disabledtoilet_android.Near.UILayer.ViewModel
 
 import ToiletModel
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +11,9 @@ import com.dream.disabledtoilet_android.Near.DataLayer.LabelBuilder
 import com.dream.disabledtoilet_android.Near.DataLayer.ToiletListGenerator
 import com.dream.disabledtoilet_android.Near.DomainLayer.NearDomain
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterState
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraPosition
@@ -18,6 +22,8 @@ import com.kakao.vectormap.label.Label
 class NearViewModel: ViewModel() {
     val nearDomain = NearDomain()
     val toiletListGenerator = ToiletListGenerator()
+    @RequiresApi(Build.VERSION_CODES.O)
+    val toiletRepository = ToiletRepository()
     // 맵 상태
     private val _mapState = MutableLiveData<MapStatus>()
     val mapState: LiveData<MapStatus> get() = _mapState
@@ -39,7 +45,7 @@ class NearViewModel: ViewModel() {
             ToiletData.cachedToiletList!!,
             listOf(),
             ToiletData.cachedToiletList.isNullOrEmpty(),
-            false,
+            listOf(),
             listOf()
         )
         val uiStatus = UIStatus(
@@ -81,7 +87,7 @@ class NearViewModel: ViewModel() {
     /**
      * 필터 상태 적용
      */
-    fun setFilter(filterState: FilterState){
+    fun setFilter(){
         _mapState.value = mapState.value?.copy(
             filteredToiletList = ToiletData.cachedToiletList!!.toList()
         )
@@ -104,14 +110,32 @@ class NearViewModel: ViewModel() {
     fun setCurrentCameraPosition(cameraPosition: CameraPosition){
         _cameraPosition.value = cameraPosition
     }
+    /**
+     * 현재 떠있는 화장실 레이블 받기
+     */
+    fun setToiletInCameraList(labelList: List<Label>){
+        _mapState.value = mapState.value?.copy(
+            toiletInCameraList = labelList
+        )
+    }
+    /**
+     * 필터링된 화장실 리스트 생성
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun applyFilter(filterViewModel: FilterViewModel){
+        val filteredToiletList = toiletRepository.setFilter(filterViewModel, mapState.value!!.toiletList!!)
+        _mapState.value = mapState.value?.copy(
+            filteredToiletList = filteredToiletList
+        )
+    }
 }
 
 data class MapStatus(
     val toiletList: List<ToiletModel>?,
     val filteredToiletList: List<ToiletModel>,
     val isToiletListEmpty: Boolean,
-    val allLabelShowed: Boolean,
-    val toiletLabelList: List<Label>
+    val toiletLabelList: List<Label>,
+    val toiletInCameraList: List<Label>
 )
 
 data class UIStatus(

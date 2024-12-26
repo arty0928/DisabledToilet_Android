@@ -109,7 +109,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * 조건 검색 다이얼로그 UI 표출 옵저버
      */
-    fun setFilterDialogObserver() {
+    private fun setFilterDialogObserver() {
         filterViewModel.isDialogDismissed.observe(this) { isDismissed ->
             if (isDismissed) {
                 applyFilter()
@@ -164,13 +164,13 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * sortDialog show
      */
-    fun showSortDialog() {
+    private fun showSortDialog() {
         sortDialog.show(supportFragmentManager, loadingDialog.tag)
     }
     /**
      * 필터 다이얼로그 생성
      */
-    fun showFilter() {
+    private fun showFilter() {
         filterSearchDialog = FilterSearchDialog.newInstance()
         filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
         filterViewModel.isDialogDismissed.value = false
