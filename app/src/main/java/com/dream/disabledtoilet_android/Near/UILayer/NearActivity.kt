@@ -103,6 +103,7 @@ class NearActivity : AppCompatActivity() {
                 }
             }
         )
+
         // 조건 적용 다이얼로그 dismiss 옵저버 세팅
         filterViewModel.isDialogDismissed.observe(this) { isDismissed ->
             if (isDismissed) {
@@ -114,6 +115,7 @@ class NearActivity : AppCompatActivity() {
                 showLabelList(labelsInCamera)
             }
         }
+
         // 맵뷰 초기화 관측 시
         viewModel.isMapInit.observe(this) { state ->
             // 맵뷰 초기화 됐으면
@@ -127,10 +129,15 @@ class NearActivity : AppCompatActivity() {
                     handleIntent(kakaoMap)
                 }
 
-                // 카메라 이동 감지 리스너
+                // 카메라 이동 끝 감지 리스너
                 kakaoMap.setOnCameraMoveEndListener { kakaoMap, cameraPosition, gestureType ->
                     // 이동 감지되면 카메라 포지션 뷰모델에 세팅
                     viewModel.setCurrentCameraPosition(cameraPosition)
+                }
+
+                // 카메라 이동 시작 리스너
+                kakaoMap.setOnCameraMoveStartListener{ kakaoMap, gestureType, ->
+                    Log.d("test log", kakaoMap.toString() + gestureType.toString())
                 }
                 // 카카오맵 클릭 리스너
                 kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
@@ -328,7 +335,7 @@ class NearActivity : AppCompatActivity() {
         }
     }
     // Intent 데이터를 처리하는 함수
-    private fun handleIntent(kakaoMap: KakaoMap): String? {
+    private fun handleIntent(kakaoMap: KakaoMap) {
         val rootActivity = intent.getStringExtra("rootActivity")
         when (rootActivity) {
             // 장소 검색에서 넘어온 경우
@@ -355,6 +362,5 @@ class NearActivity : AppCompatActivity() {
                 moveCameraToUser()
             }
         }
-        return rootActivity
     }
 }
