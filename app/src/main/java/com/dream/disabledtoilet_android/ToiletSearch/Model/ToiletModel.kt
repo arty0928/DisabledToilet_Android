@@ -5,6 +5,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 
 @Parcelize
 data class ToiletModel(
+
+    var distance : Double = -1.0,
+
     val number: Int = 0,
     val basis: String = "",
     val restroom_name: String = "",
@@ -54,6 +57,7 @@ data class ToiletModel(
     companion object {
         fun fromDocument(document: DocumentSnapshot): ToiletModel {
             return ToiletModel(
+                distance = -1.0,
                 number = document.getLong("number")?.toInt() ?: 0,
                 category = document.getString("category") ?: "",
                 basis = document.getString("basis") ?: "",

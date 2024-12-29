@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.User.User
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
@@ -33,12 +34,17 @@ class SaveManager(private val context: Context) {
         if (currentSrc1.constantState == context.getDrawable(R.drawable.save_icon)?.constantState || currentSrc2.constantState == context.getDrawable(R.drawable.save_icon)?.constantState) {
             imageView1.setImageResource(R.drawable.saved_star_icon)
             imageView2.setImageResource(R.drawable.saved_star_icon)
-            toilet.save += 1
+            updateSave(toilet)
+//            toilet.save += ToiletData.getCurretnUser()
 
         } else {
             imageView1.setImageResource(R.drawable.save_icon)
             imageView2.setImageResource(R.drawable.save_icon)
-            toilet.save -= 1
+//            toilet.save -= 1
+            //삭제
+//            updateSave(toilet)
+
+            //삭제
 
         }
 
@@ -47,6 +53,45 @@ class SaveManager(private val context: Context) {
         // Firebase에서 해당 toilet 업데이트
         updateToiletInFirebase(toilet)
         Log.d(TAG, "Updated save count: ${toilet.save}")
+    }
+
+    fun updateSave(toilet: ToiletModel){
+        val db = FirebaseFirestore.getInstance()
+        val currentSave = getCurrentSave(toilet)
+
+        //toilet.save 업데이트
+        val newSaveValue = toilet.save + getCurrentSave(toilet)
+
+        //toilet.number로 문서찾기
+        db.collection("dreamhyoja")
+            .document(toilet.number.toString())
+            .update("save", newSaveValue)
+            .addOnSuccessListener {
+                Log.d(TAG, "save update successfully")
+            }
+            .addOnFailureListener { e->
+                Log.d(TAG,"Error updating save")
+            }
+    }
+
+    /**
+     * 현재 User가 해당 화장실을 좋아요 했는지 체크
+     * 1 : 추가 , -1 : 삭제
+     */
+    fun getCurrentSave(toilet: ToiletModel) : Int {
+        var likedToilets = ToiletData.currentUser?.likedToilets
+
+        if (likedToilets != null) {
+            //좋아요한 화장실 중에
+            for (t in likedToilets){
+                //있다면 1 반환
+                if(toilet == t){
+                    return 1
+                }
+            }
+            return -1
+        }
+        return -1
     }
 
     // 아이콘 토글 함수 (Expanded BottomSheet)
@@ -61,7 +106,7 @@ class SaveManager(private val context: Context) {
         }
         else{
             imageView.setImageResource(R.drawable.save_icon)
-            toilet.save -=1
+//            toilet.save -= curr
         }
 
         saveCount.text = "저장 (${toilet.save})"

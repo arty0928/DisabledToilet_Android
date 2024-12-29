@@ -1,9 +1,11 @@
 package com.dream.disabledtoilet_android.ToiletSearch
 
 import ToiletModel
+import android.location.Location
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.kakao.vectormap.LatLng
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -385,6 +387,59 @@ class ToiletRepository {
      */
     private enum class PeriodType {
         YEAR, MONTH
+    }
+
+    /**
+     * 화장시 거리 업데이트
+     */
+    fun updateDistance(userLocation : LatLng){
+        var distanceInMeters: Float = 3F
+
+        if(userLocation != null){
+
+            val currentLatitude = userLocation.latitude
+            val currentLongitude = userLocation.longitude
+            // 유저 위치
+            val currentLocation = Location("").apply {
+                latitude = currentLatitude
+                longitude = currentLongitude
+            }
+
+            for(toilet in ToiletData.cachedToiletList!!){
+                // 화장실 위치의 Location 객체 생성
+                val toiletLocation = Location("").apply {
+                    latitude = toilet.wgs84_latitude
+                    longitude = toilet.wgs84_longitude
+                }
+                // 두 위치 사이의 거리 계산 (미터 단위)
+                distanceInMeters = currentLocation.distanceTo(toiletLocation)
+                toilet.distance = distanceInMeters.toDouble()
+            }
+        }
+    }
+
+    /**
+     * 거리 계산
+     */
+    fun calculateDistance(toiletData: ToiletModel, userLocation : LatLng): String {
+        var formattedDistance: String? = null
+        if (userLocation != null) {
+            if (toiletData.distance != -1.0) {
+                Log.d("Distance", toiletData.distance.toString())
+
+                // 거리를 적절한 형식으로 변환
+                formattedDistance = when {
+                    toiletData.distance < 1000 -> "${toiletData.distance.toInt()}m"
+                    else -> String.format("%.1fkm", toiletData.distance / 1000)
+                }
+            } else {
+                formattedDistance = "-"
+            }
+        } else {
+            Log.d("test log", "userLocation is null in ToiletListViewAdapter")
+            formattedDistance = " - "
+        }
+        return formattedDistance.toString()
     }
 
 }
