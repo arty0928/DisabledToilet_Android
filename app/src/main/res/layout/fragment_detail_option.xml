@@ -50,7 +50,7 @@
                         android:gravity="center|left"
                         android:text="세진공원"
                         android:textColor="@color/mainColor"
-                        android:textSize="20sp"
+                        android:textSize="20dp"
                         android:maxLines="1"
                         android:textStyle="bold" />
 
@@ -76,7 +76,7 @@
                             android:gravity="center_vertical"
                             android:layout_marginStart="3dp"
                             android:text="저장 (10)"
-                            android:textSize="14sp"
+                            android:textSize="14dp"
                             android:textColor="@android:color/black"
                             android:fontFamily="@font/notosanskr_medium" />
                     </LinearLayout>
@@ -97,7 +97,7 @@
                         android:gravity="center"
                         android:text="개방 시간"
                         android:textColor="@android:color/black"
-                        android:textSize="15sp"
+                        android:textSize="15dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -108,7 +108,7 @@
                         android:gravity="center"
                         android:text="08 : 00 - 22 : 00"
                         android:textColor="@android:color/black"
-                        android:textSize="14sp"
+                        android:textSize="14dp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -126,12 +126,15 @@
                         android:layout_gravity="center"
                         android:text="서울특별시 세진구"
                         android:textColor="@color/darkerGrey"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textSize="14dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textStyle="bold"
+                        />
 
                     <ImageButton
                         android:id="@+id/copy_address_icon"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginStart="0dp"
                         android:layout_gravity="center"
                         android:background="@color/white"
                         android:layout_width="30dp"
@@ -140,6 +143,8 @@
                         android:scaleType="fitCenter"
                         android:src="@drawable/copy_icon" />
                 </LinearLayout>
+
+
             </LinearLayout>
         </LinearLayout>
 
@@ -173,7 +178,7 @@
                 android:gravity="center_vertical"
                 android:text="시설수리"
                 android:textColor="@color/black"
-                android:textSize="17sp"
+                android:textSize="17dp"
                 android:fontFamily="@font/notosanskr_bold" />
 
             <LinearLayout
@@ -193,7 +198,7 @@
                         android:gravity="center_vertical"
                         android:text="관리기관명"
                         android:textColor="@color/greyColor"
-                        android:textSize="15sp"
+                        android:textSize="15dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -204,7 +209,7 @@
                         android:gravity="center_vertical"
                         android:text="세진구청"
                         android:textColor="@android:color/black"
-                        android:textSize="15sp"
+                        android:textSize="15dp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -221,7 +226,7 @@
                         android:gravity="center_vertical"
                         android:text="관리기관 전화번호"
                         android:textColor="@color/greyColor"
-                        android:textSize="15sp"
+                        android:textSize="15dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -237,7 +242,7 @@
                         android:gravity="center_vertical"
                         android:text="02 - 450 - 1234"
                         android:textColor="@color/mainColor"
-                        android:textSize="17sp"
+                        android:textSize="17dp"
                         android:textStyle="bold" />
                 </LinearLayout>
             </LinearLayout>
@@ -270,7 +275,7 @@
                     android:text="남성용"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -294,7 +299,7 @@
                     android:text="여성용"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18dp" />
 
                 <LinearLayout
                     android:id="@+id/toilet_Info_woman_list_linear"

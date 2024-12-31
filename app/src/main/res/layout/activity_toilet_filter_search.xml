@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/notosanskr_bold"
-                android:gravity="center_horizontal|center_vertical"
+                android:gravity="center"
                 android:text="장소 검색"
                 android:textColor="@color/black"
                 android:textSize="25dp" />
@@ -59,6 +59,7 @@
                 android:background="@drawable/search_bar_background"
                 android:textColorHint="@color/greyColor"
                 android:hint="장소, 버스, 지하철, 주소 검색"
+                android:textSize="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -74,7 +75,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.1">
+                    app:layout_constraintVertical_bias="0">
 
                     <TextView
                         android:paddingRight="7dp"
@@ -84,6 +85,7 @@
                         android:layout_marginLeft="20dp"
                         android:gravity="center"
                         android:text="거리순"
+                        android:textSize="20dp"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:fontFamily="@font/notosanskr_bold"
@@ -111,7 +113,7 @@
                         android:background="@drawable/filter_button"
                         android:layout_width="100dp"
                         android:minHeight="0dp"
-                        android:textSize="15sp"
+                        android:textSize="15dp"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical|center_horizontal"
                         app:layout_constraintBottom_toBottomOf="parent"

@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="로그아웃"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:textColor="@color/black"
             android:fontFamily="@font/notosanskr_semibold" />
     </LinearLayout>

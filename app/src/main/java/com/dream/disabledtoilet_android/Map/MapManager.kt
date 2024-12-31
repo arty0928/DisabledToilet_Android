@@ -73,19 +73,14 @@ class MapManager(private val context: Context) {
     suspend fun fetchAndDisplayFilteredToilets(filteredToilets : MutableList<ToiletModel>): Boolean {
         val isSuccess = CompletableDeferred<Boolean>()
 
-        Log.d("MapManager 00", filteredToilets.toString())
-
         withContext(Dispatchers.IO) {
 
             withContext(Dispatchers.Main) {
 
-                Log.d("MapManager 01 " , filteredToilets.toString())
                 if (filteredToilets.isNotEmpty()) {
-                    Log.d("MapManager 1", isFirst.toString())
 
                     // 새 레이블 추가
                     if(isFirst){
-                        Log.d("MapManager 2", isFirst.toString())
                         filteredToilets.forEach { toilet ->
                             val pos = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
                             if (toilet.wgs84_latitude != 0.0 && toilet.wgs84_longitude != 0.0) {

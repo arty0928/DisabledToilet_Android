@@ -133,11 +133,6 @@ class ToiletListViewAdapter(
     fun updateList(updatedList: MutableList<ToiletModel>, sort: MutableLiveData<Int>) {
         // 거리 계산 후 Pair로 저장
 
-        // 거리 값을 로그로 출력
-        updatedList.forEach { toilet ->
-            Log.d("ToiletDistance", "Toilet Name: ${toilet.restroom_name}, Distance: ${toilet.distance}")
-        }
-
         val validList = updatedList.filter {it.distance != -1.0}
         val invalidList = updatedList.filter { it.distance == -1.0 }
 
@@ -150,7 +145,7 @@ class ToiletListViewAdapter(
                 updatedList.sortedWith(compareByDescending<ToiletModel> {it.save}
                     .thenBy{it.distance}).also { sorted ->
                         sorted.forEach { toilet ->
-                            Log.d("SortLog", "Save : ${toilet.restroom_name}, Name: ${toilet.save}")
+//                            Log.d("SortLog", "Save : ${toilet.restroom_name}, Name: ${toilet.save}")
                         }
                 }
             }

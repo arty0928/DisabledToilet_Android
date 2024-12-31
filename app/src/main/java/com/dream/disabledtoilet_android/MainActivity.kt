@@ -87,11 +87,9 @@ class MainActivity : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener { menuItem ->
 
-            Log.d("nonlogin", "Menu item clicked: ${menuItem.itemId}")
 
             when (menuItem.itemId) {
                 R.id.nav_mypage -> {
-                    Log.d("login NAV",R.id.nav_icon1.toString())
                     startActivity(Intent(this, MyPageActivity::class.java))
                     drawerLayout.closeDrawers()
                     true
@@ -103,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         //footer
         val navFooter = findViewById<LinearLayout>(R.id.nav_footer)
         navFooter.setOnClickListener {
-            Toast.makeText(this, "Delete Account clicked!", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Delete Account clicked!", Toast.LENGTH_SHORT).show()
 
             // 확인 다이얼로그 생성
             val builder = AlertDialog.Builder(this)

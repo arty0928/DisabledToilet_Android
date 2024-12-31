@@ -22,7 +22,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="마이페이지"
+        android:text="내 정보"
+        android:textSize="15dp"
         android:textColor="@color/black"
         android:fontFamily="@font/notosanskr_semibold" />
 </LinearLayout>
