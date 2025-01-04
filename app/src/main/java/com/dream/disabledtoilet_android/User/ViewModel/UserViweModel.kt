@@ -1,9 +1,9 @@
 package com.dream.disabledtoilet_android.User.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.tools.build.jetifier.core.utils.Log
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.User.User
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,18 +36,26 @@ class UserViewModel : ViewModel() {
     suspend fun loadUser(email: String): Boolean {
         Log.d("test loadUser", "Starting loadUser for email: $email")
 
-        return withContext(Dispatchers.Default) { // Dispatchers.IO 대신 Default 사용
+        return withContext(Dispatchers.Default) {
             Log.d("test loadUser", "Entered withContext block")
+
             try {
                 val document = firestore.collection("users")
                     .document(email)
                     .get()
                     .await()
-                Log.d("test loadUser", "Firestore document fetched: $document")
+
+                // document 데이터 로깅 추가
+                Log.d("test loadUser", "Document exists: ${document.exists()}")
+                Log.d("test loadUser", "Document data: ${document.data}")
+
                 val user = document.toObject(User::class.java)
 
                 if (user != null) {
                     Log.d("test loadUser", "User found: $user")
+                    ToiletData.currentUser = user
+                    _user.postValue(user)  // LiveData 업데이트 추가
+                    _likedToilets.postValue(user.likedToilets?.toMutableSet() ?: mutableSetOf())
                     true
                 } else {
                     Log.d("test loadUser", "User not found in Firestore")

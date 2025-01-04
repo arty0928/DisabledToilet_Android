@@ -21,9 +21,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class GoogleHelper private constructor(private val context: Context) {
 
@@ -81,21 +83,43 @@ class GoogleHelper private constructor(private val context: Context) {
     /**
      * 구글 로그인 처리 후, 사용자 정보 업데이트
      */
+    /**
+     * 구글 로그인 처리 후, 사용자 정보 업데이트
+     */
+    /**
+     * 구글 로그인 처리 후, 사용자 정보 업데이트
+     */
     suspend fun fetchUserData(userViewModel: UserViewModel): Boolean {
-        val email = getUserEmail()
+        try {
+            val email = getUserEmail()
+            Log.d("test es", "1. Email: $email")
 
-        Log.d("test es 1", "Email: $email")
-
-        return if (email != null) {
-            Log.d("test es 2", "Before calling loadUser")
-            val success = userViewModel.loadUser(email) // loadUser가 끝날 때까지 대기
-            Log.d("test es 3", "LoadUser result: $success")
-            success
-        } else {
-            Log.d("test es 4", "Email is null, returning false")
-            false
+            return if (email != null) {
+                Log.d("test es", "2. Before calling loadUser")
+                try {
+                    Log.d("test es", "3. Entering withContext block")
+                    val success = withContext(Dispatchers.IO) {
+                        Log.d("test es", "4. Inside withContext, about to call loadUser")
+                        val result = userViewModel.loadUser(email)
+                        Log.d("test es", "5. loadUser completed with result: $result")
+                        result
+                    }
+                    Log.d("test es", "6. After withContext block, LoadUser result: $success")
+                    success
+                } catch (e: Exception) {
+                    Log.e("test es", "7. Error in withContext block: ${e.message}", e)
+                    false
+                }
+            } else {
+                Log.d("test es", "8. Email is null, returning false")
+                false
+            }
+        } catch (e: Exception) {
+            Log.e("test es", "9. Error in fetchUserData: ${e.message}", e)
+            return false
         }
     }
+
 
 
     /**
@@ -150,7 +174,7 @@ class GoogleHelper private constructor(private val context: Context) {
      */
     fun checkUserInFirestore(account: GoogleSignInAccount) {
         val db = FirebaseFirestore.getInstance()
-        val userDoc = db.collection("users").document(account.id!!)
+        val userDoc = db.collection("users").document(account.email!!)
 
         userDoc.get().addOnSuccessListener { document ->
             if (document.exists()) {
@@ -178,7 +202,7 @@ class GoogleHelper private constructor(private val context: Context) {
         )
 
         val db = FirebaseFirestore.getInstance()
-        db.collection("users").document(account.id!!)
+        db.collection("users").document(account.email!!)
             .set(userData)
             .addOnSuccessListener {
                 Log.d(TAG, "User data saved successfully")
