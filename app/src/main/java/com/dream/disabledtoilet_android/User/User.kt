@@ -8,9 +8,9 @@ data class User(
     val name : String,
     val photoURL : String,
 
-    var likedToilets : MutableList<ToiletModel>  = mutableListOf(),
-    var recentlyViewedToilets : MutableList<ToiletModel> = mutableListOf(),
-
-    var registedToilets : MutableList<ToiletModel> = mutableListOf()
+    //해당 화장실 번호만
+    var likedToilets : MutableList<Int>  = mutableListOf(),
+    var recentlyViewedToilets : MutableList<Int> = mutableListOf(),
+    var registedToilets : MutableList<Int> = mutableListOf()
 
 )

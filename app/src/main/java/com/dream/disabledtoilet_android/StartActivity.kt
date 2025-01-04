@@ -14,12 +14,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.util.Log
+import androidx.activity.viewModels
+import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 
 class StartActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
     private var loadingDialog = LoadingDialog()
     private lateinit var googleHelper: GoogleHelper
+    private val userViewModel : UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +36,7 @@ class StartActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // GoogleHelper 초기화
-                googleHelper.initializeGoogleSignIn() // 구글 로그인 초기화
+                googleHelper.initializeGoogleSignIn(userViewModel) // 구글 로그인 초기화
 
                 // 초기화 작업 (예: 데이터 로드)
                 val initResult = initializeApp()

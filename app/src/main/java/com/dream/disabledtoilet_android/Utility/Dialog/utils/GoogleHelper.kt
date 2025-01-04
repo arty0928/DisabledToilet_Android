@@ -6,11 +6,12 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.MainActivity
 import com.dream.disabledtoilet_android.NonloginActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
-import com.dream.disabledtoilet_android.User.getLoggedInUser
+import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -51,10 +52,11 @@ class GoogleHelper private constructor(private val context: Context) {
     /**
      * 구글 로그인 클라이언트 초기화
      */
-    suspend fun initializeGoogleSignIn(): Boolean {
+    suspend fun initializeGoogleSignIn(userViewModel: UserViewModel): Boolean {
         val isSuccess = CompletableDeferred<Boolean>()
 
         withContext(Dispatchers.IO) {
+            Log.d("test es google 1", "google initialzie")
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.WEB_CLIENT_ID)
                 .requestEmail()
@@ -68,7 +70,7 @@ class GoogleHelper private constructor(private val context: Context) {
             }
             
             //로그인한 상태인지 확인후, 사용자 정보 업데이트
-            val success = fetchUserData()
+            val success = fetchUserData(userViewModel)
 
             isSuccess.complete(success)
 
@@ -79,30 +81,22 @@ class GoogleHelper private constructor(private val context: Context) {
     /**
      * 구글 로그인 처리 후, 사용자 정보 업데이트
      */
-    suspend fun fetchUserData(): Boolean {
+    suspend fun fetchUserData(userViewModel: UserViewModel): Boolean {
         val email = getUserEmail()
 
-        Log.d(TAG, email.toString())
-        
-        //로그인된 사용자였으면 해당 사용자 정보 firebase에서 가져오기
+        Log.d("test es 1", "Email: $email")
+
         return if (email != null) {
-            // Firebase에서 사용자 데이터 가져오기
-            val deferred = CompletableDeferred<Boolean>()
-
-
-            getLoggedInUser(email) { success ->
-                Log.d(TAG, success.toString())
-                if (success) {
-                    deferred.complete(true)
-                } else {
-                    deferred.complete(false) // 사용자 데이터 없거나 오류 발생
-                }
-            }
-            deferred.await() // 데이터를 받을 때까지 기다림
+            Log.d("test es 2", "Before calling loadUser")
+            val success = userViewModel.loadUser(email) // loadUser가 끝날 때까지 대기
+            Log.d("test es 3", "LoadUser result: $success")
+            success
         } else {
+            Log.d("test es 4", "Email is null, returning false")
             false
         }
     }
+
 
     /**
      * 구글 로그인 시작

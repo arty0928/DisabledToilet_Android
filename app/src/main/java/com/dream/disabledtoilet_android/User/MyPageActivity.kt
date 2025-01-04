@@ -11,13 +11,13 @@ import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.databinding.ActivityMypageBinding
 import com.dream.disabledtoilet_android.User.Model.Recent_viewed_toilet
-import com.dream.disabledtoilet_android.User.ViewModel.UserViweModel
+import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 
 class MyPageActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMypageBinding
 
-    lateinit var userViewModel : UserViweModel
+    lateinit var userViewModel : UserViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ class MyPageActivity : AppCompatActivity() {
         binding = ActivityMypageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        userViewModel = ViewModelProvider(this)[UserViweModel::class.java]
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
 
         // 뒤로 가기 버튼 클릭 리스너 설정
         binding.backButton.setOnClickListener {
@@ -46,28 +46,28 @@ class MyPageActivity : AppCompatActivity() {
         val recentViewedToilet = ToiletData.currentUser!!.recentlyViewedToilets
         val toiletList = mutableListOf<Recent_viewed_toilet>()
 
-        for(toilet in recentViewedToilet){
-            toiletList.add(
-                Recent_viewed_toilet(
-                    name = toilet.restroom_name,
-                    imageUrl = "toilet.restroom_name, \"https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg\""
-                )
-            )
-        }
+//        for(toilet in recentViewedToilet){
+//            toiletList.add(
+//                Recent_viewed_toilet(
+//                    name = toilet.,
+//                    imageUrl = "toilet.restroom_name, \"https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg\""
+//                )
+//            )
+//        }
         addToiletViews(toiletList, binding.recentViewedSectionLinear)
 
         //찜한 화장실 뷰 추가
         val likedToilets = ToiletData.currentUser!!.likedToilets
         val likedToiletList = mutableListOf<Recent_viewed_toilet>()
 
-        for(toilet in likedToilets){
-            likedToiletList.add(
-                Recent_viewed_toilet(
-                    name = toilet.restroom_name,
-                    imageUrl = "toilet.restroom_name, \"https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg\""
-                )
-            )
-        }
+//        for(toilet in likedToilets){
+//            likedToiletList.add(
+//                Recent_viewed_toilet(
+//                    name = toilet.restroom_name,
+//                    imageUrl = "toilet.restroom_name, \"https://cdn.travie.com/news/photo/first/201710/img_19975_1.jpg\""
+//                )
+//            )
+//        }
         addToiletViews(likedToiletList, binding.recentViewedSectionLinear)
 
     }

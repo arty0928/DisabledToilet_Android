@@ -24,6 +24,7 @@ import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.NearViewModel
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
@@ -55,6 +56,7 @@ class NearActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var viewModel: NearViewModel
     private lateinit var filterViewModel: FilterViewModel
+    private lateinit var userViewModel : UserViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +68,8 @@ class NearActivity : AppCompatActivity() {
         // 뷰모델 받기
         viewModel = ViewModelProvider(this).get(NearViewModel::class.java)
         filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
         // 임시
         viewModel.setFilter()
         // 사용자 위치
@@ -83,6 +87,9 @@ class NearActivity : AppCompatActivity() {
         binding.filterButtonNear.setOnClickListener{
             showFilter()
         }
+        
+        //좋아요 상태를 관찰하여 UI 업데이트
+//        observeLikedToilets()
 
         // 맵뷰 초기화
         binding.mapView.start(
@@ -333,7 +340,35 @@ class NearActivity : AppCompatActivity() {
         bottomSheetView.findViewById<LinearLayout>(R.id.share_btn).setOnClickListener {
             KakaoShareHelper(this).shareKakaoMap(toilet)
         }
+
+        // 좋아요 버튼 클릭 리스너
+        saveIcon1.setOnClickListener {
+            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
+            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
+        }
+
+        saveIcon2.setOnClickListener {
+            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
+            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
+        }
+
+        // 좋아요 상태 관찰
+        userViewModel.likedToilets.observe(this) { likedToilets ->
+            val isLiked = likedToilets.contains(toilet.number)
+            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
+        }
     }
+
+    private fun updateSaveIcons(saveIcon1: ImageView, saveIcon2: ImageView, isLiked: Boolean) {
+        if (isLiked) {
+            saveIcon1.setImageResource(R.drawable.saved_star_icon)
+            saveIcon2.setImageResource(R.drawable.saved_star_icon)
+        } else {
+            saveIcon1.setImageResource(R.drawable.save_icon)
+            saveIcon2.setImageResource(R.drawable.save_icon)
+        }
+    }
+
     // Intent 데이터를 처리하는 함수
     private fun handleIntent(kakaoMap: KakaoMap) {
         val rootActivity = intent.getStringExtra("rootActivity")

@@ -33,15 +33,14 @@ class DetailPageActivity : AppCompatActivity() {
     private lateinit var mapView: MapView
     private lateinit var kakaoMap: KakaoMap
 
-    val mapManager by lazy { MapManager(this) }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBinding.inflate(layoutInflater)
         KakaoMapSdk.init(this, BuildConfig.KAKAO_SCHEME)
 
         setContentView(binding.root)
+
+
 
         // 뒤로 가기 버튼 설정
         val backButton = binding.backButton

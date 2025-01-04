@@ -21,10 +21,12 @@ object ToiletData {
     //사용자
     var currentUser : User? = null
 
+    // Firestore 인스턴스
+    private val firestore = FirebaseFirestore.getInstance()
+
     suspend fun initialize(): Boolean = suspendCoroutine { continuation ->
         // Firestore에서 데이터 로드
-        val db = FirebaseFirestore.getInstance()
-        db.collection("dreamhyoja") // "dreamhyoja" 컬렉션에서 데이터 가져오기
+        firestore.collection("dreamhyoja") // "dreamhyoja" 컬렉션에서 데이터 가져오기
             .get()
             .addOnSuccessListener { documents ->
                 // ToiletModel로 변환하여 cachedToiletList에 저장
@@ -43,24 +45,67 @@ object ToiletData {
             }
     }
 
-    // save 값 업데이트 (전체 값에 대한 업데이트)
-    fun updateSaveValueForToilet(toiletNumber: Int, newSaveValue: Int) {
-        // 해당 화장실 찾기
-        val toilet = cachedToiletList?.find { it.number == toiletNumber }
-        toilet?.save = newSaveValue // 해당 화장실의 save 값을 업데이트
+    /**
+     * 특정 화장실의 좋아요 값 업데이트 (로컬 데이터)
+     */
+    fun updateSaveValueForToilet(toiletId: Int, userId: String, isLiked: Boolean) {
+        val toilet = cachedToiletList?.find { it.number == toiletId }
+        toilet?.let {
+            if (isLiked) {
+                // 사용자의 likedToilets에 화장실 ID 추가
+                if (!currentUser?.likedToilets?.contains(toiletId)!! == true) {
+                    currentUser?.likedToilets?.add(toiletId)
+                    it.save += 1 // save 값 증가
+                }
+            } else {
+                // 사용자의 likedToilets에서 화장실 ID 제거
+                if (currentUser?.likedToilets?.contains(toiletId) == true) {
+                    currentUser?.likedToilets?.remove(toiletId)
+                    it.save = maxOf(0, it.save - 1) // save 값 감소 (0 이하로 내려가지 않도록 처리)
+                }
+            }
+        }
     }
 
 
     /**
-     *          현재 지도 화면에 보이는 영역 내의 화장실을 필터링하여 반환합니다.
-     *          @param southWest 남서쪽 경도/위도
-     *          @param northEast 북동쪽 경도/위도
-     *          @return 현재 화면 내에 위치한 화장실의 리스트
+     * 사용자 정보 업데이트 (즉시 Firebase 반영)
      */
-    fun getToiletsWithinBounds(southWestLatitude: Double, southWestLongitude: Double, northEastLatitude: Double, northEastLongitude: Double): List<ToiletModel> {
-        return ToiletData.cachedToiletList!!.filter { toilet ->
-            toilet.wgs84_latitude in southWestLatitude..northEastLatitude &&
-                    toilet.wgs84_longitude in southWestLongitude..northEastLongitude
+    fun updateUserLikes(toiletId: Int, isLiked: Boolean) {
+        currentUser?.let { user ->
+            if (isLiked) {
+                if (!user.likedToilets.contains(toiletId)) user.likedToilets.add(toiletId)
+            } else {
+                user.likedToilets.remove(toiletId)
+            }
+
+            // Firebase에 사용자 정보 업데이트
+            firestore.collection("users")
+                .document(user.email)
+                .set(user)
+                .addOnSuccessListener {
+                    Log.d("test es", "User data updated successfully.")
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("test es", "Error updating user data: ${exception.message}")
+                }
+        }
+    }
+
+    /**
+     * Firebase에 로컬 화장실 데이터 동기화
+     */
+    fun syncToFirebase() {
+        cachedToiletList?.forEach { toilet ->
+            firestore.collection("dreamhyoja")
+                .document(toilet.number.toString())
+                .set(toilet)
+                .addOnSuccessListener {
+                    Log.d("test es", "Toilet data synced successfully: ${toilet.number}")
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("test es", "Error syncing toilet data: ${exception.message}")
+                }
         }
     }
 

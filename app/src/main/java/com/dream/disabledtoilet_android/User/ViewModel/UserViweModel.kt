@@ -1,107 +1,116 @@
 package com.dream.disabledtoilet_android.User.ViewModel
 
-import ToiletModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.android.tools.build.jetifier.core.utils.Log
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.User.User
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import okhttp3.Callback
 
-class UserViweModel : ViewModel() {
-    private val _currentUser = MutableLiveData<User?>()
-    val currentUser: LiveData<User?> get() = _currentUser
+class UserViewModel : ViewModel() {
 
+    private val firestore = FirebaseFirestore.getInstance()
 
-    init {
-        _currentUser.value = ToiletData.currentUser
-    }
+    // 사용자 데이터 LiveData
+    private val _user = MutableLiveData<User?>()
+    val user: LiveData<User?> get() = _user
 
-
-
-    fun updateUser(updatedUser : User){
-        _currentUser.value = updatedUser
-    }
-
-    /**
-     * 최근 본 화장실 추가
-     */
-    fun addRecentViewToilet(toilet: ToiletModel) {
-        val currentUser = _currentUser.value ?: return
-        val recentToilets = currentUser.recentlyViewedToilets
-
-        // 이미 있으면 맨 앞으로 이동
-        val index = recentToilets.indexOfFirst { it.number == toilet.number }
-        if (index != -1) {
-            recentToilets.removeAt(index)
-        }
-        recentToilets.add(0, toilet)
-
-        // 최대 10개 유지
-        if (recentToilets.size > 10) {
-            recentToilets.removeAt(recentToilets.size - 1)
-        }
-
-        // 데이터 업데이트
-        currentUser.recentlyViewedToilets = recentToilets
-        updateUser(currentUser)
-    }
+    // 특정 화장실 좋아요 상태 LiveData
+    private val _likedToilets = MutableLiveData<MutableSet<Int>>()
+    val likedToilets: LiveData<MutableSet<Int>> get() = _likedToilets
 
     /**
-     * 등록한 화장실 추가
+     * 사용자 데이터를 이메일을 통해 Firebase에서 로드
+     * ToiletData에 저장
      */
-    fun addRegisteredToilets(toilet: ToiletModel){
-        val currentUser = _currentUser.value ?: return
-        val registeredToilets = currentUser!!.registedToilets
+    /**
+     * 사용자 데이터를 이메일을 통해 Firebase에서 로드
+     * ToiletData에 저장
+     */
+    suspend fun loadUser(email: String): Boolean {
+        Log.d("test loadUser", "Starting loadUser for email: $email")
 
-        val index = registeredToilets.indexOfFirst { it.number == toilet.number }
-        if(index!= -1){
-            registeredToilets.removeAt(index)
-        }else{
-            registeredToilets.add(toilet)
+        return withContext(Dispatchers.Default) { // Dispatchers.IO 대신 Default 사용
+            Log.d("test loadUser", "Entered withContext block")
+            try {
+                val document = firestore.collection("users")
+                    .document(email)
+                    .get()
+                    .await()
+                Log.d("test loadUser", "Firestore document fetched: $document")
+                val user = document.toObject(User::class.java)
+
+                if (user != null) {
+                    Log.d("test loadUser", "User found: $user")
+                    true
+                } else {
+                    Log.d("test loadUser", "User not found in Firestore")
+                    false
+                }
+            } catch (e: Exception) {
+                Log.e("test loadUser", "Error loading user: ${e.message}", e)
+                false
+            }
         }
-
-        if (registeredToilets != null) {
-            currentUser.registedToilets = registeredToilets
-        }
-        updateUser(currentUser)
-
     }
+
 
 
     /**
-     * currentUser.saveList에 좋아요한 화장실 추가 및 삭제
+     * 좋아요 상태 업데이트
+     * @param toiletId 화장실 ID
+     * @param isLiked 좋아요 여부
      */
-    fun toggleLikedToilet(toilet: ToiletModel) {
-        val currentUser = _currentUser.value ?: return
-        val likedToilets = currentUser.likedToilets
+    fun updateLikeStatus(toiletId: Int, isLiked: Boolean) {
+        val currentUser = _user.value
+        if (currentUser != null) {
+            val updatedLikedToilets = _likedToilets.value ?: mutableSetOf()
 
-        val index = likedToilets.indexOfFirst { it.number == toilet.number }
-        if (index != -1) {
-            likedToilets.removeAt(index)
-            toilet.save = (toilet.save ?: 0) - 1 // save 값 감소
-        } else {
-            likedToilets.add(toilet)
-            toilet.save = (toilet.save ?: 0) + 1 // save 값 증가
+            if (isLiked) {
+                updatedLikedToilets.add(toiletId)
+            } else {
+                updatedLikedToilets.remove(toiletId)
+            }
+
+            // LiveData 업데이트
+            _likedToilets.value = updatedLikedToilets
+
+
+            // Firebase에 사용자 데이터 업데이트
+            currentUser.likedToilets = updatedLikedToilets.toMutableList()
+            firestore.collection("users")
+                .document(currentUser.email)
+                .set(currentUser)
+                .addOnSuccessListener {
+                    _user.postValue(currentUser)
+                }
+                .addOnFailureListener {
+                    // 에러 처리
+                }
         }
+    }
 
-        currentUser.likedToilets = likedToilets
-        updateUser(currentUser)
+
+    /**
+     * 특정 화장실이 사용자의 좋아요 목록에 있는지 확인
+     * @param toiletId 화장실 ID
+     * @return 좋아요 여부
+     */
+    fun isToiletLiked(toiletId: Int): Boolean {
+        return _likedToilets.value?.contains(toiletId) ?: false
     }
 
     /**
-     * 좋아요 여부 확인
+     * Firebase에 저장된 사용자 데이터를 삭제 (로그아웃 시 호출)
      */
-    fun isToiletLiked(toilet: ToiletModel): Boolean {
-        val currentUser = _currentUser.value ?: return false
-        return currentUser.likedToilets.any { it.number == toilet.number }
-    }
-
-    /**
-     * 좋아요 리스트를 별도로 LiveData로 제공
-     */
-    val likedToilets : LiveData<List<ToiletModel>> = MutableLiveData<List<ToiletModel>>().apply{
-        _currentUser.observeForever { user ->
-            value = user?.likedToilets ?: emptyList()
-        }
+    fun clearUserData() {
+        _user.value = null
+        _likedToilets.value = mutableSetOf()
     }
 }
