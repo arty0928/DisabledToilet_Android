@@ -143,5 +143,4 @@ class SortDialog: DialogFragment() {
         binding.filterText1.setTextColor(ContextCompat.getColor(requireContext(), R.color.darkerGrey))
         binding.filterText2.setTextColor(ContextCompat.getColor(requireContext(), R.color.darkerGrey))
     }
-
 }

@@ -64,9 +64,6 @@ class FilterSearchDialog : DialogFragment() {
      */
     private fun setUi() {
         setBackButton()
-        // 최근 점검
-        setCurrentCheck()
-        setRecentCheckObserver()
         // 초기화 버튼
         setClearButton()
         // 화장실 보기
@@ -176,84 +173,6 @@ class FilterSearchDialog : DialogFragment() {
             // 뷰모델 초기 상태로
             viewModel.loadStatus()
         }
-    }
-    /**
-     * 최근 점검 리스너 세팅
-     */
-    private fun setCurrentCheck(){
-        // 화장실 최근 점검
-        binding.recentCheck1.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckNever
-        }
-        binding.recentCheck2.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckInYear
-        }
-        binding.recentCheck3.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckHalfYear
-        }
-        binding.recentCheck4.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckInMonth
-        }
-        binding.circle1.setOnClickListener{
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckNever
-        }
-        binding.circle2.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckInYear
-        }
-        binding.circle3.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckHalfYear
-        }
-        binding.circle4.setOnClickListener {
-            viewModel.toiletRecentCheck.value =
-                viewModel.filterString.toiletCheckInMonth
-        }
-    }
-    /**
-     * 최근 점검 데이터 옵저버 세팅
-     */
-    private fun setRecentCheckObserver(){
-        viewModel.toiletRecentCheck.observe(this) { value ->
-            // value가 어떤 String인지 when으로 처리
-            when (value) {
-                viewModel.filterString.toiletCheckNever -> {
-                    // 버튼 먼저 초기화 후
-                    clearRecentButton()
-                    // 버튼 색 칠하기
-                    binding.circle1.setImageResource(R.drawable.checked_circle)
-                }
-
-                viewModel.filterString.toiletCheckInYear -> {
-                    clearRecentButton()
-                    binding.circle2.setImageResource(R.drawable.checked_circle)
-                }
-
-                viewModel.filterString.toiletCheckHalfYear -> {
-                    clearRecentButton()
-                    binding.circle3.setImageResource(R.drawable.checked_circle)
-                }
-
-                viewModel.filterString.toiletCheckInMonth -> {
-                    clearRecentButton()
-                    binding.circle4.setImageResource(R.drawable.checked_circle)
-                }
-            }
-        }
-    }
-    /**
-     * 최근 점검 버튼 UI 초기화
-     */
-    private fun clearRecentButton() {
-        binding.circle1.setImageResource(R.drawable.check_circle)
-        binding.circle2.setImageResource(R.drawable.check_circle)
-        binding.circle3.setImageResource(R.drawable.check_circle)
-        binding.circle4.setImageResource(R.drawable.check_circle)
     }
     /**
      * 초기화 버튼 리스너 세팅

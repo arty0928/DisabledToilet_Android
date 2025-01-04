@@ -65,125 +65,47 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recentCheck">
 
-            <LinearLayout
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/recentSlider"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/oneMonth"
+                    android:text="한달"
+                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/sixMonth"
+                    android:text="6개월"
+                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
+                    app:layout_constraintEnd_toStartOf="@id/oneYear"
+                    app:layout_constraintStart_toEndOf="@id/oneMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/oneYear"
+                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
+                    android:text="1년"
+                    app:layout_constraintEnd_toStartOf="@id/all"
+                    app:layout_constraintStart_toEndOf="@id/sixMonth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:id="@+id/all"
+                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
+                    android:text="전체"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <LinearLayout
-                    android:id="@+id/recentCheck1"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/circle1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="19dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="4dp"
-                        android:background="@color/white"
-                        android:src="@drawable/check_circle" />
-
-                    <TextView
-                        android:id="@+id/text1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="없음"
-                        android:textColor="@color/black" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/recentCheck2"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/circle2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="19dp"
-                        android:layout_marginRight="4dp"
-                        android:background="@color/white"
-                        android:src="@drawable/check_circle"
-                        app:flow_verticalBias="0.5" />
-
-                    <TextView
-                        android:id="@+id/text2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="1년 이내"
-                        android:textColor="@color/black" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/recentCheck3"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/circle3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="19dp"
-                        android:layout_marginRight="4dp"
-                        android:background="@color/white"
-                        android:src="@drawable/check_circle" />
-
-                    <TextView
-                        android:id="@+id/text3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="6개월 이내"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/recentCheck4"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/circle4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="19dp"
-                        android:layout_marginRight="4dp"
-                        android:background="@color/white"
-                        android:src="@drawable/check_circle"
-                        app:flow_verticalBias="0.5" />
-
-                    <TextView
-                        android:id="@+id/text4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="한달 이내"
-                        android:textColor="@color/black" />
-                </LinearLayout>
-            </LinearLayout>
 
         </LinearLayout>
 
