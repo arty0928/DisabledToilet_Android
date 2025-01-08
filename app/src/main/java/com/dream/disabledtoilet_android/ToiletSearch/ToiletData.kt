@@ -50,20 +50,26 @@ object ToiletData {
      */
     fun updateSaveValueForToilet(toiletId: Int, userId: String, isLiked: Boolean) {
         val toilet = cachedToiletList?.find { it.number == toiletId }
+        val currentLikedStatus = currentUser?.likedToilets?.contains(toiletId) ?: false
+
+
         toilet?.let {
-            if (isLiked) {
-                // 사용자의 likedToilets에 화장실 ID 추가
-                if (!currentUser?.likedToilets?.contains(toiletId)!! == true) {
-                    currentUser?.likedToilets?.add(toiletId)
-                    it.save += 1 // save 값 증가
-                }
-            } else {
-                // 사용자의 likedToilets에서 화장실 ID 제거
-                if (currentUser?.likedToilets?.contains(toiletId) == true) {
-                    currentUser?.likedToilets?.remove(toiletId)
-                    it.save = maxOf(0, it.save - 1) // save 값 감소 (0 이하로 내려가지 않도록 처리)
+            //현재 상태와 요청된 상태가 다를 때만 업데이트
+            if (currentLikedStatus != isLiked){
+                if (isLiked) {
+                    // 사용자의 likedToilets에 화장실 ID 추가
+//                    currentUser?.likedToilets?.add(toiletId)
+                    it.save += 1
+                    Log.d("test es", "added save : ${it.save}")
+                } else {
+                    // 좋아요 제거
+//                    currentUser?.likedToilets?.remove(toiletId)
+                    it.save = maxOf(0,it.save -1)
+                    Log.d("test es", "remove save : ${it.save}")
+
                 }
             }
+
         }
     }
 
@@ -73,24 +79,30 @@ object ToiletData {
      */
     fun updateUserLikes(toiletId: Int, isLiked: Boolean) {
         currentUser?.let { user ->
-            if (isLiked) {
-                if (!user.likedToilets.contains(toiletId)) user.likedToilets.add(toiletId)
-            } else {
-                user.likedToilets.remove(toiletId)
-            }
+            val currentLikedStatus = user.likedToilets.contains(toiletId)
 
-            // Firebase에 사용자 정보 업데이트
-            firestore.collection("users")
-                .document(user.email)
-                .set(user)
-                .addOnSuccessListener {
-                    Log.d("test es", "User data updated successfully.")
+            // 현재 상태와 요청된 상태가 다를 때만 업데이트
+            if (currentLikedStatus != isLiked) {
+                if (isLiked) {
+//                    user.likedToilets.add(toiletId)
+                } else {
+//                    user.likedToilets.remove(toiletId)
                 }
-                .addOnFailureListener { exception ->
-                    Log.e("test es", "Error updating user data: ${exception.message}")
-                }
+
+                // Firebase에 사용자 정보 업데이트
+                firestore.collection("users")
+                    .document(user.email)
+                    .set(user)
+                    .addOnSuccessListener {
+                        Log.d("ToiletData", "User likes updated successfully for toilet $toiletId")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("ToiletData", "Error updating user likes: ${exception.message}")
+                    }
+            }
         }
     }
+
 
     /**
      * Firebase에 로컬 화장실 데이터 동기화

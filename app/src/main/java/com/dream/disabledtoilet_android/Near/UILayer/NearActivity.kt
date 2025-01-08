@@ -341,22 +341,22 @@ class NearActivity : AppCompatActivity() {
             KakaoShareHelper(this).shareKakaoMap(toilet)
         }
 
-        // 좋아요 버튼 클릭 리스너
-        saveIcon1.setOnClickListener {
-            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
-            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
-        }
-
-        saveIcon2.setOnClickListener {
-            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
-            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
-        }
-
-        // 좋아요 상태 관찰
-        userViewModel.likedToilets.observe(this) { likedToilets ->
-            val isLiked = likedToilets.contains(toilet.number)
-            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
-        }
+//        // 좋아요 버튼 클릭 리스너
+//        saveIcon1.setOnClickListener {
+//            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
+//            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
+//        }
+//
+//        saveIcon2.setOnClickListener {
+//            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
+//            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
+//        }
+//
+//        // 좋아요 상태 관찰
+//        userViewModel.likedToilets.observe(this) { likedToilets ->
+//            val isLiked = likedToilets.contains(toilet.number)
+//            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
+//        }
     }
 
     private fun updateSaveIcons(saveIcon1: ImageView, saveIcon2: ImageView, isLiked: Boolean) {

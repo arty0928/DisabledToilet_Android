@@ -4,14 +4,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.User.User
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.Callback
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class UserViewModel : ViewModel() {
 
@@ -29,96 +33,117 @@ class UserViewModel : ViewModel() {
      * 사용자 데이터를 이메일을 통해 Firebase에서 로드
      * ToiletData에 저장
      */
-    /**
-     * 사용자 데이터를 이메일을 통해 Firebase에서 로드
-     * ToiletData에 저장
-     */
+
     suspend fun loadUser(email: String): Boolean {
-        Log.d("test loadUser", "Starting loadUser for email: $email")
-
-        return withContext(Dispatchers.Default) {
-            Log.d("test loadUser", "Entered withContext block")
-
+        return withContext(Dispatchers.IO) {
             try {
-                val document = firestore.collection("users")
-                    .document(email)
-                    .get()
-                    .await()
+                // Firestore에서 사용자 데이터 로드
+                val result = suspendCoroutine<Boolean> { continuation ->
+                    firestore.collection("users")
+                        .document(email)
+                        .get()
+                        .addOnSuccessListener { document ->
+                            if (document != null && document.exists()) {
+                                val user = document.toObject(User::class.java)
 
-                // document 데이터 로깅 추가
-                Log.d("test loadUser", "Document exists: ${document.exists()}")
-                Log.d("test loadUser", "Document data: ${document.data}")
+                                user?.let {
+                                    _user.value = it
+                                    _likedToilets.value =
+                                        (it.likedToilets?.toSet() ?: setOf()) as MutableSet<Int>?
 
-                val user = document.toObject(User::class.java)
+                                    // email로 받아온 사용자 데이터 저장
+                                    ToiletData.currentUser = it
 
-                if (user != null) {
-                    Log.d("test loadUser", "User found: $user")
-                    ToiletData.currentUser = user
-                    _user.postValue(user)  // LiveData 업데이트 추가
-                    _likedToilets.postValue(user.likedToilets?.toMutableSet() ?: mutableSetOf())
-                    true
+                                    Log.d("test es", "User loaded: ${it.email}")
+                                    Log.d("test es", "Liked toilets loaded: ${_likedToilets.value}")
+                                    continuation.resume(true)
+                                } ?: continuation.resume(false)
+                            } else {
+                                Log.e("test es", "Document does not exist")
+                                continuation.resume(false)
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("test es", "Error loading user: ${e.message}")
+                            continuation.resume(false)
+                        }
+                }
+                return@withContext result
+            } catch (e: Exception) {
+                Log.e("test es", "Error in loadUser: ${e.message}")
+                return@withContext false
+            }
+        }
+    }
+
+
+        /**
+         * 좋아요 상태 업데이트
+         * @param toiletId 화장실 ID
+         * @param isLiked 좋아요 여부
+         */
+    fun updateLikeStatus(toiletId: Int, isLiked: Boolean) {
+        val currentUser = _user.value ?: ToiletData.currentUser
+        if (currentUser == null) {
+            Log.e("test es", "Cannot update like status: No user logged in")
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                // 현재 좋아요 목록 업데이트
+                val updatedLikedToilets = (_likedToilets.value ?: setOf()).toMutableSet()
+                if (isLiked) {
+                    updatedLikedToilets.add(toiletId)
                 } else {
-                    Log.d("test loadUser", "User not found in Firestore")
-                    false
+                    updatedLikedToilets.remove(toiletId)
+                }
+
+                // LiveData 업데이트
+                _likedToilets.value = updatedLikedToilets
+
+                // Firestore 업데이트
+                updateUserInFirestore(currentUser.email, updatedLikedToilets)
+            } catch (e: Exception) {
+                Log.e("test es", "Error updating like status: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateUserInFirestore(email: String, likedToilets: Set<Int>) {
+        viewModelScope.launch {
+            try {
+                val userRef = firestore.collection("users").document(email)
+
+                // 트랜잭션을 사용하여 안전하게 업데이트
+                firestore.runTransaction { transaction ->
+                    val snapshot = transaction.get(userRef)
+                    if (snapshot.exists()) {
+                        // 현재 사용자 데이터 가져오기
+                        val currentData = snapshot.toObject(User::class.java)
+
+                        // 업데이트할 데이터 준비
+                        val updates = hashMapOf<String, Any>(
+                            "likedToilets" to likedToilets.toList()
+                        )
+
+                        // 트랜잭션 내에서 업데이트 실행
+                        transaction.update(userRef, updates)
+                    }
+                }.addOnSuccessListener {
+                    Log.d("test es", "Successfully updated user likes in Firestore")
+                    // 로컬 User 객체도 업데이트
+                    _user.value?.let { currentUser ->
+                        _user.value = currentUser.copy(likedToilets = likedToilets.toList())
+                    }
+                }.addOnFailureListener { e ->
+                    Log.e("test es", "Error updating user in Firestore", e)
+                    // 실패 시 로컬 상태 롤백을 위한 이벤트 발생 가능
                 }
             } catch (e: Exception) {
-                Log.e("test loadUser", "Error loading user: ${e.message}", e)
-                false
+                Log.e("test es", "Error in updateUserInFirestore: ${e.message}")
             }
         }
     }
 
-
-
-    /**
-     * 좋아요 상태 업데이트
-     * @param toiletId 화장실 ID
-     * @param isLiked 좋아요 여부
-     */
-    fun updateLikeStatus(toiletId: Int, isLiked: Boolean) {
-        val currentUser = _user.value
-        if (currentUser != null) {
-            val updatedLikedToilets = _likedToilets.value ?: mutableSetOf()
-
-            if (isLiked) {
-                updatedLikedToilets.add(toiletId)
-            } else {
-                updatedLikedToilets.remove(toiletId)
-            }
-
-            // LiveData 업데이트
-            _likedToilets.value = updatedLikedToilets
-
-
-            // Firebase에 사용자 데이터 업데이트
-            currentUser.likedToilets = updatedLikedToilets.toMutableList()
-            firestore.collection("users")
-                .document(currentUser.email)
-                .set(currentUser)
-                .addOnSuccessListener {
-                    _user.postValue(currentUser)
-                }
-                .addOnFailureListener {
-                    // 에러 처리
-                }
-        }
-    }
-
-
-    /**
-     * 특정 화장실이 사용자의 좋아요 목록에 있는지 확인
-     * @param toiletId 화장실 ID
-     * @return 좋아요 여부
-     */
-    fun isToiletLiked(toiletId: Int): Boolean {
-        return _likedToilets.value?.contains(toiletId) ?: false
-    }
-
-    /**
-     * Firebase에 저장된 사용자 데이터를 삭제 (로그아웃 시 호출)
-     */
-    fun clearUserData() {
-        _user.value = null
-        _likedToilets.value = mutableSetOf()
-    }
 }

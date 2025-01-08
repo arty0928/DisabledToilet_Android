@@ -35,20 +35,18 @@ class StartActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // GoogleHelper 초기화
-                googleHelper.initializeGoogleSignIn(userViewModel) // 구글 로그인 초기화
 
                 // 초기화 작업 (예: 데이터 로드)
                 val initResult = initializeApp()
-                Log.d("GoogleHelper start1", initResult.toString())
+
+                // GoogleHelper 초기화
+                googleHelper.initializeGoogleSignIn(userViewModel) // 구글 로그인 초기화
 
                 withContext(Dispatchers.Main) {
                     loadingDialog.dismiss() // 로딩 다이얼로그 종료
                     if (initResult) {
                         // 로그인 상태 확인
                         val currentUser = ToiletData.getCurretnUser()
-
-                        Log.d("GoogleHelper start2", currentUser.toString())
 
                         if (currentUser != null) {
                             // 로그인 상태일 경우 MainActivity로 이동

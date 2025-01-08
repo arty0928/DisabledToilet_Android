@@ -3,9 +3,11 @@ package com.dream.disabledtoilet_android.Utility.Dialog.utils
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.MainActivity
@@ -20,11 +22,15 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.MapLifeCycleCallback
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class GoogleHelper private constructor(private val context: Context) {
@@ -70,56 +76,79 @@ class GoogleHelper private constructor(private val context: Context) {
                 isSuccess.complete(false)
                 throw Exception("GoogleSignInClient initialization failed")
             }
-            
-            //로그인한 상태인지 확인후, 사용자 정보 업데이트
+
+            // 로그인한 상태인지 확인 후, 사용자 정보 업데이트
             val success = fetchUserData(userViewModel)
 
             isSuccess.complete(success)
-
         }
         return isSuccess.await()
     }
 
-    /**
-     * 구글 로그인 처리 후, 사용자 정보 업데이트
-     */
-    /**
-     * 구글 로그인 처리 후, 사용자 정보 업데이트
-     */
+
     /**
      * 구글 로그인 처리 후, 사용자 정보 업데이트
      */
     suspend fun fetchUserData(userViewModel: UserViewModel): Boolean {
-        try {
-            val email = getUserEmail()
-            Log.d("test es", "1. Email: $email")
+        val email = getUserEmail()
 
-            return if (email != null) {
-                Log.d("test es", "2. Before calling loadUser")
-                try {
-                    Log.d("test es", "3. Entering withContext block")
-                    val success = withContext(Dispatchers.IO) {
-                        Log.d("test es", "4. Inside withContext, about to call loadUser")
-                        val result = userViewModel.loadUser(email)
-                        Log.d("test es", "5. loadUser completed with result: $result")
-                        result
-                    }
-                    Log.d("test es", "6. After withContext block, LoadUser result: $success")
-                    success
-                } catch (e: Exception) {
-                    Log.e("test es", "7. Error in withContext block: ${e.message}", e)
-                    false
-                }
-            } else {
-                Log.d("test es", "8. Email is null, returning false")
-                false
+        return if (email != null) {
+            val isSuccess = withContext(Dispatchers.IO) {
+                userViewModel.loadUser(email)
             }
-        } catch (e: Exception) {
-            Log.e("test es", "9. Error in fetchUserData: ${e.message}", e)
-            return false
+            isSuccess
+        } else {
+            false
         }
     }
 
+//        val isSuccess = CompletableDeferred<Boolean>()
+//
+//        withContext(Dispatchers.Main) { // UI 스레드에서 실행
+//            mapView = binding.mapViewDetailpage
+//            mapView.start(object : MapLifeCycleCallback() {
+//                override fun onMapDestroy() {
+//                    Log.d("MapManager", "MapView destroyed")
+//                }
+//
+//                override fun onMapError(error: Exception) {
+//                    Log.e("MapManager", "Map error: ${error.message}")
+//                    isSuccess.completeExceptionally(error)
+//                }
+//            }, object : KakaoMapReadyCallback() {
+//                @RequiresApi(Build.VERSION_CODES.O)
+//                override fun onMapReady(map: KakaoMap) {
+//                    kakaoMap = map
+//                    Log.d("MapManager", "KakaoMap is ready")
+//                    isSuccess.complete(true)
+//                }
+//            })
+//        }
+//
+//        return isSuccess.await()
+//    }
+
+    //        return try {
+//            val email = getUserEmail()
+//            Log.d("test es", "1. Email: $email")
+//
+//            if (email != null) {
+//                Log.d("test es", "2. Before calling loadUser")
+//                val success = withContext(Dispatchers.IO) {
+//                    Log.d("test es", "4. Inside withContext, about to call loadUser")
+//                    userViewModel.loadUser(email) // Boolean을 반환한다고 가정
+//                }
+//                Log.d("test es", "6. After withContext block, LoadUser result: $success")
+//                success
+//            } else {
+//                Log.d("test es", "8. Email is null, returning false")
+//                false
+//            }
+//        } catch (e: Exception) {
+//            Log.e("test es", "9. Error in fetchUserData: ${e.message}", e)
+//            false
+//        }
+//    }
 
 
     /**

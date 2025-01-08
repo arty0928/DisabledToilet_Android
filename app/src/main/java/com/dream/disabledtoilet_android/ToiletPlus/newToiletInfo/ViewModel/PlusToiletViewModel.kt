@@ -1,8 +1,9 @@
 package com.dream.disabledtoilet_android.ToiletPlus.newToiletInfo.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.tools.build.jetifier.core.utils.Log
+
 
 /**
  * 화장실 등록 상세 정보 뷰모델
