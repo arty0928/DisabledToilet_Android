@@ -5,6 +5,7 @@ import android.icu.number.Scale
 import androidx.compose.animation.scaleIn
 import com.android.tools.build.jetifier.core.utils.Log
 import com.dream.disabledtoilet_android.R
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.label.Label
@@ -54,14 +55,32 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
      *      맵에 화장실 레이블 생성
      */
     fun makeToiletLabel(toiletModel: ToiletModel): Label?{
-        val styles = kakaoMap.labelManager?.addLabelStyles(
-            LabelStyles.from(
-                LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
-                LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
-                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
-                LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
+
+        Log.d("test liked", "${ToiletData.currentUser?.likedToilets}")
+        // 좋아요 여부 확인
+        val isLiked = ToiletData.currentUser?.likedToilets?.contains(toiletModel.number)
+
+        // 좋아요 스타일 설정
+        val styles = if(isLiked == true) {
+            kakaoMap.labelManager?.addLabelStyles(
+                LabelStyles.from(
+                    LabelStyle.from(R.drawable.saved_pin1).setZoomLevel(10),
+                    LabelStyle.from(R.drawable.saved_pin2).setZoomLevel(13),
+                    LabelStyle.from(R.drawable.saved_pin3).setZoomLevel(16),
+                    LabelStyle.from(R.drawable.saved_pin4).setZoomLevel(19)
+                )
             )
-        )
+        }else{
+                kakaoMap.labelManager?.addLabelStyles(
+                    LabelStyles.from(
+                        LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
+                        LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
+                        LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
+                        LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
+                    )
+                )
+        }
+
         val position = LatLng.from(toiletModel.wgs84_latitude, toiletModel.wgs84_longitude)
         val options = LabelOptions.from(position)
             .setStyles(styles)
