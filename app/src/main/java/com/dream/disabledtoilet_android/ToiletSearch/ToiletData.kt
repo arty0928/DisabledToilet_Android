@@ -1,10 +1,11 @@
 package com.dream.disabledtoilet_android.ToiletSearch
 
 import ToiletModel
+import User
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.dream.disabledtoilet_android.BuildConfig
-import com.dream.disabledtoilet_android.User.User
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletData.currentUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.FirebaseDatabase
 import kotlin.coroutines.resume
@@ -13,10 +14,12 @@ import kotlin.coroutines.suspendCoroutine
 object ToiletData {
     private val TAG = "[ToiletData]"
 
-    //좋아요 데이터 변동 감지
-    private val _save = MutableLiveData<Int>()
     var toiletListInit = false
+    // 전체 화장실 리스트 (불변)
     var cachedToiletList: List<ToiletModel>? = listOf()
+
+    //좋아요가 변동된 화장실 리스트
+    var updatedToilets = mutableListOf<ToiletModel>()
 
     //사용자
     var currentUser : User? = null
@@ -46,80 +49,39 @@ object ToiletData {
     }
 
     /**
-     * 특정 화장실의 좋아요 값 업데이트 (로컬 데이터)
+     * 화장실 정보 업데이트
      */
-    fun updateSaveValueForToilet(toiletId: Int, userId: String, isLiked: Boolean) {
-        val toilet = cachedToiletList?.find { it.number == toiletId }
-        val currentLikedStatus = currentUser?.likedToilets?.contains(toiletId) ?: false
+    fun updateToilet(toiletId : Int, isLiked : Boolean){
+        val toilet = cachedToiletList?.find { it.number ==toiletId }
+        toilet?.let{
+            val originSaveValue = it.save
+            it.save = if(isLiked) it.save + 1 else maxOf(0, it.save -1)
 
-
-        toilet?.let {
-            //현재 상태와 요청된 상태가 다를 때만 업데이트
-            if (currentLikedStatus != isLiked){
-                if (isLiked) {
-                    // 사용자의 likedToilets에 화장실 ID 추가
-//                    currentUser?.likedToilets?.add(toiletId)
-                    it.save += 1
-                    Log.d("test es", "added save : ${it.save}")
-                } else {
-                    // 좋아요 제거
-//                    currentUser?.likedToilets?.remove(toiletId)
-                    it.save = maxOf(0,it.save -1)
-                    Log.d("test es", "remove save : ${it.save}")
-
-                }
-            }
-
-        }
-    }
-
-
-    /**
-     * 사용자 정보 업데이트 (즉시 Firebase 반영)
-     */
-    fun updateUserLikes(toiletId: Int, isLiked: Boolean) {
-        currentUser?.let { user ->
-            val currentLikedStatus = user.likedToilets.contains(toiletId)
-
-            // 현재 상태와 요청된 상태가 다를 때만 업데이트
-            if (currentLikedStatus != isLiked) {
-                if (isLiked) {
-//                    user.likedToilets.add(toiletId)
-                } else {
-//                    user.likedToilets.remove(toiletId)
-                }
-
-                // Firebase에 사용자 정보 업데이트
-                firestore.collection("users")
-                    .document(user.email)
-                    .set(user)
-                    .addOnSuccessListener {
-                        Log.d("ToiletData", "User likes updated successfully for toilet $toiletId")
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.e("ToiletData", "Error updating user likes: ${exception.message}")
-                    }
+            if(originSaveValue != it.save && !updatedToilets.contains(it)){
+                updatedToilets.add(it)
+                Log.d("test es ", "Toilet updated : ${toiletId}, new save count : ${it.save}")
             }
         }
     }
 
-
     /**
-     * Firebase에 로컬 화장실 데이터 동기화
+     * 업데이트 된 화장실 정보만 firebase에 업데이트
      */
     fun syncToFirebase() {
-        cachedToiletList?.forEach { toilet ->
+        updatedToilets.forEach { toilet ->
             firestore.collection("dreamhyoja")
                 .document(toilet.number.toString())
                 .set(toilet)
                 .addOnSuccessListener {
-                    Log.d("test es", "Toilet data synced successfully: ${toilet.number}")
+                    Log.d(TAG, "Toilet data synced successfully: ${toilet.number}")
                 }
                 .addOnFailureListener { exception ->
-                    Log.e("test es", "Error syncing toilet data: ${exception.message}")
+                    Log.e(TAG, "Error syncing toilet data: ${exception.message}")
                 }
         }
+        updatedToilets.clear()
     }
+
 
     fun getToiletAllData() : List<ToiletModel>? {
         return ToiletData.cachedToiletList

@@ -33,13 +33,13 @@ class MyPageActivity : AppCompatActivity() {
         }
 
         //좋아요 화장실 갯수
-        binding.mypageSaveCountTxt.text = ToiletData.currentUser?.recentlyViewedToilets?.size.toString()
+//        binding.mypageSaveCountTxt.text = ToiletData.currentUser?.recentlyViewedToilets?.size.toString()
 
         //등록한 화장실 갯수
-        binding.mypageRegisterCountTxt.text = ToiletData.currentUser?.registedToilets?.size.toString()
+//        binding.mypageRegisterCountTxt.text = ToiletData.currentUser?.registedToilets?.size.toString()
 
         //사용자 이름
-        binding.mypageUsernameTxt.text = ToiletData.currentUser!!.name!!.split("@")[0]
+//        binding.mypageUsernameTxt.text = ToiletData.currentUser!!.name!!.split("@")[0]
 
 
         // 최근 본 화장실 데이터 목록 생성

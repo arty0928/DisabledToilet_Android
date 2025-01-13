@@ -1,16 +1,11 @@
-package com.dream.disabledtoilet_android.User
+import androidx.lifecycle.MutableLiveData
 
-import androidx.annotation.Keep
-
-@Keep
 data class User(
-
     val email: String = "",
-    val name: String ="",
-    val photoURL: String ="",
-    //해당 화장실 번호만
-    var likedToilets: List<Int> = mutableListOf(),
-    var recentlyViewedToilets: MutableList<Int> = mutableListOf(),
-    var registedToilets: MutableList<Int> = mutableListOf()
-
+    val name: String = "",
+    val photoURL: String = "",
+    // 해당 화장실 번호만
+    var likedToilets: List<Int> = emptyList(),
+    var recentlyViewedToilets: MutableLiveData<MutableList<Int>> = MutableLiveData(mutableListOf()),
+    var registedToilets: MutableLiveData<MutableList<Int>> = MutableLiveData(mutableListOf())
 )

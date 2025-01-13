@@ -1,5 +1,6 @@
 package com.dream.disabledtoilet_android.Utility.Dialog.utils
 
+import User
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,6 +9,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.MainActivity
@@ -36,6 +38,7 @@ import kotlinx.coroutines.launch
 class GoogleHelper private constructor(private val context: Context) {
 
     private val job = Job()
+    private val firestore = FirebaseFirestore.getInstance()
 
     companion object {
         @Volatile
@@ -60,7 +63,7 @@ class GoogleHelper private constructor(private val context: Context) {
     /**
      * 구글 로그인 클라이언트 초기화
      */
-    suspend fun initializeGoogleSignIn(userViewModel: UserViewModel): Boolean {
+    suspend fun initializeGoogleSignIn(): Boolean {
         val isSuccess = CompletableDeferred<Boolean>()
 
         withContext(Dispatchers.IO) {
@@ -78,7 +81,7 @@ class GoogleHelper private constructor(private val context: Context) {
             }
 
             // 로그인한 상태인지 확인 후, 사용자 정보 업데이트
-            val success = fetchUserData(userViewModel)
+            val success = fetchUserData()
 
             isSuccess.complete(success)
         }
@@ -89,66 +92,64 @@ class GoogleHelper private constructor(private val context: Context) {
     /**
      * 구글 로그인 처리 후, 사용자 정보 업데이트
      */
-    suspend fun fetchUserData(userViewModel: UserViewModel): Boolean {
-        val email = getUserEmail()
+    suspend fun fetchUserData(): Boolean {
+        val email = getUserEmail() // 사용자의 이메일 가져오기
 
-        return if (email != null) {
-            val isSuccess = withContext(Dispatchers.IO) {
-                userViewModel.loadUser(email)
-            }
-            isSuccess
-        } else {
-            false
+        if (email == null) {
+            Log.e("test es", "사용자 이메일이 null입니다.")
+            return false
         }
+
+        val isSuccess = CompletableDeferred<Boolean>()
+
+        try {
+            firestore.collection("users")
+                .document(email)
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        // Firestore 데이터를 Map으로 가져오기
+                        val data = document.data
+
+                        if (data != null) {
+                            // Map 데이터를 User 객체로 변환
+                            val user = User(
+                                email = data["email"] as? String ?: "",
+                                name = data["name"] as? String ?: "",
+                                photoURL = data["photoURL"] as? String ?: "",
+                                likedToilets = data["likedToilets"] as? List<Int> ?: emptyList(),
+                                recentlyViewedToilets = MutableLiveData(
+                                    (data["recentlyViewedToilets"] as? List<Int>)?.toMutableList() ?: mutableListOf()
+                                ),
+                                registedToilets = MutableLiveData(
+                                    (data["registedToilets"] as? List<Int>)?.toMutableList() ?: mutableListOf()
+                                )
+                            )
+
+                            ToiletData.currentUser = user
+                            isSuccess.complete(true)
+                        } else {
+                            Log.e("test es", "Firestore 문서에 데이터가 없습니다.")
+                            isSuccess.complete(false)
+                        }
+                    } else {
+                        Log.e("test es", "Firestore 문서가 존재하지 않습니다.")
+                        isSuccess.complete(false)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("test es", "Firestore 데이터 가져오기 실패", e)
+                    isSuccess.complete(false)
+                }
+
+        } catch (e: Exception) {
+            Log.e("test es", "예외 발생: ${e.message}", e)
+            isSuccess.complete(false)
+        }
+
+        return isSuccess.await()
     }
 
-//        val isSuccess = CompletableDeferred<Boolean>()
-//
-//        withContext(Dispatchers.Main) { // UI 스레드에서 실행
-//            mapView = binding.mapViewDetailpage
-//            mapView.start(object : MapLifeCycleCallback() {
-//                override fun onMapDestroy() {
-//                    Log.d("MapManager", "MapView destroyed")
-//                }
-//
-//                override fun onMapError(error: Exception) {
-//                    Log.e("MapManager", "Map error: ${error.message}")
-//                    isSuccess.completeExceptionally(error)
-//                }
-//            }, object : KakaoMapReadyCallback() {
-//                @RequiresApi(Build.VERSION_CODES.O)
-//                override fun onMapReady(map: KakaoMap) {
-//                    kakaoMap = map
-//                    Log.d("MapManager", "KakaoMap is ready")
-//                    isSuccess.complete(true)
-//                }
-//            })
-//        }
-//
-//        return isSuccess.await()
-//    }
-
-    //        return try {
-//            val email = getUserEmail()
-//            Log.d("test es", "1. Email: $email")
-//
-//            if (email != null) {
-//                Log.d("test es", "2. Before calling loadUser")
-//                val success = withContext(Dispatchers.IO) {
-//                    Log.d("test es", "4. Inside withContext, about to call loadUser")
-//                    userViewModel.loadUser(email) // Boolean을 반환한다고 가정
-//                }
-//                Log.d("test es", "6. After withContext block, LoadUser result: $success")
-//                success
-//            } else {
-//                Log.d("test es", "8. Email is null, returning false")
-//                false
-//            }
-//        } catch (e: Exception) {
-//            Log.e("test es", "9. Error in fetchUserData: ${e.message}", e)
-//            false
-//        }
-//    }
 
 
     /**

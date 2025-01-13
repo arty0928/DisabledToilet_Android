@@ -21,9 +21,11 @@ import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Detail.DetailPageActivity
 import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.NearViewModel
+import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.UserViewModelFactory
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
@@ -68,7 +70,12 @@ class NearActivity : AppCompatActivity() {
         // 뷰모델 받기
         viewModel = ViewModelProvider(this).get(NearViewModel::class.java)
         filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+
+        val currentUserEmail = ToiletData.currentUser?.email
+        if(currentUserEmail != null){
+            val factory = UserViewModelFactory(currentUserEmail)
+            userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
+        }
 
         // 임시
         viewModel.setFilter()
@@ -299,10 +306,12 @@ class NearActivity : AppCompatActivity() {
         val cameraAnimation = CameraAnimation.from(100,true,true)
         moveCamera(cameraUpdate, cameraAnimation)
 
+
         // 바텀시트 뷰 생성
         val bottomSheetView = this.layoutInflater.inflate(R.layout.detail_bottomsheet, null)
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         bottomSheetDialog.setContentView(bottomSheetView)
+
         setBottomSheetUI(bottomSheetView, toilet)
         bottomSheetDialog.show()
     }
@@ -313,8 +322,6 @@ class NearActivity : AppCompatActivity() {
         val toiletName: TextView = bottomSheetView.findViewById(R.id.toilet_name)
         val toiletAddress: TextView = bottomSheetView.findViewById(R.id.toilet_address)
         val toiletOpeningHours: TextView = bottomSheetView.findViewById(R.id.toilet_opening_hours)
-        val saveIcon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
-        val saveIcon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
         val saveCount: TextView = bottomSheetView.findViewById(R.id.toilet_save_count)
         val calDis : TextView = bottomSheetView.findViewById(R.id.toilet_distance)
 
@@ -341,32 +348,39 @@ class NearActivity : AppCompatActivity() {
             KakaoShareHelper(this).shareKakaoMap(toilet)
         }
 
-//        // 좋아요 버튼 클릭 리스너
-//        saveIcon1.setOnClickListener {
-//            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
-//            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
-//        }
-//
-//        saveIcon2.setOnClickListener {
-//            val newLikedStatus = !userViewModel.isToiletLiked(toilet.number)
-//            userViewModel.updateLikeStatus(toilet.number, newLikedStatus)
-//        }
-//
-//        // 좋아요 상태 관찰
-//        userViewModel.likedToilets.observe(this) { likedToilets ->
-//            val isLiked = likedToilets.contains(toilet.number)
-//            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
-//        }
+        val saveIcon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
+        val saveIcon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
+
+        //좋아요 상태 관찰하며 UI 업데이트
+        userViewModel.userData.observe(this) {user ->
+            val isLiked = user?.likedToilets?.contains(toilet.number)
+            if (isLiked != null) {
+                updateSaveIcons(saveIcon1, saveIcon2, isLiked)
+            }
+
+            Log.d("test es", "userData 변동 감지 : ${userViewModel.userData}")
+        }
+
+        //버튼 클릭 리스너
+        saveIcon1.setOnClickListener {
+            val isLiked = userViewModel.toggleLikeStatus(toilet.number)
+            updateSaveIcons(saveIcon1,saveIcon2,isLiked)
+            Log.d("test es", "save1 버튼 클릭 : ${userViewModel.userData}")
+
+        }
+        saveIcon2.setOnClickListener {
+            val isLiked = userViewModel.toggleLikeStatus(toilet.number)
+            updateSaveIcons(saveIcon1,saveIcon2,isLiked)
+            Log.d("test es", "save1 버튼 클릭 : ${userViewModel.userData}")
+
+        }
+
     }
 
     private fun updateSaveIcons(saveIcon1: ImageView, saveIcon2: ImageView, isLiked: Boolean) {
-        if (isLiked) {
-            saveIcon1.setImageResource(R.drawable.saved_star_icon)
-            saveIcon2.setImageResource(R.drawable.saved_star_icon)
-        } else {
-            saveIcon1.setImageResource(R.drawable.save_icon)
-            saveIcon2.setImageResource(R.drawable.save_icon)
-        }
+        val iconRes = if (isLiked) R.drawable.saved_star_icon else R.drawable.save_icon
+        saveIcon1.setImageResource(iconRes)
+        saveIcon2.setImageResource(iconRes)
     }
 
     // Intent 데이터를 처리하는 함수
