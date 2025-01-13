@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -69,132 +68,66 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <com.google.android.material.slider.Slider
-                    android:id="@+id/recentSlider"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:id="@+id/recentCheckSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/oneMonth"
-                    android:text="한달"
-                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/sixMonth"
-                    android:text="6개월"
-                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
-                    app:layout_constraintEnd_toStartOf="@id/oneYear"
-                    app:layout_constraintStart_toEndOf="@id/oneMonth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/oneYear"
-                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
-                    android:text="1년"
-                    app:layout_constraintEnd_toStartOf="@id/all"
-                    app:layout_constraintStart_toEndOf="@id/sixMonth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:stepSize="1"
+                    android:theme="@style/CustomSlider"
+                    android:valueFrom="0"
+                    android:valueTo="3"
+                    app:labelBehavior="gone"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <TextView
                     android:id="@+id/all"
-                    app:layout_constraintTop_toBottomOf="@id/recentSlider"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="전체"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
+
+                <TextView
+                    android:id="@+id/oneYear"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="1년"
+                    app:layout_constraintEnd_toStartOf="@id/sixMonth"
+                    app:layout_constraintStart_toEndOf="@id/all"
+                    app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
+
+                <TextView
+                    android:id="@+id/sixMonth"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="6개월"
+                    app:layout_constraintEnd_toStartOf="@id/oneMonth"
+                    app:layout_constraintStart_toEndOf="@id/oneYear"
+                    app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
+
+                <TextView
+                    android:id="@+id/oneMonth"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="한달"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         </LinearLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/white_round_box"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="10dp">
-
-        <TextView
-            android:id="@+id/operating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="현재 운영"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/operating1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/operating2"
-            app:layout_constraintTop_toBottomOf="@id/operating">
-
-            <ImageButton
-                android:id="@+id/operatingCircle1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="19dp"
-                android:background="@color/white"
-                android:src="@drawable/check_circle" />
-
-            <TextView
-                android:id="@+id/operatingText1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="15dp"
-                android:text="없음"
-                android:textColor="@color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/operating2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toEndOf="@id/operating1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/operating">
-
-            <ImageButton
-                android:id="@+id/operatingCircle2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="19dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/white"
-                android:src="@drawable/check_circle" />
-
-            <TextView
-                android:id="@+id/operatingText2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="한달 이내"
-                android:textColor="@color/black" />
-        </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:layout_gravity="center"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/white_round_box"
@@ -212,144 +145,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/optionRecycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:rowCount="4"
-            android:useDefaultMargins="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/filter1"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_selected"
-                    android:gravity="center"
-                    android:text="남녀구분"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/filter2"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="손잡이"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/filter3"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="자동문"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/filter4"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="다목적 화장실"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/filter5"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="미닫이"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/filter6"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="점자블록"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <TextView
-                    android:id="@+id/filter7"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="접이문"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/filter8"
-                    android:layout_width="100dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginHorizontal="5dp"
-                    android:background="@drawable/filter_button_around"
-                    android:gravity="center"
-                    android:text="접이문"
-                    android:textColor="@color/black"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
@@ -372,7 +171,7 @@
             android:textColor="@color/black"
             android:textStyle="bold" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/searchToilet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

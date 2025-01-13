@@ -3,7 +3,6 @@
 
     <style name="Theme.DisabledToilet_Android" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
     </style>
 
     <style name="Theme.DisabledToilet_Android.NoActionBar">
@@ -14,4 +13,9 @@
     <style name="Theme.DisabledToilet_Android.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.DisabledToilet_Android.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.DisabledToilet_Android_Material" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+    </style>
+
 </resources>

@@ -1,7 +1,11 @@
 package com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.DataLayer.OptionBuilder
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model.OptionModel
 
 
 /**
@@ -9,110 +13,104 @@ import androidx.lifecycle.ViewModel
  * FilterString을 통해서 조건 적용에 들어가는 텍스트까지 관리
  */
 class FilterViewModel : ViewModel() {
-    // filterString dataClass 초기화
-    val filterString = FilterString()
-    // Dialog 현재 띄워져있는지 데이터
-    val isDialogDismissed = MutableLiveData<Boolean>()
+    val _filterStatus = MutableLiveData<FilterStatus>()
+    val filterStatus: LiveData<FilterStatus> get() = _filterStatus
 
-    // 화장실 최근 점검 데이터
-    val toiletRecentCheck = MutableLiveData<Int>()
-    // 현재 운영 데이터
-    val isToiletOperating = MutableLiveData<Boolean>()
+    val _recentCheck = MutableLiveData<Int>()
+    val recentCheck: LiveData<Int> get() = _recentCheck
 
-    // 조건 적용 데이터 리스트
-    private var filterList = mutableListOf<FilterModel>()
-    // 조건 적용 데이터 라이브 데이터
-    val filterLiveList = MutableLiveData<MutableList<FilterModel>>()
-    //storeData() 호출 시 데이터 상태 저장 정보
-    private var savedStatus: FilterStatus? = null
+    val _optionStatus = MutableLiveData<List<OptionModel>>()
+    val optionStatus: LiveData<List<OptionModel>> get() = _optionStatus
+
+    private var originalFilterStatus = FilterStatus(
+        recentCheck = RecentCheckStatus(0),
+        optionStatus = OptionStatus()
+    )
 
     init {
-        // filterLiveList 초기화
-        filterLiveList.value = filterList
-        // filterList 초기화
-        for (i in 0 until filterString.filterNameList.size) {
-            filterList.add(
-                FilterModel(
-                    filterString.filterNameList[i],
-                    false
-                )
-            )
-        }
-        toiletRecentCheck.value = filterString.toiletCheckNever
-        isToiletOperating.value = false
-    }
-    /**
-     * 조건 적용에서 update를 위한 함수
-     */
-    fun updateFilterCheck(index: Int, isChecked: Boolean) {
-        filterList[index].checked = isChecked
-        filterLiveList.value = filterList
-    }
-    /**
-     * 지정된 값 이용하기 위한 data class
-     */
-    data class FilterString(
-        val toiletCheckNever: Int = 0,
-        val toiletCheckInYear: Int = 1,
-        val toiletCheckHalfYear: Int = 3,
-        val toiletCheckInMonth: Int = 4,
-        // 필터 이름(조건적용) 리스트
-        val filterNameList: List<String> = listOf(
-            "장애인 소변기",
-            "장애인 대변기",
-            "비상벨",
-            "입구 CCTV",
-            "개방화장실",
-            "공중화장실",
-            "민간소유",
-            "공공기관"
-        )
-    )
-    /**
-     * 조건 적용에 사용되는 데이터 클래스
-     */
-    data class FilterModel(
-        var filterName: String,
-        var checked: Boolean
-    )
-    /**
-     *  필터 상태 저장을 위한 데이터 클래스
-     */
-    data class FilterStatus(
-        val filterCheckedStates: List<Boolean>,
-        val toiletRecentCheckValue: Int,
-        val isToiletOperatingValue: Boolean
-    )
-    /**
-     * 조건 검색 show 되었을 때 값 store
-     */
-    fun storeStatus() {
-        savedStatus = FilterStatus(
-            filterCheckedStates = filterList.map { it.checked },
-            toiletRecentCheckValue = toiletRecentCheck.value ?: filterString.toiletCheckNever,
-            isToiletOperatingValue = isToiletOperating.value ?: false
+        _recentCheck.value = 0
+        _optionStatus.value = OptionBuilder().buildOptionList()
+        _filterStatus.value = FilterStatus(
+            recentCheck = RecentCheckStatus(0),
+            optionStatus = OptionStatus()
         )
     }
-    /**
-     * storeStatus() 호출 당시 데이터로 load
-     */
-    fun loadStatus() {
-        savedStatus?.let { status ->
-            // filterList 복원
-            status.filterCheckedStates.forEachIndexed { index, checked ->
-                filterList[index].checked = checked
-            }
-            filterLiveList.value = filterList
 
-            // 다른 상태값들 복원
-            toiletRecentCheck.value = status.toiletRecentCheckValue
-            isToiletOperating.value = status.isToiletOperatingValue
-        }
+    /**
+     * 원래 값 저장
+     */
+    fun saveOriginalFilterStatus(value: FilterStatus){
+        originalFilterStatus = value
+        Log.d("test saveOrigin1", originalFilterStatus.toString())
+        applyOriginalFilterStatus()
     }
+
+    /**
+     * 원래 값 get
+     */
+    fun getOriginalFilterStatus(): FilterStatus {
+        Log.d("test saveOrigin2", originalFilterStatus.toString())
+        return originalFilterStatus
+    }
+
+    /**
+     * 현재 필터값 get
+     */
+    fun getFilterStatus(): FilterStatus {
+        return FilterStatus(
+            recentCheck = RecentCheckStatus(recentCheck.value!!),
+            optionStatus = OptionStatus(optionStatus.value!!)
+        )
+    }
+
+    /**
+     * 최근 점검값 세팅
+     */
+    fun setRecentCheck(value: Int) {
+        _recentCheck.value = value
+    }
+
+    /**
+     * 옵션값 세팅
+     */
+    fun setOptionStatus(value: List<OptionModel>){
+        _optionStatus.value = value
+    }
+    /**
+     * 필터값 초기화
+     */
+    fun clearFilterStatus(){
+        setRecentCheck(0)
+        setOptionStatus(OptionBuilder().buildOptionList())
+    }
+    /**
+     * 필터값 생성
+     */
+    fun makeFilterStatus(){
+        _filterStatus.value = FilterStatus(
+            recentCheck = RecentCheckStatus(recentCheck.value!!),
+            optionStatus = OptionStatus(optionStatus.value!!)
+        )
+    }
+    /**
+     * 초기값 적용
+     */
+    private fun applyOriginalFilterStatus(){
+        setOptionStatus(originalFilterStatus.optionStatus.optionStatusList)
+        setRecentCheck(originalFilterStatus.recentCheck.value)
+    }
+
 }
 
-data class FilterState(
-    val filterCheckedStates: List<Boolean> = listOf(),
-    val toiletRecentCheckValue: Int = 0,
-    val isToiletOperatingValue: Boolean = false
+data class FilterStatus(
+    val recentCheck: RecentCheckStatus,
+    val optionStatus: OptionStatus
+)
+
+data class RecentCheckStatus(
+    val value: Int = 0
+)
+
+data class OptionStatus(
+    val optionStatusList: List<OptionModel> = OptionBuilder().buildOptionList()
 )

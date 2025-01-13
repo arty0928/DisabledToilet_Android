@@ -99,8 +99,6 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         var lotAddressName = ""
         // Call 성공 시
         callResult.onSuccess { response ->
-            Log.d(Tag, response.toString())
-            Log.d(Tag, response.documents.toString())
             // response.documents가 비어있지 않은 경우 첫 번째 요소 처리
             response.documents.firstOrNull()?.let { document ->
                 // 지번 확인
