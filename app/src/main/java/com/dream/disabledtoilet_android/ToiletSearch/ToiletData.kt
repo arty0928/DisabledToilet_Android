@@ -3,6 +3,7 @@ package com.dream.disabledtoilet_android.ToiletSearch
 import ToiletModel
 import User
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData.currentUser
@@ -19,7 +20,9 @@ object ToiletData {
     var cachedToiletList: List<ToiletModel>? = listOf()
 
     //좋아요가 변동된 화장실 리스트
-    var updatedToilets = mutableListOf<ToiletModel>()
+    // 좋아요가 변동된 화장실 리스트
+    private val _updatedToilets = MutableLiveData<Map<Int, ToiletModel>>(mapOf())
+    val updatedToilets: LiveData<Map<Int, ToiletModel>> get() = _updatedToilets
 
     //사용자
     var currentUser : User? = null
@@ -36,50 +39,79 @@ object ToiletData {
                 cachedToiletList = documents.mapNotNull { doc ->
                     ToiletModel.fromDocument(doc) // null이 아닌 경우만 포함
                 }
-                // 데이터 로드 성공 시 true 반환
                 toiletListInit = true
-
                 continuation.resume(true)
             }
             .addOnFailureListener { exception ->
-                // 데이터 로드 실패 시 false 반환
                 Log.e(TAG, "Error loading data: ${exception.message}")
                 continuation.resume(false)
             }
     }
 
     /**
-     * 화장실 정보 업데이트
+     * 화장실 정보 업데이트 : Map {화장실 번호 : save 값}
+     * 키가 이미 존재하면 새로운 값으로 대체
      */
-    fun updateToilet(toiletId : Int, isLiked : Boolean){
-        val toilet = cachedToiletList?.find { it.number ==toiletId }
-        toilet?.let{
+    fun updateToilet(toiletId: Int, isLiked: Boolean) {
+        val toilet = cachedToiletList?.find { it.number == toiletId }
+        toilet?.let {
             val originSaveValue = it.save
-            it.save = if(isLiked) it.save + 1 else maxOf(0, it.save -1)
+            val updatedSaveValue = if (isLiked) originSaveValue + 1 else maxOf(0, originSaveValue - 1)
 
-            if(originSaveValue != it.save && !updatedToilets.contains(it)){
-                updatedToilets.add(it)
-                Log.d("test es ", "Toilet updated : ${toiletId}, new save count : ${it.save}")
+            // 기존 Map 복사 후 수정
+            val currentMap = _updatedToilets.value ?: mapOf()
+            val updatedMap = currentMap.toMutableMap()
+
+            if (updatedMap.containsKey(it.number)) {
+                // 이미 존재하면 값 업데이트
+                val existingToilet = updatedMap[it.number]!!
+                existingToilet.save = updatedSaveValue
+                updatedMap[it.number] = existingToilet
+            } else {
+                // 존재하지 않으면 새로 추가
+                it.save = updatedSaveValue
+                updatedMap[it.number] = it
             }
+
+            // LiveData 업데이트
+            _updatedToilets.value = updatedMap
+
+            Log.d(TAG, "Toilet updated: $toiletId, new save count: ${updatedMap[it.number]?.save}")
         }
     }
 
     /**
-     * 업데이트 된 화장실 정보만 firebase에 업데이트
+     * 특정 화장실의 LiveData 관찰 함수
+     */
+    fun observeToilet(toiletId: Int): LiveData<ToiletModel?> {
+        val specificToiletLiveData = MutableLiveData<ToiletModel?>()
+
+        // updatedToilets LiveData를 관찰하여 특정 화장실의 변화만 필터링
+        updatedToilets.observeForever { updatedMap ->
+            specificToiletLiveData.value = updatedMap[toiletId]
+        }
+
+        return specificToiletLiveData
+    }
+
+    /**
+     * 업데이트 된 화장실 정보만 Firebase에 업데이트
      */
     fun syncToFirebase() {
-        updatedToilets.forEach { toilet ->
+        val currentMap = _updatedToilets.value ?: return
+        currentMap.forEach { (_, toilet) ->
             firestore.collection("dreamhyoja")
                 .document(toilet.number.toString())
-                .set(toilet)
+                .update("save", toilet.save)
                 .addOnSuccessListener {
-                    Log.d(TAG, "Toilet data synced successfully: ${toilet.number}")
+                    Log.d(TAG, "Save value updated successfully for toilet: ${toilet.number}")
                 }
                 .addOnFailureListener { exception ->
-                    Log.e(TAG, "Error syncing toilet data: ${exception.message}")
+                    Log.e(TAG, "Error updating save value for toilet: ${exception.message}")
                 }
         }
-        updatedToilets.clear()
+        // 업데이트 완료 후 초기화
+        _updatedToilets.value = mapOf()
     }
 
 

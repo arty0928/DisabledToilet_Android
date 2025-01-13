@@ -184,6 +184,10 @@ class NearActivity : AppCompatActivity() {
             }
         }
     }
+
+
+
+
     /**
      * 로딩 다이얼로그 띄우기
      */
@@ -348,33 +352,29 @@ class NearActivity : AppCompatActivity() {
             KakaoShareHelper(this).shareKakaoMap(toilet)
         }
 
+        // 특정 화장실의 LiveData를 관찰
+        ToiletData.observeToilet(toilet.number).observe(this) { updatedToilet ->
+            updatedToilet?.let {
+                saveCount.text = "저장 (${it.save})"
+            }
+        }
+
+        // 좋아요 버튼 클릭 리스너
         val saveIcon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
         val saveIcon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
 
-        //좋아요 상태 관찰하며 UI 업데이트
-        userViewModel.userData.observe(this) {user ->
-            val isLiked = user?.likedToilets?.contains(toilet.number)
-            if (isLiked != null) {
-                updateSaveIcons(saveIcon1, saveIcon2, isLiked)
-            }
-
-            Log.d("test es", "userData 변동 감지 : ${userViewModel.userData}")
-        }
-
-        //버튼 클릭 리스너
         saveIcon1.setOnClickListener {
             val isLiked = userViewModel.toggleLikeStatus(toilet.number)
-            updateSaveIcons(saveIcon1,saveIcon2,isLiked)
-            Log.d("test es", "save1 버튼 클릭 : ${userViewModel.userData}")
-
+            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
+            // `ToiletData` 업데이트
+            ToiletData.updateToilet(toilet.number, isLiked)
         }
         saveIcon2.setOnClickListener {
             val isLiked = userViewModel.toggleLikeStatus(toilet.number)
-            updateSaveIcons(saveIcon1,saveIcon2,isLiked)
-            Log.d("test es", "save1 버튼 클릭 : ${userViewModel.userData}")
-
+            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
+            // `ToiletData` 업데이트
+            ToiletData.updateToilet(toilet.number, isLiked)
         }
-
     }
 
     private fun updateSaveIcons(saveIcon1: ImageView, saveIcon2: ImageView, isLiked: Boolean) {
