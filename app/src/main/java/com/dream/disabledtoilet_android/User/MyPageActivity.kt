@@ -43,7 +43,6 @@ class MyPageActivity : AppCompatActivity() {
 
 
         // 최근 본 화장실 데이터 목록 생성
-        val recentViewedToilet = ToiletData.currentUser!!.recentlyViewedToilets
         val toiletList = mutableListOf<Recent_viewed_toilet>()
 
 //        for(toilet in recentViewedToilet){
@@ -57,7 +56,7 @@ class MyPageActivity : AppCompatActivity() {
         addToiletViews(toiletList, binding.recentViewedSectionLinear)
 
         //찜한 화장실 뷰 추가
-        val likedToilets = ToiletData.currentUser!!.likedToilets
+//        val likedToilets = ToiletData.currentUser!!.likedToilets
         val likedToiletList = mutableListOf<Recent_viewed_toilet>()
 
 //        for(toilet in likedToilets){

@@ -1,11 +1,14 @@
 package com.dream.disabledtoilet_android.Near.DataLayer
 
 import ToiletModel
+import User
 import android.icu.number.Scale
 import androidx.compose.animation.scaleIn
+import androidx.lifecycle.MutableLiveData
 import com.android.tools.build.jetifier.core.utils.Log
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.User.UserRepository
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.label.Label
@@ -20,6 +23,8 @@ import com.kakao.vectormap.label.Transition
  */
 class LabelBuilder(val kakaoMap: KakaoMap) {
     private var toiletLabelMap = mutableMapOf<Label, ToiletModel>()
+    private val repository = UserRepository()
+    val userToilets = MutableLiveData<User?>()
 
     /**
      *      ToiletModel 리스트를 기반으로 Label 리스트 생성
@@ -56,9 +61,15 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
      */
     fun makeToiletLabel(toiletModel: ToiletModel): Label?{
 
-        Log.d("test liked", "${ToiletData.currentUser?.likedToilets}")
+        ToiletData.currentUser?.let {
+            repository.loadUser(it) { user ->
+                userToilets.value = user
+            }
+        }
+
         // 좋아요 여부 확인
-        val isLiked = ToiletData.currentUser?.likedToilets?.contains(toiletModel.number)
+//        val isLiked = currentUser..contains(toiletModel.number)
+        val isLiked = userToilets.value?.likedToilets?.contains(toiletModel.number)
 
         // 좋아요 스타일 설정
         val styles = if(isLiked == true) {

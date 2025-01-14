@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,11 +22,12 @@ import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Detail.DetailPageActivity
 import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.NearViewModel
-import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.UserViewModelFactory
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.User.ToiletPostViewModel
+import com.dream.disabledtoilet_android.User.UserRepository
 import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
@@ -58,8 +60,9 @@ class NearActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var viewModel: NearViewModel
     private lateinit var filterViewModel: FilterViewModel
-    private lateinit var userViewModel : UserViewModel
 
+    private lateinit var userViewModel : UserViewModel
+    private lateinit var postViewModel: ToiletPostViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,10 +74,12 @@ class NearActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(NearViewModel::class.java)
         filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
 
-        val currentUserEmail = ToiletData.currentUser?.email
-        if(currentUserEmail != null){
-            val factory = UserViewModelFactory(currentUserEmail)
-            userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        postViewModel = ViewModelProvider(this).get(ToiletPostViewModel::class.java)
+
+        val email = ToiletData.currentUser
+        if(email != null){
+            userViewModel.fetchUserByEmail(email)
         }
 
         // 임시
@@ -94,9 +99,6 @@ class NearActivity : AppCompatActivity() {
         binding.filterButtonNear.setOnClickListener{
 
         }
-        
-        //좋아요 상태를 관찰하여 UI 업데이트
-//        observeLikedToilets()
 
         // 맵뷰 초기화
         binding.mapView.start(
@@ -172,9 +174,6 @@ class NearActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
 
     /**
      * 로딩 다이얼로그 띄우기
@@ -306,7 +305,7 @@ class NearActivity : AppCompatActivity() {
         val toiletName: TextView = bottomSheetView.findViewById(R.id.toilet_name)
         val toiletAddress: TextView = bottomSheetView.findViewById(R.id.toilet_address)
         val toiletOpeningHours: TextView = bottomSheetView.findViewById(R.id.toilet_opening_hours)
-        val saveCount: TextView = bottomSheetView.findViewById(R.id.toilet_save_count)
+        val saveCount: TextView = bottomSheetView.findViewById(R.id.toilet_save_count1)
         val calDis : TextView = bottomSheetView.findViewById(R.id.toilet_distance)
 
         toiletName.text = toilet.restroom_name
@@ -317,9 +316,6 @@ class NearActivity : AppCompatActivity() {
 
         // 상세 페이지로 이동
         bottomSheetView.findViewById<TextView>(R.id.more_button).setOnClickListener {
-            //Firebase에 ViewModel 정보 동기화
-            syncNearViewModelToFirebase()
-
             val intent = Intent(this, DetailPageActivity::class.java)
             intent.putExtra("TOILET_DATA", toilet)
             startActivity(intent)
@@ -342,33 +338,68 @@ class NearActivity : AppCompatActivity() {
             }
         }
 
-        // 좋아요 버튼 클릭 리스너
-        val saveIcon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
-        val saveIcon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
 
-        saveIcon1.setOnClickListener {
-            val isLiked = userViewModel.toggleLikeStatus(toilet.number)
-            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
-            // `ToiletData` 업데이트
-            ToiletData.updateToilet(toilet.number, isLiked)
+        // 사용자 정보 관찰
+        userViewModel.currentUser.observe(this) {user ->
+            if(user != null){
+                //로그인 상태
+                setupPostInteraction(bottomSheetView,toilet.number,user.email)
+            }else{
+                //로그아웃 상태이면 로그인 시도로
+                Log.d("test ", "user : ${user}")
+            }
         }
-        saveIcon2.setOnClickListener {
-            val isLiked = userViewModel.toggleLikeStatus(toilet.number)
-            updateSaveIcons(saveIcon1, saveIcon2, isLiked)
-            // `ToiletData` 업데이트
-            ToiletData.updateToilet(toilet.number, isLiked)
+    }
+    
+    private fun setupPostInteraction(bottomSheetView: View,toiletId : Int, userId : String){
+        postViewModel.observePostLikes(toiletId)
+        
+        //좋아요 버튼 클릭 이벤트
+        val savebtn1: LinearLayout = bottomSheetView.findViewById(R.id.save_btn1)
+        val savebtn2: LinearLayout = bottomSheetView.findViewById(R.id.save_btn2)
+
+        val saveicon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
+        val saveicon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
+
+        savebtn1.setOnClickListener {
+            val isLiked = postViewModel.isLikedByUser(userId)
+            Log.d("test ", "saveicon1 클릭")
+            if(isLiked){
+                postViewModel.removeLike(toiletId, userId)
+            }else{
+                Log.d("test ", "saveicon1 추가")
+                postViewModel.addLike(toiletId, userId)
+            }
+        }
+
+        savebtn2.setOnClickListener {
+            val isLiked = postViewModel.isLikedByUser(userId)
+            if(isLiked){
+                postViewModel.removeLike(toiletId, userId)
+            }else{
+                postViewModel.addLike(toiletId, userId)
+            }
+        }
+
+        // 좋아요 실시간 업데이트 관찰
+        postViewModel.toiletLikes.observe(this){likes ->
+            val likeCountTextView = bottomSheetView.findViewById<TextView>(R.id.toilet_save_count1)
+            likeCountTextView.text = "저장 (${likes.size})"
+            updateLikeButtonIcon(saveicon1, saveicon2, userId)
         }
     }
 
-    /**
-     * NearActivity의 ViewModel 정보를 Firebase에 동기화
-     */
-    private fun syncNearViewModelToFirebase() {
-        userViewModel.userData.value?.let { user ->
-            // Firebase에 사용자 데이터를 업데이트
-            userViewModel.syncUserDataToFirebase(user)
+    private fun updateLikeButtonIcon(saveBtn1: ImageView, saveBtn2 : ImageView, userId: String) {
+        val isLiked = postViewModel.isLikedByUser(userId)
+        if (isLiked) {
+            saveBtn1.setImageResource(R.drawable.saved_star_icon)
+            saveBtn2.setImageResource(R.drawable.saved_star_icon)
+        } else {
+            saveBtn1.setImageResource(R.drawable.save_icon)
+            saveBtn2.setImageResource(R.drawable.save_icon)
         }
     }
+
 
     private fun updateSaveIcons(saveIcon1: ImageView, saveIcon2: ImageView, isLiked: Boolean) {
         val iconRes = if (isLiked) R.drawable.saved_star_icon else R.drawable.save_icon
@@ -405,4 +436,20 @@ class NearActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        val currentToilet = viewModel.currentToilet.value
+        if (currentToilet == null) {
+            Log.e("NearActivity", "Error: currentToilet is null in onResume")
+            return
+        }
+
+        currentToilet.let { toilet ->
+            Log.d("NearActivity", "Observing likes for toilet: ${toilet.number}")
+            postViewModel.observePostLikes(toilet.number)
+        }
+    }
+
 }

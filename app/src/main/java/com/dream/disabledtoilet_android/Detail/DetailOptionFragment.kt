@@ -1,6 +1,7 @@
 package com.dream.disabledtoilet_android.Detail
 
 import ToiletModel
+import User
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -15,9 +16,9 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.UserViewModelFactory
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.User.ToiletPostViewModel
 import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
 import com.dream.disabledtoilet_android.databinding.FragmentDetailOptionBinding
 
@@ -27,21 +28,21 @@ class DetailOptionFragment : Fragment() {
 
     private var _binding: FragmentDetailOptionBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var postViewModel: ToiletPostViewModel
     private lateinit var userViewModel: UserViewModel
+
     //현재 화장실 데이터 저장
     private var currentToilet : ToiletModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val currentUserEmail = ToiletData.currentUser?.email
-        if(currentUserEmail != null){
-            val factory = UserViewModelFactory(currentUserEmail)
-            userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
 
-            //Firebase에서 사용자 데이터 가져오기
-            userViewModel.loadUser()
-        }
+        postViewModel = ViewModelProvider(this).get(ToiletPostViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
+        // 전달받은 화장실 데이터
+        currentToilet = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
     }
 
     override fun onCreateView(
@@ -51,10 +52,6 @@ class DetailOptionFragment : Fragment() {
         _binding = FragmentDetailOptionBinding.inflate(inflater, container, false)
         binding.root.setBackgroundColor(android.graphics.Color.TRANSPARENT)
 
-        // 전달받은 화장실 데이터
-        currentToilet = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
-
-        Log.d("test", "currentToilet : ${currentToilet}")
         currentToilet?.let { toilet ->
             setupUI(toilet)
             setupSaveButton(toilet)
@@ -107,32 +104,58 @@ class DetailOptionFragment : Fragment() {
     private fun setupSaveButton(toilet: ToiletModel) {
         val saveButton = binding.saveBtn3
         val saveIcon = binding.iconToggle
+        val saveTxt = binding.toiletSaveCount
 
-        //Firebase에서 가져온 데이터를 기반으로 좋아요 버튼 상태 업데이트
-        userViewModel.userData.observe(viewLifecycleOwner){user ->
-            if(user!= null){
-                updateSaveIcon(saveIcon ,user.likedToilets.contains(toilet.number))
+        postViewModel.toiletLikes.observe(viewLifecycleOwner) {likes ->
+            saveTxt.text = "저장 (${likes.size})"
+            val userId = userViewModel.currentUser.value?.email ?: return@observe
+            updateLikeButtonIcon(saveIcon, userId)
+        }
+
+//        postViewModel.likeCount.observe(viewLifecycleOwner) {count ->
+//            saveTxt.text = "저장 (${count})"
+//        }
+
+        saveButton.setOnClickListener {
+            val userId = userViewModel.currentUser.value?.email ?: return@setOnClickListener
+            val isLiked = postViewModel.isLikedByUser(userId)
+            if(isLiked){
+                postViewModel.removeLike(toilet.number, userId)
+            }else{
+                postViewModel.addLike(toilet.number, userId)
             }
         }
 
-        saveButton.setOnClickListener {
-            val isLiked = userViewModel.toggleLikeStatus(toilet.number)
-            updateSaveIcon(saveIcon, isLiked)
+//        postViewModel.toiletLikes.observe(viewLifecycleOwner) {likes ->
+//            val likeCountTextView = binding.toiletSaveCount
+//            likeCountTextView.text = "저장 (${likes.size})"
+//            updateLikeButtonIcon(saveButton, userId)
+//        }
+    }
+
+    private fun updateLikeButtonIcon(likeButton : ImageView, userId : String){
+        val isLiked = postViewModel.isLikedByUser(userId)
+        if(isLiked){
+            likeButton.setImageResource(R.drawable.saved_star_icon)
+        }else{
+            likeButton.setImageResource(R.drawable.save_icon)
         }
-
-    }
-    private fun  updateSaveCount(count : Int){
-        binding.toiletSaveCount.text = "저장 (${count})"
-    }
-
-    private fun updateSaveIcon(saveIcon: ImageView, isLiked: Boolean) {
-        saveIcon.setImageResource(
-            if (isLiked) R.drawable.saved_star_icon else R.drawable.save_icon
-        )
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(currentToilet == null){
+            return
+        }
+
+        currentToilet.let { toilet ->
+            postViewModel.observePostLikes(toilet!!.number)
+        }
     }
 }

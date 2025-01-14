@@ -118,15 +118,10 @@ class GoogleHelper private constructor(private val context: Context) {
                                 name = data["name"] as? String ?: "",
                                 photoURL = data["photoURL"] as? String ?: "",
                                 likedToilets = data["likedToilets"] as? List<Int> ?: emptyList(),
-                                recentlyViewedToilets = MutableLiveData(
-                                    (data["recentlyViewedToilets"] as? List<Int>)?.toMutableList() ?: mutableListOf()
-                                ),
-                                registedToilets = MutableLiveData(
-                                    (data["registedToilets"] as? List<Int>)?.toMutableList() ?: mutableListOf()
-                                )
+                                registedToilets = data["registedToilets"] as? List<Int> ?: emptyList(),
                             )
 
-                            ToiletData.currentUser = user
+                            ToiletData.currentUser = user.email
                             isSuccess.complete(true)
                         } else {
                             Log.e("test es", "Firestore 문서에 데이터가 없습니다.")
@@ -227,7 +222,6 @@ class GoogleHelper private constructor(private val context: Context) {
             "email" to account.email,
             "photoURL" to account.photoUrl.toString(),
             "likedToilets" to listOf<String>(),
-            "recentlyViewedToilets" to listOf<String>(),
             "registeredToilets" to listOf<String>()
         )
 

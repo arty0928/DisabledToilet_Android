@@ -1,52 +1,59 @@
 package com.dream.disabledtoilet_android.User
 
-import ToiletModel
-import android.util.Log
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import User
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
+import android.util.Log
+import kotlinx.coroutines.tasks.await
 
+class UserRepository {
 
-private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val db = FirebaseFirestore.getInstance()
 
-/**
- * 로그인한 사용자 정보를 가져와서, 현재 사용자 정보 currentUser 업데이트
- * @param email 사용자의 이메일
- * @param callback 사용자 정보를 처리할 콜백
- */
-//fun getLoggedInUser(email: String, callback: (Boolean) -> Unit) {
-//    // Firestore에서 사용자 데이터 가져오기
-//    firestore.collection("users")
-//        .whereEqualTo("email", email)
-//        .get()
-//        .addOnSuccessListener { querySnapshot ->
-//            if (!querySnapshot.isEmpty) {
-//                val document = querySnapshot.documents[0]
-//                val name = document.getString("name") ?: ""
-//                val photoURL = document.getString("photoURL") ?: ""
-//                val likedToilets =
-//                    document.get("likedToilets") as? List<ToiletModel> ?: listOf()
-//                val recentlyViewedToilets =
-//                    document.get("recentlyViewedToilets") as? List<ToiletModel> ?: listOf()
+    /**
+     * Firebase에서 사용자 데이터를 가져와 User 데이터 형식으로 반환
+     * @param email 사용자 이메일
+     * @return User 객체 (null 가능)
+     */
+    fun loadUser(email: String, callback : (User?) -> Unit){
+        db.collection("users")
+            .document(email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (documents.exists()) {
+                    val user = documents.toObject(User::class.java)
+                    callback(user)
+                } else {
+                    callback(null)
+                }
+            }
+            .addOnFailureListener {
+                callback(null)
+            }
+    }
+
+//    /**
+//     * Firebase에 사용자 데이터를 업데이트
+//     * @param email 사용자 이메일
+//     * @param updatedUser 업데이트할 User 데이터
+//     */
+//    fun uploadFirebase(email: String, updatedUser: User) {
+//        val userMap = hashMapOf(
+//            "email" to updatedUser.email,
+//            "name" to updatedUser.name,
+//            "name" to updatedUser.name,
+//            "photoURL" to updatedUser.photoURL,
+//            "likedToilets" to updatedUser.likedToilets,
+//        )
 //
-//                // User 객체 생성
-//                val user = User(
-//                    email = email,
-//                    name = name,
-//                    photoURL = photoURL,
-//                    likedToilets = likedToilets.toMutableList(),
-//                    recentlyViewedToilets = recentlyViewedToilets.toMutableList()
-//                )
-//
-//                // currentUser에 저장
-//                ToiletData.currentUser = user
-//                Log.d("GoogleHelper 저장" , ToiletData.currentUser.toString())
-//                callback(true)
-//            } else {
-//                callback(false) // 문서가 없음
+//        db.collection("users")
+//            .document(email)
+//            .set(userMap)
+//            .addOnSuccessListener {
+//                Log.d("UserRepository", "User data successfully uploaded to Firebase.")
 //            }
-//        }
-//        .addOnFailureListener {
-//            callback(false) // 오류 발생
-//        }
-//}
-//
+//            .addOnFailureListener { exception ->
+//                Log.e("UserRepository", "Failed to upload user data: ${exception.message}")
+//            }
+//    }
+}

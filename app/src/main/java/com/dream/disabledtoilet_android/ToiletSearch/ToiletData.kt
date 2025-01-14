@@ -25,7 +25,7 @@ object ToiletData {
     val updatedToilets: LiveData<Map<Int, ToiletModel>> get() = _updatedToilets
 
     //사용자
-    var currentUser : User? = null
+    var currentUser : String? = null
 
     // Firestore 인스턴스
     private val firestore = FirebaseFirestore.getInstance()
@@ -120,7 +120,7 @@ object ToiletData {
     }
 
 
-    fun getCurretnUser() : User?{
+    fun getCurretnUser() : String?{
         return currentUser
     }
 

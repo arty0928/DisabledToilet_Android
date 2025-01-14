@@ -22,27 +22,38 @@ import com.kakao.vectormap.label.Label
 class NearViewModel: ViewModel() {
     val nearDomain = NearDomain()
     val toiletListGenerator = ToiletListGenerator()
+
     @RequiresApi(Build.VERSION_CODES.O)
     val toiletRepository = ToiletRepository()
+
     // 맵 상태
     private val _mapState = MutableLiveData<MapStatus>()
     val mapState: LiveData<MapStatus> get() = _mapState
+
     // UI 상태
     private val _uiState = MutableLiveData<UIStatus>()
     val uiState: LiveData<UIStatus> get() = _uiState
+
     // 지도 초기화 상태
     private val _isMapInit = MutableLiveData<Boolean>()
     val isMapInit: LiveData<Boolean> get() = _isMapInit
+
     // 카메라 상태
     private val _cameraPosition = MutableLiveData<CameraPosition>()
     val cameraPosition: LiveData<CameraPosition> get() = _cameraPosition
+
     // 내 위치
     private val _myLocation = MutableLiveData<LatLng>()
     val myLocation: LiveData<LatLng> get() = _myLocation
+
     // 바텀시트
     private val _bottomSheetStatus = MutableLiveData<BottomSheetStatus>()
     val bottomSheetStatus: LiveData<BottomSheetStatus> get() = _bottomSheetStatus
 
+    // 현재 선택한 화장실
+    private val _currentToilet = MutableLiveData<ToiletModel?>()
+    val currentToilet : LiveData<ToiletModel?> get() = _currentToilet
+    
     init {
         val mapStatus = MapStatus(
             ToiletData.cachedToiletList!!,
@@ -65,6 +76,14 @@ class NearViewModel: ViewModel() {
         Log.d("test log", "setMyLocation: $location")
         _myLocation.value = location
     }
+
+    /**
+     * 현재 선택된 화장실 세팅
+     */
+    fun setCurrentToilet(toilet: ToiletModel?){
+        _currentToilet.value = toilet
+    }
+
     /**
      * 현재 필터링 된 화장실 리스트 기반으로 레이블 리스트 생성
      * 지도 초기화 된 후 사용해야 함
@@ -164,6 +183,7 @@ class NearViewModel: ViewModel() {
         val labelBuilder = LabelBuilder(kakaoMap)
         return labelBuilder.makeToiletLabel(toilet)!!
     }
+
 }
 
 data class MapStatus(
