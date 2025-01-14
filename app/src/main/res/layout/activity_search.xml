@@ -78,14 +78,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
-        <Button
+        <android.widget.Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:text="조건 적용"
             android:textColor="@color/white"
             android:fontFamily="@font/notosanskr_bold"
             android:textSize="18dp"
-            android:background="@drawable/filter_button"/>
+            android:background="@drawable/corner_up_right"/>
     </LinearLayout>
 
 

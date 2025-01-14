@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import com.dream.disabledtoilet_android.Near.DataLayer.LabelBuilder
 import com.dream.disabledtoilet_android.Near.DataLayer.ToiletListGenerator
 import com.dream.disabledtoilet_android.Near.DomainLayer.NearDomain
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterState
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
@@ -130,10 +129,7 @@ class NearViewModel: ViewModel() {
      */
     @RequiresApi(Build.VERSION_CODES.O)
     fun applyFilter(filterViewModel: FilterViewModel){
-        val filteredToiletList = toiletRepository.setFilter(filterViewModel, mapState.value!!.toiletList!!)
-        _mapState.value = mapState.value?.copy(
-            filteredToiletList = filteredToiletList
-        )
+
     }
     /**
      * 바텀 시트 UI 데이터 클래스 세팅

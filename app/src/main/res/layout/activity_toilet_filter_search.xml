@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/background"
     android:id="@+id/main"
+    android:windowSoftInputMode="adjustNothing"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ToiletSearch.ToiletFilterSearchActivity">

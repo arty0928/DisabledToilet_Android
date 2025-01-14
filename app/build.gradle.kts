@@ -85,7 +85,7 @@ android {
     sourceSets {
         getByName("main") {
             assets {
-                srcDirs("src\\main\\assets", "src\\main\\assets")
+                srcDirs("src\\main\\assets")
             }
         }
     }
@@ -163,4 +163,6 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
     testImplementation ("org.mockito:mockito-core:4.0.0")
+
+    implementation ("com.google.android.material:material:1.12.0")
 }

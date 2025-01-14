@@ -92,7 +92,7 @@ class NearActivity : AppCompatActivity() {
         }
         // 조건 적용 버튼
         binding.filterButtonNear.setOnClickListener{
-            showFilter()
+
         }
         
         //좋아요 상태를 관찰하여 UI 업데이트
@@ -111,24 +111,12 @@ class NearActivity : AppCompatActivity() {
                 }
             },object : KakaoMapReadyCallback(){
                 override fun onMapReady(map: KakaoMap) {
-                    Log.d("test log: Map", "onMapReady")
+                    Log.d("test map", "onMapReady")
                     kakaoMap = map
                     viewModel.setIsMapInit(true)
                 }
             }
         )
-
-        // 조건 적용 다이얼로그 dismiss 옵저버 세팅
-        filterViewModel.isDialogDismissed.observe(this) { isDismissed ->
-            if (isDismissed) {
-                // 필터 뷰 모델 내용으로 필터링
-                viewModel.applyFilter(filterViewModel)
-                // 카메라 포지션 기준 20kM 내의 화장실 레이블 받아서
-                val labelsInCamera = viewModel.getToiletLabelListInCamera(kakaoMap)
-                // 화장실 레이블 지도에 표시
-                showLabelList(labelsInCamera)
-            }
-        }
 
         // 맵뷰 초기화 관측 시
         viewModel.isMapInit.observe(this) { state ->
@@ -212,7 +200,7 @@ class NearActivity : AppCompatActivity() {
         // 권한 확인
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d("test log", "권한 없음")
+            Log.d("test permission", "권한 없음")
             return currentPosition // 권한이 없으면 기본값 반환
         }
 
@@ -223,7 +211,7 @@ class NearActivity : AppCompatActivity() {
                     val latitude = location.latitude
                     val longitude = location.longitude
                     currentPosition = LatLng.from(latitude, longitude)
-                    Log.d("test log", "현재 위치: $currentPosition")
+                    Log.d("test location", "현재 위치: $currentPosition")
                     continuation.resume(currentPosition) // 위치 정보가 업데이트되면 코루틴 재개
                 } else {
                     Log.d("test log", "위치 정보를 가져올 수 없습니다.")
@@ -238,7 +226,7 @@ class NearActivity : AppCompatActivity() {
      * 파라미터 위치로 카메라 이동
      */
     private fun moveCamera(cameraUpdate: CameraUpdate, cameraAnimation: CameraAnimation) {
-        Log.d("test log", "카메라 이동")
+        Log.d("test mapCamera", "카메라 이동")
         kakaoMap.moveCamera(cameraUpdate,cameraAnimation)
     }
     /**
@@ -254,7 +242,7 @@ class NearActivity : AppCompatActivity() {
         }
         // 현재 떠있는 레이블 리스트 뷰모델에 세팅
         viewModel.setToiletInCameraList(labelList)
-        Log.d("test log", "지도에 띄워진 화장실 수: $count")
+        Log.d("test map", "지도에 띄워진 화장실 수: $count")
     }
     /**
      * 안 겹치는 Label 리스트 지도에서 제거
@@ -291,14 +279,6 @@ class NearActivity : AppCompatActivity() {
         val cameraUpdate = CameraUpdateFactory.newCenterPosition(viewModel.myLocation.value, 17)
         val cameraAnimation = CameraAnimation.from(100,true,true)
         moveCamera(cameraUpdate,cameraAnimation)
-    }
-    /**
-     * 조건 적용 필터 띄우기
-     */
-    private fun showFilter() {
-        val filterSearchDialog = FilterSearchDialog.newInstance()
-        filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
-        filterViewModel.isDialogDismissed.value = false
     }
     /**
      * BottomSheet 생성

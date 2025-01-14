@@ -16,13 +16,18 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.SortViewModel
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
+import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterDialogStatus
+import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.ToiletSearchViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.SortDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.databinding.ActivityToiletFilterSearchBinding
@@ -32,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -46,10 +52,12 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
     /**
      * ToiletData 한번 필터링한 리스트
      */
-    lateinit var toiletList: MutableList<ToiletModel>
-    var query = ""
     lateinit var filterSearchDialog: FilterSearchDialog
-    lateinit var filterViewModel: FilterViewModel
+
+    /**
+     * 필터 적용 다이얼로그에서 사용할 뷰모델
+     */
+    lateinit var viewModel: ToiletSearchViewModel
 
     /**
      * 정렬 기준
@@ -61,24 +69,27 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityToiletFilterSearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // 조건 적용 다이얼로그에서 사용할 뷰모델
-        filterViewModel = ViewModelProvider(this)[FilterViewModel::class.java]
         // 정렬 적용 다이얼로그에서 사용할 뷰모델
         sortViewModel = ViewModelProvider(this)[SortViewModel::class.java]
+        // 뷰모델 세팅
+        viewModel = ViewModelProvider(this)[ToiletSearchViewModel::class.java]
 
         // 혹시 화장실 리스트가 캐시되지 않았을 경우
         if (!ToiletData.toiletListInit) {
             Log.d("test log", "ToiletData toiletList 캐시 안됨")
             // 비어있는 리스트 생성
-            toiletList = mutableListOf<ToiletModel>()
+            val toiletList = mutableListOf<ToiletModel>()
+            viewModel.setCachedToiletList(toiletList)
         } else {
             Log.d("test log", "ToiletData toiletList 캐시 됨")
             // 전처리 한번 해서 toiletList 생성
-            toiletList = removeEmptyData(ToiletData.cachedToiletList!!.toMutableList())
+            val toiletList = removeEmptyData(ToiletData.cachedToiletList!!.toMutableList())
+            viewModel.setCachedToiletList(toiletList)
+            viewModel.setFilteredToiletList(toiletList)
         }
+
         // 권한이 있으면 바로 UI 세팅
         if (getLocationPermission()) {
             setUi()
@@ -89,7 +100,6 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         fabScrollToTop.setOnClickListener {
             binding.toiletRecyclerView.smoothScrollToPosition(0)
         }
-
         //애니메이션 시작
         startBounceAnimation()
     }
@@ -98,55 +108,56 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * UI 세팅
      */
     private fun setUi() {
-        val context = this
         // 로딩 띄우기
         loadingDialog.show(supportFragmentManager, loadingDialog.tag)
         // 리사이클러뷰 어댑터는 비동기로 세팅
         CoroutineScope(Dispatchers.IO).launch {
-            val userLocation: LatLng? = getUserLocation(context)
+            val userLocation: LatLng? = getUserLocation()
 
             //사용자 위치 기반 거리 업데이트
             if (userLocation != null) {
                 toiletRepository.updateDistance(userLocation)
             }
 
-            toiletListViewAdapter = ToiletListViewAdapter(context, userLocation)
+            // 어댑터 세팅, 초기 리스트 UI에 띄우기
+            toiletListViewAdapter = ToiletListViewAdapter(this@ToiletFilterSearchActivity, userLocation)
             Log.d("test log", "toiletListViewAdapter 생성")
             toiletListViewAdapter.updateList(
-                toiletRepository.getToiletWithSearchKeyword(
-                    toiletList,
-                    query
-                ), sortViewModel.SortCheck
+                viewModel.getSearchedToiletList(),
+                sortViewModel.SortCheck
             )
+
+            // 필터 적용 시, 옵저빙 -> 여기서 리사이클러뷰 업데이트
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED){
+                    viewModel.toiletListState.collect{
+                        toiletListViewAdapter.updateList(
+                            viewModel.getSearchedToiletList(),
+                            sortViewModel.SortCheck
+                        )
+                    }
+                }
+            }
+
             // 메인 스레드에서
             withContext(Dispatchers.Main) {
                 // 어댑터 초기화
                 binding.toiletRecyclerView.layoutManager =
-                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    LinearLayoutManager(this@ToiletFilterSearchActivity, LinearLayoutManager.VERTICAL, false)
                 binding.toiletRecyclerView.adapter = toiletListViewAdapter
                 //초기화 후 바로 리사이클러뷰 업데이트 리스너 세틷
                 setSearchKeyWordListener()
             }
+
             // 로딩화면 dismiss
             loadingDialog.dismiss()
         }
+
+
         // 버튼들 리스너
         setButtonsListener()
-        // 조건 적용 다이얼로그 사라지면 필터 적용
-        setFilterDialogObserver()
         // 정렬 적용 다이얼로그 사라지면 필터 적용
         setSortDialogObserver()
-    }
-
-    /**
-     * 조건 검색 다이얼로그 UI 표출 옵저버
-     */
-    fun setFilterDialogObserver() {
-        filterViewModel.isDialogDismissed.observe(this) { isDismissed ->
-            if (isDismissed) {
-                applyFilter()
-            }
-        }
     }
 
     /**
@@ -181,16 +192,11 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                query = binding.searchBar.text.toString()
-                if (toiletList.isNotEmpty()) {
-                    // 리사이클러뷰 바로 업데이트
-                    toiletListViewAdapter.updateList(
-                        toiletRepository.getToiletWithSearchKeyword(toiletList, query),
-                        sortViewModel.SortCheck
-                    )
-                } else {
-                    Log.d("test log", "toiletList is empty")
-                }
+                viewModel.setQuery(binding.searchBar.text.toString())
+                toiletListViewAdapter.updateList(
+                    viewModel.getSearchedToiletList(),
+                    sortViewModel.SortCheck
+                )
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -237,9 +243,24 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 필터 다이얼로그 생성
      */
     private fun showFilter() {
-        filterSearchDialog = FilterSearchDialog.newInstance()
+        // 필터 다이얼로그, 리스너 세팅
+        filterSearchDialog = FilterSearchDialog(
+            viewModel.filterDialogStatus.value.filterStatus,
+            object : FilterApplyListener {
+                override fun onApplyFilterListener(filterStatus: FilterStatus) {
+                    viewModel.setFilterDialogStatus(
+                        FilterDialogStatus(
+                            true,
+                            filterStatus
+                        )
+                    )
+                }
+                override fun onDialogDismissListener(isDismissed: Boolean) {
+                    viewModel.setIsDialogDismissed(isDismissed)
+                }
+            }
+        )
         filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
-        filterViewModel.isDialogDismissed.value = false
     }
 
     /**
@@ -248,12 +269,9 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      */
     fun applyFilter() {
         Log.d("test log", "[applyFilter]: dismissed")
-        toiletRepository.setFilter(filterViewModel, toiletList.toList())
         toiletListViewAdapter.updateList(
-            toiletRepository.getToiletWithSearchKeyword(
-                toiletList,
-                query
-            ), sortViewModel.SortCheck
+            viewModel.getSearchedToiletList(),
+            sortViewModel.SortCheck
         )
     }
 
@@ -265,7 +283,6 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         for (i in toiletList.size - 1 downTo 0) {
             val toiletName = toiletList[i].restroom_name
             if (toiletName == "") {
-                Log.d("test log", toiletList[i].toString())
                 toiletList.removeAt(i)
             }
         }
@@ -276,7 +293,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
      * 유저 위치 정보 받아 오기
      * 코루틴에서 비동기 처리
      */
-    suspend fun getUserLocation(context: Context): LatLng? {
+    suspend fun getUserLocation(): LatLng? {
         var currentPosition: LatLng? = null
         // 권한부터 확인
         if (ActivityCompat.checkSelfPermission(
@@ -284,7 +301,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            Log.d("test log", "LocationPermission Granted")
+            Log.d("test userLocation", "LocationPermission Granted")
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             try {
                 // 로케이션 받아올때까지 await()
@@ -295,14 +312,14 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
                 //currentPosition 생성
                 currentPosition = LatLng.from(location.latitude, location.longitude)
             } catch (e: Exception) {
-                Log.e("test Log", "Failed to get location: ${e.message}")
+                Log.e("test userLocation", "Failed to get location: ${e.message}")
                 Toast.makeText(this, "현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show()
             }
         } else {
             // 권한 확인
-            Log.e("test log", "Location permission not granted")
+            Log.e("test userLocation", "Location permission not granted")
         }
-        Log.d("test log", "현재 위치: $currentPosition")
+        Log.d("test userLocation", "현재 위치: $currentPosition")
         return currentPosition
     }
 

@@ -45,7 +45,7 @@
             android:background="@color/greyColor"
             android:layout_height="match_parent" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/filterButton_near"
             android:layout_marginTop="15dp"
             android:layout_marginRight="10dp"
@@ -58,7 +58,7 @@
             android:minHeight="0dp"
             android:textSize="15dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|top" />
+            android:layout_gravity="end|top"/>
 
         <ImageButton
             android:id="@+id/map_return_cur_pos_btn"

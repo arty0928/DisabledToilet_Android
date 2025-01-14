@@ -5,6 +5,8 @@ import android.location.Location
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.DataLayer.OptionStringList
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.kakao.vectormap.LatLng
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import java.time.LocalDate
@@ -17,9 +19,6 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 class ToiletRepository {
     val Tag = "[ToiletRepository]"
-    private var filterViewModel: FilterViewModel? = null
-    private var filteredToiletList = listOf<ToiletModel>()
-    private var isFilteredListInit = false
     /**
      * 키워드 검색 함수
      */
@@ -27,18 +26,8 @@ class ToiletRepository {
         toiletList: List<ToiletModel>,
         keyword: String
     ): MutableList<ToiletModel> {
-        Log.d("test log", "filteredToiletList 사이즈: " + filteredToiletList.size.toString())
         val finalResult: MutableList<ToiletModel>
-        // 조건 검색 필터링 반영된 리스트 있는지 체크
-        if (isFilteredListInit) {
-            // 필터링 반영된 리스트로 applyQuery
-            finalResult = applyQuery(filteredToiletList, keyword)
-            Log.d("test log", "검색된 화장실 데이터 수: " + finalResult.size.toString())
-        } else {
-            // 넘겨준 리스트로 applyQuery
-            finalResult = applyQuery(toiletList, keyword)
-        }
-        Log.d("filtered near", finalResult.toString() )
+        finalResult = applyQuery(toiletList, keyword)
         return finalResult
     }
     /**
@@ -48,6 +37,7 @@ class ToiletRepository {
         toiletList: List<ToiletModel>,
         keyword: String
     ): MutableList<ToiletModel> {
+        Log.d("test toiletRepo", "들어온 화장실 데이터 수: " + toiletList.size)
         val roadAddressResult = getToiletByRoadAddress(toiletList, keyword)
         val lotAddressResult = getToiletByLotAddress(toiletList, keyword)
         val nameResult = getToiletByToiletName(toiletList, keyword)
@@ -56,122 +46,80 @@ class ToiletRepository {
             lotAddressResult,
             nameResult
         )
-        Log.d("test log", "검색된 화장실 데이터 수: " + finalResult.size.toString())
+        Log.d("test toiletRepo", "검색된 화장실 데이터 수: " + finalResult.size.toString())
         return finalResult
-    }
-    /**
-     * 필터 세팅할때 호출하는 함수
-     * 필터 세팅하고 바로 필터 적용한 화장실 리스트 만든다.
-     * 기본적으로 넘겨받은 toiletList로 filteredList 생성
-     */
-    fun setFilter(filterViewModel: FilterViewModel, toiletList: List<ToiletModel>): List<ToiletModel> {
-        //뷰모델 받아서 세팅
-        this.filterViewModel = filterViewModel
-        //받은 toiletList 바로 넘김
-        filteredToiletList = setFilteredToiletList(filterViewModel, toiletList.toMutableList())
-        return filteredToiletList
     }
     /**
      * 조건적용 다이얼로그 데이터를 반영한 필터 리스트 생성.
      * 필터 세팅되면 바로 실행됨
      * 넘겨받은 toiletList이용해서 fliteredList 생성
      */
-    private fun setFilteredToiletList(
-        filterViewModel: FilterViewModel,
-        toiletList: MutableList<ToiletModel>
+    fun setFilteredToiletList(
+        filterStatus: FilterStatus,
+        toiletList: List<ToiletModel>
     ): List<ToiletModel> {
-        Log.d("test log", "filteredToiletList built")
         //여기에 추가해가는 방식
         var resultToiletList = mutableListOf<ToiletModel>()
         // 최근 점검
-        when (filterViewModel.toiletRecentCheck.value) {
-            filterViewModel.filterString.toiletCheckNever -> {
-                resultToiletList = toiletList
+        when (filterStatus.recentCheck.value) {
+            0 -> {
+                resultToiletList = toiletList.toMutableList()
             }
-            //1년 이내
-            filterViewModel.filterString.toiletCheckInYear -> {
-                for (i in 0 until toiletList.size) {
-                    if (isWithinOneYear(toiletList[i].data_reference_date)) {
+            1 -> {
+                for (i in toiletList.indices) {
+                    if (isWithinOneYear(toiletList[i].data_reference_date)){
                         resultToiletList.add(toiletList[i])
                     }
                 }
-                Log.d("test log", "남은 화장실 데이터 수: " + resultToiletList.size.toString())
             }
-            //6개월 이내
-            filterViewModel.filterString.toiletCheckHalfYear -> {
-                for (i in 0 until toiletList.size) {
-                    if (isWithinSixMonths(toiletList[i].data_reference_date)) {
+
+            2 -> {
+                for (i in toiletList.indices) {
+                    if (isWithinSixMonths(toiletList[i].data_reference_date)){
                         resultToiletList.add(toiletList[i])
                     }
                 }
-                Log.d("test log", "남은 화장실 데이터 수: " + resultToiletList.size.toString())
             }
-            //1달 이내
-            filterViewModel.filterString.toiletCheckInMonth -> {
-                for (i in 0 until toiletList.size) {
-                    if (isWithinOneMonth(toiletList[i].data_reference_date)) {
+
+            3 -> {
+                for (i in toiletList.indices) {
+                    if (isWithinOneMonth(toiletList[i].data_reference_date)){
                         resultToiletList.add(toiletList[i])
                     }
                 }
-                Log.d("test log", "남은 화장실 데이터 수: " + resultToiletList.size.toString())
             }
         }
-        // 현재 운영
-        if (filterViewModel.isToiletOperating.value!!) {
-            for (i in resultToiletList.size - 1 downTo 0) {
-                // 이거 어떻게 하지
-            }
-        }
+
         //조건 적용
-        val filterList = filterViewModel.filterLiveList.value
-        val nameList = filterViewModel.filterString.filterNameList
-        for (i in 0 until filterList!!.size){
-            when(filterList[i].filterName){
-                nameList[0] -> {
-                    if (filterList[i].checked){
+        val optionList = filterStatus.optionStatus.optionStatusList
+
+        for (i in 0 until optionList.size){
+            when(optionList[i].option){
+                OptionStringList().disabledUrinal -> {
+                    if (optionList[i].isChecked){
                         // resultToiletList에서 데이터 추출
                         resultToiletList = extractDisableUrinalExistingToilet(resultToiletList)
                     }
                 }
-                nameList[1] -> {
-                    if (filterList[i].checked){
+                OptionStringList().disabledToilet -> {
+                    if (optionList[i].isChecked){
                         resultToiletList = extractDisableToiletExistingToilet(resultToiletList)
                     }
                 }
-                nameList[2] -> {
-                    if (filterList[i].checked){
+                OptionStringList().emergencyBell -> {
+                    if (optionList[i].isChecked){
                         resultToiletList = extractEmergencyBellExistingToilet(resultToiletList)
                     }
                 }
-                nameList[3] -> {
-                    if (filterList[i].checked){
+                OptionStringList().entranceCCTV -> {
+                    if (optionList[i].isChecked){
                         resultToiletList = extractEntranceCCTVExistingToilet(resultToiletList)
-                    }
-                }
-                nameList[4] -> {
-                    if (filterList[i].checked){
-                        resultToiletList = extractOpenedToilet(resultToiletList)
-                    }
-                }
-                nameList[5] -> {
-                    if (filterList[i].checked){
-                        resultToiletList = extractPublicToilet(resultToiletList)
-                    }
-                }
-                nameList[6] -> {
-                    if (filterList[i].checked){
-                        resultToiletList = extractPrivateOwnerToilet(resultToiletList)
-                    }
-                }
-                nameList[7] -> {
-                    if (filterList[i].checked){
-                        resultToiletList = extractPublicOwnerToilet(resultToiletList)
                     }
                 }
             }
         }
-        // Init 정보 업데이트
-        isFilteredListInit = true
+
+        Log.d("test toiletRepo", "필터링된 화장실 리스트 사이즈: " + resultToiletList.size)
         return resultToiletList.toList()
     }
     /**
@@ -436,7 +384,7 @@ class ToiletRepository {
                 formattedDistance = "-"
             }
         } else {
-            Log.d("test log", "userLocation is null in ToiletListViewAdapter")
+            Log.d("test calculateDist", "userLocation is null in ToiletListViewAdapter")
             formattedDistance = " - "
         }
         return formattedDistance.toString()

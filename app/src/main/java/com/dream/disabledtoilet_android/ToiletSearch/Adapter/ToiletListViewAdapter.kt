@@ -130,7 +130,7 @@ class ToiletListViewAdapter(
      * 거리순 오름차순 정렬
      */
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(updatedList: MutableList<ToiletModel>, sort: MutableLiveData<Int>) {
+    fun updateList(updatedList: List<ToiletModel>, sort: MutableLiveData<Int>) {
         // 거리 계산 후 Pair로 저장
 
         val validList = updatedList.filter {it.distance != -1.0}

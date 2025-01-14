@@ -1,11 +1,20 @@
 <resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+    </style>
     <!-- BottomSheetDialogTheme 스타일 정의 -->
-    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="BottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
     </style>
 
     <!-- CustomBottomSheetStyle 정의 -->
-    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+    <style name="CustomBottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="android:background">@drawable/rounded_corner_background</item>
     </style>
+
+    <style name="CustomSlider" parent="Widget.MaterialComponents.Slider">
+        <item name="trackColor">@color/purple_200</item>
+        <item name="thumbColor">@color/purple_200</item>
+    </style>
+
 </resources>
