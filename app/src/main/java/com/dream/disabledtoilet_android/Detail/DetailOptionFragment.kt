@@ -37,6 +37,9 @@ class DetailOptionFragment : Fragment() {
         if(currentUserEmail != null){
             val factory = UserViewModelFactory(currentUserEmail)
             userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
+
+            //Firebase에서 사용자 데이터 가져오기
+            userViewModel.loadUser()
         }
 
     }
@@ -58,13 +61,6 @@ class DetailOptionFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-
     }
 
     private fun setupUI(toilet: ToiletModel) {
@@ -112,6 +108,7 @@ class DetailOptionFragment : Fragment() {
         val saveButton = binding.saveBtn3
         val saveIcon = binding.iconToggle
 
+        //Firebase에서 가져온 데이터를 기반으로 좋아요 버튼 상태 업데이트
         userViewModel.userData.observe(viewLifecycleOwner){user ->
             if(user!= null){
                 updateSaveIcon(saveIcon ,user.likedToilets.contains(toilet.number))

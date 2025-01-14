@@ -337,6 +337,9 @@ class NearActivity : AppCompatActivity() {
 
         // 상세 페이지로 이동
         bottomSheetView.findViewById<TextView>(R.id.more_button).setOnClickListener {
+            //Firebase에 ViewModel 정보 동기화
+            syncNearViewModelToFirebase()
+
             val intent = Intent(this, DetailPageActivity::class.java)
             intent.putExtra("TOILET_DATA", toilet)
             startActivity(intent)
@@ -374,6 +377,16 @@ class NearActivity : AppCompatActivity() {
             updateSaveIcons(saveIcon1, saveIcon2, isLiked)
             // `ToiletData` 업데이트
             ToiletData.updateToilet(toilet.number, isLiked)
+        }
+    }
+
+    /**
+     * NearActivity의 ViewModel 정보를 Firebase에 동기화
+     */
+    private fun syncNearViewModelToFirebase() {
+        userViewModel.userData.value?.let { user ->
+            // Firebase에 사용자 데이터를 업데이트
+            userViewModel.syncUserDataToFirebase(user)
         }
     }
 
