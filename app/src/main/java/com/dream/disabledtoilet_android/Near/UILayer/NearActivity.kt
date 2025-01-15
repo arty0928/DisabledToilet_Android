@@ -16,16 +16,21 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Detail.DetailPageActivity
 import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.NearViewModel
 import com.dream.disabledtoilet_android.R
+import com.dream.disabledtoilet_android.ToiletSearch.FilterApplyListener
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
+import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
+import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterDialogStatus
 import com.dream.disabledtoilet_android.User.ToiletPostViewModel
 import com.dream.disabledtoilet_android.User.UserRepository
 import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
@@ -47,6 +52,8 @@ import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.lang.Exception
@@ -59,7 +66,7 @@ class NearActivity : AppCompatActivity() {
     private lateinit var kakaoMap: KakaoMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var viewModel: NearViewModel
-    private lateinit var filterViewModel: FilterViewModel
+    lateinit var filterSearchDialog: FilterSearchDialog
 
     private lateinit var userViewModel : UserViewModel
     private lateinit var postViewModel: ToiletPostViewModel
@@ -72,7 +79,6 @@ class NearActivity : AppCompatActivity() {
 
         // 뷰모델 받기
         viewModel = ViewModelProvider(this).get(NearViewModel::class.java)
-        filterViewModel = ViewModelProvider(this).get(FilterViewModel::class.java)
 
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
         postViewModel = ViewModelProvider(this).get(ToiletPostViewModel::class.java)
@@ -97,7 +103,7 @@ class NearActivity : AppCompatActivity() {
         }
         // 조건 적용 버튼
         binding.filterButtonNear.setOnClickListener{
-
+            showFilter()
         }
 
         // 맵뷰 초기화
@@ -428,6 +434,33 @@ class NearActivity : AppCompatActivity() {
                 moveCameraToUser()
             }
         }
+    }
+
+    /**
+     *  필터 다이얼로그 띄우기
+     */
+    private fun showFilter() {
+        // 필터 다이얼로그, 리스너 세팅
+        val filterSearchDialog = FilterSearchDialog(
+            viewModel.filterDialogStatus.value!!.filterStatus,
+            object : FilterApplyListener {
+                override fun onApplyFilterListener(filterStatus: FilterStatus) {
+                    viewModel.setFilterDialogStatus(
+                        FilterDialogStatus(
+                            true,
+                            filterStatus
+                        )
+                    )
+                }
+                override fun onDialogDismissListener(isDismissed: Boolean) {
+                    viewModel.setIsDialogDismissed(isDismissed)
+                    val labelsInCamera = viewModel.getToiletLabelListInCamera(kakaoMap)
+                    // 화장실 레이블 지도에 표시
+                    showLabelList(labelsInCamera)
+                }
+            }
+        )
+        filterSearchDialog.show(supportFragmentManager, filterSearchDialog.tag)
     }
 
     override fun onResume() {
