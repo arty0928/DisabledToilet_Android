@@ -15,22 +15,27 @@ class UserRepository {
      * @param email 사용자 이메일
      * @return User 객체 (null 가능)
      */
-    fun loadUser(email: String, callback : (User?) -> Unit){
+    fun loadUser(email: String, callback: (User?) -> Unit) {
+        Log.d("UserRepository", "Loading user with email: $email")
         db.collection("users")
             .document(email)
             .get()
             .addOnSuccessListener { documents ->
                 if (documents.exists()) {
                     val user = documents.toObject(User::class.java)
+                    Log.d("UserRepository", "User loaded: $user")
                     callback(user)
                 } else {
+                    Log.d("UserRepository", "User document does not exist")
                     callback(null)
                 }
             }
-            .addOnFailureListener {
+            .addOnFailureListener { exception ->
+                Log.e("UserRepository", "Failed to load user: ${exception.message}")
                 callback(null)
             }
     }
+
 
     /**
      * Firebase에 사용자 데이터를 업데이트
@@ -42,7 +47,7 @@ class UserRepository {
             "email" to updatedUser.email,
             "name" to updatedUser.name,
             "photoURL" to updatedUser.photoURL,
-            "likedToilets" to updatedUser.likedToilets,
+            "likedToilets" to updatedUser.likedToilets.map { it.toString() },
             "registedToilets" to updatedUser.registedToilets
         )
 
@@ -56,5 +61,44 @@ class UserRepository {
                 Log.e("UserRepository", "Failed to upload user data: ${exception.message}")
             }
     }
+
+    /**
+     * 좋아요 추가
+     */
+    fun addLike(toiletId: Int, userId: String) {
+        val postRef = db.collection("users").document(userId)
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(postRef)
+            val likes = snapshot.get("likedToilets") as? MutableList<String> ?: mutableListOf()
+
+            // toiletId를 String으로 변환하여 contains 체크
+            if (!likes.contains(toiletId.toString())) {
+                likes.add(toiletId.toString())
+                transaction.update(postRef, "likedToilets", likes)
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("UserRepository", "Failed to add like: ${exception.message}")
+        }
+    }
+
+    /**
+     * 좋아요 삭제
+     */
+    fun removeLike(toiletId: Int, userId: String) {
+        val postRef = db.collection("users").document(userId)
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(postRef)
+            val likes = snapshot.get("likedToilets") as? MutableList<String> ?: mutableListOf()
+
+            // toiletId를 String으로 변환하여 contains 체크
+            if (likes.contains(toiletId.toString())) {
+                likes.remove(toiletId.toString())
+                transaction.update(postRef, "likedToilets", likes)
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("UserRepository", "Failed to remove like: ${exception.message}")
+        }
+    }
+
 
 }

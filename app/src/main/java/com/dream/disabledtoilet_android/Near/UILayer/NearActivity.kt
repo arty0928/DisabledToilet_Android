@@ -80,6 +80,7 @@ class NearActivity : AppCompatActivity() {
         val email = ToiletData.currentUser
         if(email != null){
             userViewModel.fetchUserByEmail(email)
+            Log.d("test", "near userview : ${userViewModel.currentUser.value}")
         }
 
         // 임시
@@ -363,12 +364,16 @@ class NearActivity : AppCompatActivity() {
 
         savebtn1.setOnClickListener {
             val isLiked = postViewModel.isLikedByUser(userId)
-            Log.d("test ", "saveicon1 클릭")
+
             if(isLiked){
                 postViewModel.removeLike(toiletId, userId)
+                userViewModel.removeLikeUser(toiletId,userId)
+                Log.d("test" , " 삭제 : ${postViewModel.toiletLikes.value}")
             }else{
                 Log.d("test ", "saveicon1 추가")
                 postViewModel.addLike(toiletId, userId)
+                userViewModel.addLikeUser(toiletId,userId)
+                Log.d("test" , " 추가 : ${postViewModel.toiletLikes.value}")
             }
         }
 
@@ -376,8 +381,13 @@ class NearActivity : AppCompatActivity() {
             val isLiked = postViewModel.isLikedByUser(userId)
             if(isLiked){
                 postViewModel.removeLike(toiletId, userId)
+                userViewModel.removeLikeUser(toiletId,userId)
+                Log.d("test" , " 삭제 : ${postViewModel.toiletLikes.value}")
             }else{
+                Log.d("test ", "saveicon1 추가")
                 postViewModel.addLike(toiletId, userId)
+                userViewModel.addLikeUser(toiletId,userId)
+                Log.d("test" , " 추가 : ${postViewModel.toiletLikes.value}")
             }
         }
 

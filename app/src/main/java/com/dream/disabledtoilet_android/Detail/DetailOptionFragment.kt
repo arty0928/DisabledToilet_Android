@@ -42,8 +42,10 @@ class DetailOptionFragment : Fragment() {
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         val email = ToiletData.currentUser
+        Log.d("test" , " onCreate email: ${email}")
         if(email != null){
             userViewModel.fetchUserByEmail(email)
+            Log.d("test", "uesrViewmodel : ${userViewModel.currentUser.value}")
         }
 
         // 전달받은 화장실 데이터
@@ -145,7 +147,7 @@ class DetailOptionFragment : Fragment() {
     private fun updateLikeButtonIcon(likeButton: ImageView, userId: String, toilet: ToiletModel?){
         Log.d("test", "post :  ${postViewModel.toiletLikes.value}")
 //        val isLiked = postViewModel.isLikedByUser(userId)
-        val isLiked = userViewModel.currentUser.value?.likedToilets?.contains(toilet?.number)
+        val isLiked = userViewModel.currentUser.value?.likedToilets?.contains(toilet?.number.toString())
         Log.d("test", "user :  ${userViewModel.currentUser.value?.likedToilets}")
 
         if(isLiked == true){

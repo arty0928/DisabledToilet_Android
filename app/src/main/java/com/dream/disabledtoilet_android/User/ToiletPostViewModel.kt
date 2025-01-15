@@ -11,7 +11,6 @@ class ToiletPostViewModel : ViewModel(){
     
     fun observePostLikes(toiletId: Int){
         repository.observePostLikes(toiletId){likes ->
-            //null이면 빈 리스트로 설정
             toiletLikes.value = likes ?: emptyList()
             likeCount.value = likes.size
         }

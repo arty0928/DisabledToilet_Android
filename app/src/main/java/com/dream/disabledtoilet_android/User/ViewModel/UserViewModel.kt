@@ -28,6 +28,14 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun addLikeUser(toiletId : Int, userId : String){
+        repository.addLike(toiletId, userId)
+    }
+
+    fun removeLikeUser(toiletId : Int, userId : String){
+        repository.removeLike(toiletId, userId)
+    }
+
     override fun onCleared() {
         super.onCleared()
         // ViewModel이 소멸되기 전에 사용자 정보를 업데이트
