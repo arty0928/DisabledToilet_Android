@@ -1,5 +1,6 @@
 package com.dream.disabledtoilet_android.User
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 
 /**
@@ -46,6 +47,7 @@ class ToiletPostRepository {
             .addSnapshotListener { snapshot, _ ->
                 if (snapshot != null && snapshot.exists()) {
                     val likes = snapshot.get("save") as? List<String> ?: emptyList()
+                    Log.d("test", "update toilet : ${likes}")
                     callback(likes)
                 }
             }

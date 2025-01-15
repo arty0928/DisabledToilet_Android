@@ -68,7 +68,7 @@ class NearActivity : AppCompatActivity() {
     private lateinit var viewModel: NearViewModel
     lateinit var filterSearchDialog: FilterSearchDialog
 
-    private lateinit var userViewModel : UserViewModel
+    private lateinit var userViewModel: UserViewModel
     private lateinit var postViewModel: ToiletPostViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,8 +84,9 @@ class NearActivity : AppCompatActivity() {
         postViewModel = ViewModelProvider(this).get(ToiletPostViewModel::class.java)
 
         val email = ToiletData.currentUser
-        if(email != null){
+        if (email != null) {
             userViewModel.fetchUserByEmail(email)
+            Log.d("test", "near userview : ${userViewModel.currentUser.value}")
         }
 
         // 임시
@@ -102,7 +103,7 @@ class NearActivity : AppCompatActivity() {
             moveCameraToUser()
         }
         // 조건 적용 버튼
-        binding.filterButtonNear.setOnClickListener{
+        binding.filterButtonNear.setOnClickListener {
             showFilter()
         }
 
@@ -113,11 +114,12 @@ class NearActivity : AppCompatActivity() {
                     Log.d("test log: Map", "onMapDestroy")
                     viewModel.setIsMapInit(false)
                 }
+
                 override fun onMapError(p0: Exception?) {
                     Log.e("test log: Map", "onMapError")
                     viewModel.setIsMapInit(false)
                 }
-            },object : KakaoMapReadyCallback(){
+            }, object : KakaoMapReadyCallback() {
                 override fun onMapReady(map: KakaoMap) {
                     Log.d("test map", "onMapReady")
                     kakaoMap = map
@@ -129,7 +131,7 @@ class NearActivity : AppCompatActivity() {
         // 맵뷰 초기화 관측 시
         viewModel.isMapInit.observe(this) { state ->
             // 맵뷰 초기화 됐으면
-            if (viewModel.isMapInit.value == true){
+            if (viewModel.isMapInit.value == true) {
                 Log.d("test log", "isMapInit: $state observed")
 
                 lifecycleScope.launch {
@@ -146,7 +148,7 @@ class NearActivity : AppCompatActivity() {
                 }
 
                 // 카메라 이동 시작 리스너
-                kakaoMap.setOnCameraMoveStartListener{ kakaoMap, gestureType, ->
+                kakaoMap.setOnCameraMoveStartListener { kakaoMap, gestureType ->
                     Log.d("test log", kakaoMap.toString() + gestureType.toString())
                 }
                 // 카카오맵 클릭 리스너
@@ -165,7 +167,7 @@ class NearActivity : AppCompatActivity() {
                 }
 
                 // 뷰모델의 카메라 포지션 값 변동 시
-                viewModel.cameraPosition.observe(this){ cameraPosition ->
+                viewModel.cameraPosition.observe(this) { cameraPosition ->
                     // 카메라 포지션 기준 20kM 내의 화장실 레이블 받아서
                     val labelsInCamera = viewModel.getToiletLabelListInCamera(kakaoMap)
                     // 화장실 레이블 지도에 표시
@@ -173,7 +175,7 @@ class NearActivity : AppCompatActivity() {
                 }
 
                 // 사용자 위치 변경 관측
-                viewModel.myLocation.observe(this){ myLocation ->
+                viewModel.myLocation.observe(this) { myLocation ->
                     // 현재 위치 레이블 업데이트
                     updateMyLocationLabel(myLocation)
                 }
@@ -182,29 +184,38 @@ class NearActivity : AppCompatActivity() {
     }
 
     /**
-     * 로딩 다이얼로그 띄우기
+     *      로딩 다이얼로그 띄우기
      */
-    private fun showLoading(){
-        if (!loadingDialog.isAdded){
+    private fun showLoading() {
+        if (!loadingDialog.isAdded) {
             loadingDialog.show(supportFragmentManager, "loading_dialog")
         }
     }
+
     /**
-     * 로딩 다이얼로그 없애기
+     *      로딩 다이얼로그 없애기
      */
-    private fun dismissLoading(){
-        if(loadingDialog.isAdded){
+    private fun dismissLoading() {
+        if (loadingDialog.isAdded) {
             loadingDialog.dismiss()
         }
     }
+
     /**
-     * 현재 위치 받아오기
+     *      현재 위치 받아오기
      */
     private suspend fun getMyLocation(): LatLng {
         var currentPosition = LatLng.from(0.0, 0.0)
         // 권한 확인
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             Log.d("test permission", "권한 없음")
             return currentPosition // 권한이 없으면 기본값 반환
         }
@@ -227,32 +238,35 @@ class NearActivity : AppCompatActivity() {
 
         return currentPosition
     }
+
     /**
-     * 파라미터 위치로 카메라 이동
+     *      파라미터 위치로 카메라 이동
      */
     private fun moveCamera(cameraUpdate: CameraUpdate, cameraAnimation: CameraAnimation) {
         Log.d("test mapCamera", "카메라 이동")
-        kakaoMap.moveCamera(cameraUpdate,cameraAnimation)
+        kakaoMap.moveCamera(cameraUpdate, cameraAnimation)
     }
+
     /**
-     * Label 리스트의 Label 지도에 띄우기
+     *      Label 리스트의 Label 지도에 띄우기
      */
-    private fun showLabelList(labelList: List<Label>){
+    private fun showLabelList(labelList: List<Label>) {
         var count = 0
         // 이미 떠있는 레이블 중, 현재 레이블 리스트와 안겹치는 레이블 숨기기
         removeDifferentLabel(labelList)
-        for (i in labelList.indices){
+        for (i in labelList.indices) {
             labelList.get(i).show()
-            count ++
+            count++
         }
         // 현재 떠있는 레이블 리스트 뷰모델에 세팅
         viewModel.setToiletInCameraList(labelList)
         Log.d("test map", "지도에 띄워진 화장실 수: $count")
     }
+
     /**
-     * 안 겹치는 Label 리스트 지도에서 제거
+     *      안 겹치는 Label 리스트 지도에서 제거
      */
-    private fun removeDifferentLabel(newLabelList: List<Label>){
+    private fun removeDifferentLabel(newLabelList: List<Label>) {
         val oldLabelList = viewModel.mapState.value!!.toiletInCameraList
         for (label in oldLabelList) {
             if (!newLabelList.contains(label)) {
@@ -260,10 +274,11 @@ class NearActivity : AppCompatActivity() {
             }
         }
     }
+
     /**
-     * 내 위치 띄우기
+     *      내 위치 띄우기
      */
-    private fun updateMyLocationLabel(position: LatLng){
+    private fun updateMyLocationLabel(position: LatLng) {
         val style = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(
                 LabelStyle.from(R.drawable.cur2)
@@ -276,23 +291,25 @@ class NearActivity : AppCompatActivity() {
 
         val myLocationLabel = kakaoMap.labelManager?.layer?.addLabel(options)
     }
+
     /**
-     * 사용자 위치로 카메라 옮기기
+     *      사용자 위치로 카메라 옮기기
      */
-    private fun moveCameraToUser(){
+    private fun moveCameraToUser() {
         // 현재 위치로 카메라 이동
         val cameraUpdate = CameraUpdateFactory.newCenterPosition(viewModel.myLocation.value, 17)
-        val cameraAnimation = CameraAnimation.from(100,true,true)
-        moveCamera(cameraUpdate,cameraAnimation)
+        val cameraAnimation = CameraAnimation.from(100, true, true)
+        moveCamera(cameraUpdate, cameraAnimation)
     }
+
     /**
-     * BottomSheet 생성
+     *      BottomSheet 생성
      */
-    private fun initBottomSheet(toilet: ToiletModel, label: Label){
+    private fun initBottomSheet(toilet: ToiletModel, label: Label) {
         // 카메라 화장실 위치로 이동
         val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
         val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 17)
-        val cameraAnimation = CameraAnimation.from(100,true,true)
+        val cameraAnimation = CameraAnimation.from(100, true, true)
         moveCamera(cameraUpdate, cameraAnimation)
 
 
@@ -304,15 +321,16 @@ class NearActivity : AppCompatActivity() {
         setBottomSheetUI(bottomSheetView, toilet)
         bottomSheetDialog.show()
     }
+
     /**
-     * BottomSheet UI 세팅
+     *      BottomSheet UI 세팅
      */
-    private fun setBottomSheetUI(bottomSheetView: View, toilet: ToiletModel){
+    private fun setBottomSheetUI(bottomSheetView: View, toilet: ToiletModel) {
         val toiletName: TextView = bottomSheetView.findViewById(R.id.toilet_name)
         val toiletAddress: TextView = bottomSheetView.findViewById(R.id.toilet_address)
         val toiletOpeningHours: TextView = bottomSheetView.findViewById(R.id.toilet_opening_hours)
         val saveCount: TextView = bottomSheetView.findViewById(R.id.toilet_save_count1)
-        val calDis : TextView = bottomSheetView.findViewById(R.id.toilet_distance)
+        val calDis: TextView = bottomSheetView.findViewById(R.id.toilet_distance)
 
         toiletName.text = toilet.restroom_name
         toiletAddress.text = toilet.address_road ?: "-"
@@ -346,20 +364,20 @@ class NearActivity : AppCompatActivity() {
 
 
         // 사용자 정보 관찰
-        userViewModel.currentUser.observe(this) {user ->
-            if(user != null){
+        userViewModel.currentUser.observe(this) { user ->
+            if (user != null) {
                 //로그인 상태
-                setupPostInteraction(bottomSheetView,toilet.number,user.email)
-            }else{
+                setupPostInteraction(bottomSheetView, toilet.number, user.email)
+            } else {
                 //로그아웃 상태이면 로그인 시도로
                 Log.d("test ", "user : ${user}")
             }
         }
     }
-    
-    private fun setupPostInteraction(bottomSheetView: View,toiletId : Int, userId : String){
+
+    private fun setupPostInteraction(bottomSheetView: View, toiletId: Int, userId: String) {
         postViewModel.observePostLikes(toiletId)
-        
+
         //좋아요 버튼 클릭 이벤트
         val savebtn1: LinearLayout = bottomSheetView.findViewById(R.id.save_btn1)
         val savebtn2: LinearLayout = bottomSheetView.findViewById(R.id.save_btn2)
@@ -369,33 +387,42 @@ class NearActivity : AppCompatActivity() {
 
         savebtn1.setOnClickListener {
             val isLiked = postViewModel.isLikedByUser(userId)
-            Log.d("test ", "saveicon1 클릭")
-            if(isLiked){
+
+            if (isLiked) {
                 postViewModel.removeLike(toiletId, userId)
-            }else{
+                userViewModel.removeLikeUser(toiletId, userId)
+                Log.d("test", " 삭제 : ${postViewModel.toiletLikes.value}")
+            } else {
                 Log.d("test ", "saveicon1 추가")
                 postViewModel.addLike(toiletId, userId)
+                userViewModel.addLikeUser(toiletId, userId)
+                Log.d("test", " 추가 : ${postViewModel.toiletLikes.value}")
             }
         }
 
         savebtn2.setOnClickListener {
             val isLiked = postViewModel.isLikedByUser(userId)
-            if(isLiked){
+            if (isLiked) {
                 postViewModel.removeLike(toiletId, userId)
-            }else{
+                userViewModel.removeLikeUser(toiletId, userId)
+                Log.d("test", " 삭제 : ${postViewModel.toiletLikes.value}")
+            } else {
+                Log.d("test ", "saveicon1 추가")
                 postViewModel.addLike(toiletId, userId)
+                userViewModel.addLikeUser(toiletId, userId)
+                Log.d("test", " 추가 : ${postViewModel.toiletLikes.value}")
             }
         }
 
         // 좋아요 실시간 업데이트 관찰
-        postViewModel.toiletLikes.observe(this){likes ->
+        postViewModel.toiletLikes.observe(this) { likes ->
             val likeCountTextView = bottomSheetView.findViewById<TextView>(R.id.toilet_save_count1)
             likeCountTextView.text = "저장 (${likes.size})"
             updateLikeButtonIcon(saveicon1, saveicon2, userId)
         }
     }
 
-    private fun updateLikeButtonIcon(saveBtn1: ImageView, saveBtn2 : ImageView, userId: String) {
+    private fun updateLikeButtonIcon(saveBtn1: ImageView, saveBtn2: ImageView, userId: String) {
         val isLiked = postViewModel.isLikedByUser(userId)
         if (isLiked) {
             saveBtn1.setImageResource(R.drawable.saved_star_icon)
@@ -406,7 +433,9 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
-    // Intent 데이터를 처리하는 함수
+    /**
+     *      인텐트 받아서 처리
+     */
     private fun handleIntent(kakaoMap: KakaoMap) {
         val rootActivity = intent.getStringExtra("rootActivity")
         when (rootActivity) {
@@ -419,8 +448,8 @@ class NearActivity : AppCompatActivity() {
                     val toilet = parcelableData
                     val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
                     val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 17)
-                    val cameraAnimation = CameraAnimation.from(100,true,true)
-                    moveCamera(cameraUpdate,cameraAnimation)
+                    val cameraAnimation = CameraAnimation.from(100, true, true)
+                    moveCamera(cameraUpdate, cameraAnimation)
                     // 화장실 데이터 기반으로 레이블 생성
                     val toiletLabel = viewModel.makeLabel(toilet, kakaoMap)
                     viewModel.setBottomSheetStatus(toiletLabel, toilet)
@@ -430,6 +459,7 @@ class NearActivity : AppCompatActivity() {
                     Log.e("test log", "parcelable data type is not matched")
                 }
             }
+
             else -> {
                 moveCameraToUser()
             }
@@ -437,7 +467,7 @@ class NearActivity : AppCompatActivity() {
     }
 
     /**
-     *  필터 다이얼로그 띄우기
+     *      필터 다이얼로그 띄우기
      */
     private fun showFilter() {
         // 필터 다이얼로그, 리스너 세팅
@@ -452,6 +482,7 @@ class NearActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 override fun onDialogDismissListener(isDismissed: Boolean) {
                     viewModel.setIsDialogDismissed(isDismissed)
                     val labelsInCamera = viewModel.getToiletLabelListInCamera(kakaoMap)

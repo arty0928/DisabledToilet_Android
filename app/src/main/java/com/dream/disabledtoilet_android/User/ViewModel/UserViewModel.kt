@@ -24,8 +24,18 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     fun fetchUserByEmail(email: String) {
         repository.loadUser(email) { user ->
+            Log.d("UserViewModel", "fetchUserByEmail 반환값: $user")
             currentUser.value = user
         }
+    }
+
+
+    fun addLikeUser(toiletId : Int, userId : String){
+        repository.addLike(toiletId, userId)
+    }
+
+    fun removeLikeUser(toiletId : Int, userId : String){
+        repository.removeLike(toiletId, userId)
     }
 
     override fun onCleared() {

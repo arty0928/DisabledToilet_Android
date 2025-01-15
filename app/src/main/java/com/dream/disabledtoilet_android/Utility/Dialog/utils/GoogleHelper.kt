@@ -117,8 +117,8 @@ class GoogleHelper private constructor(private val context: Context) {
                                 email = data["email"] as? String ?: "",
                                 name = data["name"] as? String ?: "",
                                 photoURL = data["photoURL"] as? String ?: "",
-                                likedToilets = data["likedToilets"] as? List<Int> ?: emptyList(),
-                                registedToilets = data["registedToilets"] as? List<Int> ?: emptyList(),
+                                likedToilets = data["likedToilets"] as? List<String> ?: emptyList(),
+                                registedToilets = data["registedToilets"] as? List<String> ?: emptyList(),
                             )
 
                             ToiletData.currentUser = user.email
