@@ -23,7 +23,7 @@ plugins {
 
 android {
     namespace = "com.dream.disabledtoilet_android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dream.disabledtoilet_android"
