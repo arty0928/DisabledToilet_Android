@@ -9,6 +9,11 @@ import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData.currentUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -31,21 +36,31 @@ object ToiletData {
     private val firestore = FirebaseFirestore.getInstance()
 
     suspend fun initialize(): Boolean = suspendCoroutine { continuation ->
-        // Firestore에서 데이터 로드
-        firestore.collection("dreamhyoja") // "dreamhyoja" 컬렉션에서 데이터 가져오기
-            .get()
-            .addOnSuccessListener { documents ->
-                // ToiletModel로 변환하여 cachedToiletList에 저장
-                cachedToiletList = documents.mapNotNull { doc ->
-                    ToiletModel.fromDocument(doc) // null이 아닌 경우만 포함
-                }
-                toiletListInit = true
-                continuation.resume(true)
+        GlobalScope.launch{
+            withContext(Dispatchers.Default){
+                // Firestore에서 데이터 로드
+                firestore.collection("dreamhyoja") // "dreamhyoja" 컬렉션에서 데이터 가져오기
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        GlobalScope.launch {
+                            withContext(Dispatchers.IO){
+                                // ToiletModel로 변환하여 cachedToiletList에 저장
+                                cachedToiletList = documents.mapNotNull { doc ->
+                                    Log.d("test","document")
+                                    ToiletModel.fromDocument(doc) // null이 아닌 경우만 포함
+                                }
+                                toiletListInit = true
+                                continuation.resume(true)
+                            }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error loading data: ${exception.message}")
+                        continuation.resume(false)
+                    }
             }
-            .addOnFailureListener { exception ->
-                Log.e(TAG, "Error loading data: ${exception.message}")
-                continuation.resume(false)
-            }
+        }
+
     }
 
     /**
