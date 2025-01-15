@@ -46,13 +46,8 @@ data class ToiletModel(
     // 소유권 유형
     val restroom_ownership_type: String = "",
     // 좋아요 수는 Int로 저장하고, MutableLiveData로 감싸기
-    var save: Int = 0
+    var save: List<String> = emptyList()
 ) : Parcelable {
-
-    // MutableLiveData로 변환할 메소드 추가
-    fun toLiveData(): MutableLiveData<Int> {
-        return MutableLiveData(save)
-    }
 
     companion object {
         fun fromDocument(document: DocumentSnapshot): ToiletModel {
@@ -90,7 +85,7 @@ data class ToiletModel(
                 remodeling_date = document.getString("remodeling_date") ?: "",
                 wgs84_latitude = document.getDouble("wgs84_latitude") ?: 0.0,
                 wgs84_longitude = document.getDouble("wgs84_longitude") ?: 0.0,
-                save = document.getLong("save")?.toInt() ?: 0
+                save = document.get("save") as? List<String> ?: emptyList()
             )
         }
     }

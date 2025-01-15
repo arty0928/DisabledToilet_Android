@@ -32,28 +32,29 @@ class UserRepository {
             }
     }
 
-//    /**
-//     * Firebase에 사용자 데이터를 업데이트
-//     * @param email 사용자 이메일
-//     * @param updatedUser 업데이트할 User 데이터
-//     */
-//    fun uploadFirebase(email: String, updatedUser: User) {
-//        val userMap = hashMapOf(
-//            "email" to updatedUser.email,
-//            "name" to updatedUser.name,
-//            "name" to updatedUser.name,
-//            "photoURL" to updatedUser.photoURL,
-//            "likedToilets" to updatedUser.likedToilets,
-//        )
-//
-//        db.collection("users")
-//            .document(email)
-//            .set(userMap)
-//            .addOnSuccessListener {
-//                Log.d("UserRepository", "User data successfully uploaded to Firebase.")
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("UserRepository", "Failed to upload user data: ${exception.message}")
-//            }
-//    }
+    /**
+     * Firebase에 사용자 데이터를 업데이트
+     * @param email 사용자 이메일
+     * @param updatedUser 업데이트할 User 데이터
+     */
+    fun uploadFirebase(email: String, updatedUser: User) {
+        val userMap = hashMapOf(
+            "email" to updatedUser.email,
+            "name" to updatedUser.name,
+            "photoURL" to updatedUser.photoURL,
+            "likedToilets" to updatedUser.likedToilets,
+            "registedToilets" to updatedUser.registedToilets
+        )
+
+        db.collection("users")
+            .document(email)
+            .set(userMap)
+            .addOnSuccessListener {
+                Log.d("UserRepository", "User data successfully uploaded to Firebase.")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("UserRepository", "Failed to upload user data: ${exception.message}")
+            }
+    }
+
 }

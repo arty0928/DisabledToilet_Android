@@ -400,13 +400,6 @@ class NearActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun updateSaveIcons(saveIcon1: ImageView, saveIcon2: ImageView, isLiked: Boolean) {
-        val iconRes = if (isLiked) R.drawable.saved_star_icon else R.drawable.save_icon
-        saveIcon1.setImageResource(iconRes)
-        saveIcon2.setImageResource(iconRes)
-    }
-
     // Intent 데이터를 처리하는 함수
     private fun handleIntent(kakaoMap: KakaoMap) {
         val rootActivity = intent.getStringExtra("rootActivity")

@@ -1,7 +1,6 @@
 package com.dream.disabledtoilet_android.Detail
 
 import ToiletModel
-import User
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -13,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +40,11 @@ class DetailOptionFragment : Fragment() {
 
         postViewModel = ViewModelProvider(this).get(ToiletPostViewModel::class.java)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        val email = ToiletData.currentUser
+        if(email != null){
+            userViewModel.fetchUserByEmail(email)
+        }
 
         // 전달받은 화장실 데이터
         currentToilet = arguments?.getParcelable<ToiletModel>("TOILET_DATA")
@@ -102,40 +107,48 @@ class DetailOptionFragment : Fragment() {
     }
 
     private fun setupSaveButton(toilet: ToiletModel) {
-        val saveButton = binding.saveBtn3
+        val saveButton : LinearLayout = binding.saveBtn3
         val saveIcon = binding.iconToggle
         val saveTxt = binding.toiletSaveCount
+
+        val email = ToiletData.currentUser
+        if(email != null){
+            updateLikeButtonIcon(saveIcon, email, toilet)
+        }
 
         postViewModel.toiletLikes.observe(viewLifecycleOwner) {likes ->
             saveTxt.text = "저장 (${likes.size})"
             val userId = userViewModel.currentUser.value?.email ?: return@observe
-            updateLikeButtonIcon(saveIcon, userId)
+            updateLikeButtonIcon(saveIcon, userId, toilet)
         }
 
-//        postViewModel.likeCount.observe(viewLifecycleOwner) {count ->
-//            saveTxt.text = "저장 (${count})"
-//        }
-
         saveButton.setOnClickListener {
+            Log.d("test", "클릭1  userViewModel.currentUser : ${userViewModel.currentUser}")
+            Log.d("test", "클릭1  isLiked : ${postViewModel.toiletLikes}")
+
+            Log.d("test", "userId : ${userViewModel.currentUser.value}")
+
+
             val userId = userViewModel.currentUser.value?.email ?: return@setOnClickListener
             val isLiked = postViewModel.isLikedByUser(userId)
+            Log.d("test", "클릭  userViewModel.currentUser : ${userViewModel.currentUser}")
+            Log.d("test", "클릭  isLiked : ${postViewModel.toiletLikes}")
+
             if(isLiked){
                 postViewModel.removeLike(toilet.number, userId)
             }else{
                 postViewModel.addLike(toilet.number, userId)
             }
         }
-
-//        postViewModel.toiletLikes.observe(viewLifecycleOwner) {likes ->
-//            val likeCountTextView = binding.toiletSaveCount
-//            likeCountTextView.text = "저장 (${likes.size})"
-//            updateLikeButtonIcon(saveButton, userId)
-//        }
     }
 
-    private fun updateLikeButtonIcon(likeButton : ImageView, userId : String){
-        val isLiked = postViewModel.isLikedByUser(userId)
-        if(isLiked){
+    private fun updateLikeButtonIcon(likeButton: ImageView, userId: String, toilet: ToiletModel?){
+        Log.d("test", "post :  ${postViewModel.toiletLikes.value}")
+//        val isLiked = postViewModel.isLikedByUser(userId)
+        val isLiked = userViewModel.currentUser.value?.likedToilets?.contains(toilet?.number)
+        Log.d("test", "user :  ${userViewModel.currentUser.value?.likedToilets}")
+
+        if(isLiked == true){
             likeButton.setImageResource(R.drawable.saved_star_icon)
         }else{
             likeButton.setImageResource(R.drawable.save_icon)

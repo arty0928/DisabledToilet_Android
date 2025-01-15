@@ -52,33 +52,34 @@ object ToiletData {
      * 화장실 정보 업데이트 : Map {화장실 번호 : save 값}
      * 키가 이미 존재하면 새로운 값으로 대체
      */
-    fun updateToilet(toiletId: Int, isLiked: Boolean) {
-        val toilet = cachedToiletList?.find { it.number == toiletId }
-        toilet?.let {
-            val originSaveValue = it.save
-            val updatedSaveValue = if (isLiked) originSaveValue + 1 else maxOf(0, originSaveValue - 1)
-
-            // 기존 Map 복사 후 수정
-            val currentMap = _updatedToilets.value ?: mapOf()
-            val updatedMap = currentMap.toMutableMap()
-
-            if (updatedMap.containsKey(it.number)) {
-                // 이미 존재하면 값 업데이트
-                val existingToilet = updatedMap[it.number]!!
-                existingToilet.save = updatedSaveValue
-                updatedMap[it.number] = existingToilet
-            } else {
-                // 존재하지 않으면 새로 추가
-                it.save = updatedSaveValue
-                updatedMap[it.number] = it
-            }
-
-            // LiveData 업데이트
-            _updatedToilets.value = updatedMap
-
-            Log.d(TAG, "Toilet updated: $toiletId, new save count: ${updatedMap[it.number]?.save}")
-        }
-    }
+//    fun updateToilet(toiletId: Int, isLiked: Boolean) {
+//        val toilet = cachedToiletList?.find { it.number == toiletId }
+//        toilet?.let {
+//            val originSaveValue = it.save.size
+//            val updatedSaveValue = if (isLiked) originSaveValue + 1 else maxOf(0, originSaveValue - 1)
+//
+//            // 기존 Map 복사 후 수정
+//            val currentMap = _updatedToilets.value ?: mapOf()
+//            val updatedMap = currentMap.toMutableMap()
+//
+//            if (updatedMap.containsKey(it.number)) {
+//                // 이미 존재하면 값 업데이트
+//                updatedMap[it.number] = updatedMap
+////                val existingToilet = updatedMap[it.number]!!
+////                existingToilet.save = updatedSaveValue
+////                updatedMap[it.number] = existingToilet
+//            } else {
+//                // 존재하지 않으면 새로 추가
+//                it.save = updatedSaveValue
+//                updatedMap[it.number] = it
+//            }
+//
+//            // LiveData 업데이트
+//            _updatedToilets.value = updatedMap
+//
+//            Log.d(TAG, "Toilet updated: $toiletId, new save count: ${updatedMap[it.number]?.save}")
+//        }
+//    }
 
     /**
      * 특정 화장실의 LiveData 관찰 함수
