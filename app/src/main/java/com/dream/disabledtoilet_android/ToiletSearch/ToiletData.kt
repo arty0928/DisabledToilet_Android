@@ -35,10 +35,8 @@ object ToiletData {
     var currentUser : String? = null
 
     // Firestore 인스턴스
-    @SuppressLint("StaticFieldLeak")
     private val firestore = FirebaseFirestore.getInstance()
 
-    @OptIn(DelicateCoroutinesApi::class)
     suspend fun initialize(): Boolean = suspendCoroutine { continuation ->
         GlobalScope.launch{
             withContext(Dispatchers.Default){
