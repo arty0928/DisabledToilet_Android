@@ -33,10 +33,12 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
         val toiletLabelList = mutableListOf<Label>()
         if(toiletList.isNotEmpty()){
             for (i in toiletList.indices){
-                val toiletLabel = makeToiletLabel(toiletList.get(i))
-                if (toiletLabel != null){
-                    toiletLabelList.add(toiletLabel)
-                    toiletLabelMap.put(toiletLabel, toiletList.get(i))
+                if (toiletList[i].restroom_name != ""){
+                    val toiletLabel = makeToiletLabel(toiletList.get(i))
+                    if (toiletLabel != null){
+                        toiletLabelList.add(toiletLabel)
+                        toiletLabelMap.put(toiletLabel, toiletList.get(i))
+                    }
                 }
             }
         }
@@ -67,8 +69,6 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
             }
         }
 
-        // 좋아요 여부 확인
-//        val isLiked = currentUser..contains(toiletModel.number)
         val isLiked = userToilets.value?.likedToilets?.contains(toiletModel.number.toString())
 
         // 좋아요 스타일 설정
@@ -82,14 +82,14 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
                 )
             )
         }else{
-                kakaoMap.labelManager?.addLabelStyles(
-                    LabelStyles.from(
-                        LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
-                        LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
-                        LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
-                        LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
-                    )
+            kakaoMap.labelManager?.addLabelStyles(
+                LabelStyles.from(
+                    LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
+                    LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
+                    LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
+                    LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
                 )
+            )
         }
 
         val position = LatLng.from(toiletModel.wgs84_latitude, toiletModel.wgs84_longitude)

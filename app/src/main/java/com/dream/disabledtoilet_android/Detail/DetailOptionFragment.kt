@@ -71,6 +71,7 @@ class DetailOptionFragment : Fragment() {
         // 기본 정보 표시
         binding.toiletName.text = toilet.restroom_name
         binding.toiletLocationAddress.text = toilet.address_road
+        binding.toiletManageOfficeName.text = toilet.management_agency_name
         binding.toiletManageOfficeNumber.text = toilet.phone_number ?: "-"
 
         copyAddress(toilet)

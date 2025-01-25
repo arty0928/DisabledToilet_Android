@@ -66,10 +66,6 @@ class NearActivity : AppCompatActivity() {
     private lateinit var kakaoMap: KakaoMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var viewModel: NearViewModel
-    lateinit var filterSearchDialog: FilterSearchDialog
-
-    private lateinit var userViewModel: UserViewModel
-    private lateinit var postViewModel: ToiletPostViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,15 +75,6 @@ class NearActivity : AppCompatActivity() {
 
         // 뷰모델 받기
         viewModel = ViewModelProvider(this).get(NearViewModel::class.java)
-
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-        postViewModel = ViewModelProvider(this).get(ToiletPostViewModel::class.java)
-
-        val email = ToiletData.currentUser
-        if (email != null) {
-            userViewModel.fetchUserByEmail(email)
-            Log.d("test", "near userview : ${userViewModel.currentUser.value}")
-        }
 
         // 임시
         viewModel.setFilter()
@@ -312,7 +299,6 @@ class NearActivity : AppCompatActivity() {
         val cameraAnimation = CameraAnimation.from(100, true, true)
         moveCamera(cameraUpdate, cameraAnimation)
 
-
         // 바텀시트 뷰 생성
         val bottomSheetView = this.layoutInflater.inflate(R.layout.detail_bottomsheet, null)
         val bottomSheetDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
@@ -360,76 +346,6 @@ class NearActivity : AppCompatActivity() {
             updatedToilet?.let {
                 saveCount.text = "저장 (${it.save})"
             }
-        }
-
-
-        // 사용자 정보 관찰
-        userViewModel.currentUser.observe(this) { user ->
-            if (user != null) {
-                //로그인 상태
-                setupPostInteraction(bottomSheetView, toilet.number, user.email)
-            } else {
-                //로그아웃 상태이면 로그인 시도로
-                Log.d("test ", "user : ${user}")
-            }
-        }
-    }
-
-    private fun setupPostInteraction(bottomSheetView: View, toiletId: Int, userId: String) {
-        postViewModel.observePostLikes(toiletId)
-
-        //좋아요 버튼 클릭 이벤트
-        val savebtn1: LinearLayout = bottomSheetView.findViewById(R.id.save_btn1)
-        val savebtn2: LinearLayout = bottomSheetView.findViewById(R.id.save_btn2)
-
-        val saveicon1: ImageView = bottomSheetView.findViewById(R.id.save_icon1)
-        val saveicon2: ImageView = bottomSheetView.findViewById(R.id.save_icon2)
-
-        savebtn1.setOnClickListener {
-            val isLiked = postViewModel.isLikedByUser(userId)
-
-            if (isLiked) {
-                postViewModel.removeLike(toiletId, userId)
-                userViewModel.removeLikeUser(toiletId, userId)
-                Log.d("test", " 삭제 : ${postViewModel.toiletLikes.value}")
-            } else {
-                Log.d("test ", "saveicon1 추가")
-                postViewModel.addLike(toiletId, userId)
-                userViewModel.addLikeUser(toiletId, userId)
-                Log.d("test", " 추가 : ${postViewModel.toiletLikes.value}")
-            }
-        }
-
-        savebtn2.setOnClickListener {
-            val isLiked = postViewModel.isLikedByUser(userId)
-            if (isLiked) {
-                postViewModel.removeLike(toiletId, userId)
-                userViewModel.removeLikeUser(toiletId, userId)
-                Log.d("test", " 삭제 : ${postViewModel.toiletLikes.value}")
-            } else {
-                Log.d("test ", "saveicon1 추가")
-                postViewModel.addLike(toiletId, userId)
-                userViewModel.addLikeUser(toiletId, userId)
-                Log.d("test", " 추가 : ${postViewModel.toiletLikes.value}")
-            }
-        }
-
-        // 좋아요 실시간 업데이트 관찰
-        postViewModel.toiletLikes.observe(this) { likes ->
-            val likeCountTextView = bottomSheetView.findViewById<TextView>(R.id.toilet_save_count1)
-            likeCountTextView.text = "저장 (${likes.size})"
-            updateLikeButtonIcon(saveicon1, saveicon2, userId)
-        }
-    }
-
-    private fun updateLikeButtonIcon(saveBtn1: ImageView, saveBtn2: ImageView, userId: String) {
-        val isLiked = postViewModel.isLikedByUser(userId)
-        if (isLiked) {
-            saveBtn1.setImageResource(R.drawable.saved_star_icon)
-            saveBtn2.setImageResource(R.drawable.saved_star_icon)
-        } else {
-            saveBtn1.setImageResource(R.drawable.save_icon)
-            saveBtn2.setImageResource(R.drawable.save_icon)
         }
     }
 
@@ -501,11 +417,6 @@ class NearActivity : AppCompatActivity() {
         if (currentToilet == null) {
             Log.e("NearActivity", "Error: currentToilet is null in onResume")
             return
-        }
-
-        currentToilet.let { toilet ->
-            Log.d("NearActivity", "Observing likes for toilet: ${toilet.number}")
-            postViewModel.observePostLikes(toilet.number)
         }
     }
 
