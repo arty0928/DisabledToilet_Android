@@ -176,6 +176,10 @@ class NearActivity : AppCompatActivity() {
                     // 현재 위치 레이블 업데이트
                     updateMyLocationLabel(myLocation)
                 }
+
+                viewModel.searchPlace.observe(this){ searchPlace ->
+                    applySearchPlace(searchPlace)
+                }
             }
         }
     }
@@ -294,7 +298,7 @@ class NearActivity : AppCompatActivity() {
      */
     private fun moveCameraToUser() {
         // 현재 위치로 카메라 이동
-        val cameraUpdate = CameraUpdateFactory.newCenterPosition(viewModel.myLocation.value, 17)
+        val cameraUpdate = CameraUpdateFactory.newCenterPosition(viewModel.myLocation.value, 15)
         val cameraAnimation = CameraAnimation.from(100, true, true)
         moveCamera(cameraUpdate, cameraAnimation)
     }
@@ -305,7 +309,7 @@ class NearActivity : AppCompatActivity() {
     private fun initBottomSheet(toilet: ToiletModel, label: Label) {
         // 카메라 화장실 위치로 이동
         val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
-        val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 17)
+        val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 15)
         val cameraAnimation = CameraAnimation.from(100, true, true)
         moveCamera(cameraUpdate, cameraAnimation)
 
@@ -373,7 +377,7 @@ class NearActivity : AppCompatActivity() {
                     // 화장실 위치로 카메라 이동
                     val toilet = parcelableData
                     val position = LatLng.from(toilet.wgs84_latitude, toilet.wgs84_longitude)
-                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 17)
+                    val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 15)
                     val cameraAnimation = CameraAnimation.from(100, true, true)
                     moveCamera(cameraUpdate, cameraAnimation)
                     // 화장실 데이터 기반으로 레이블 생성
@@ -430,16 +434,29 @@ class NearActivity : AppCompatActivity() {
         size.y // 디바이스 세로 길이
 
         val searchDialog = SearchDialog(
+            viewModel.myLocation.value,
             size.x,
             size.y,
             object : SearchDialogListener {
                 override fun addOnSearchResultListener(searchResultDocument: SearchResultDocument) {
-
+                    viewModel.setSearchPlace(searchResultDocument)
                 }
             }
         )
 
         searchDialog.show(supportFragmentManager, searchDialog.tag)
+    }
+
+    /**
+     *     장소 검색 시, 실행되는 함수
+     */
+    private fun applySearchPlace(searchPlace: SearchResultDocument){
+        binding.searchBar.text = searchPlace.place_name
+
+        val position = LatLng.from(searchPlace.y.toDouble(), searchPlace.x.toDouble())
+        val cameraUpdate = CameraUpdateFactory.newCenterPosition(position, 15)
+        val cameraAnimation = CameraAnimation.from(100, true, true)
+        moveCamera(cameraUpdate, cameraAnimation)
     }
 
     override fun onResume() {

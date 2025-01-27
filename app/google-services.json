@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "737108612220-1ksj1c69un45jip6t5mangnf99caalt4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dream.disabledtoilet_android",
+            "certificate_hash": "760a25123bd2b4bd3986f2de59b0fb27c1fac0c4"
+          }
+        },
+        {
           "client_id": "737108612220-1u9ltt1a24hoqnn1tkr5sdvi4asnv4ge.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,14 +44,6 @@
           "android_info": {
             "package_name": "com.dream.disabledtoilet_android",
             "certificate_hash": "311664e47e9aebe0d68aca5d492db31fb0e74971"
-          }
-        },
-        {
-          "client_id": "737108612220-u08dm57vbc8e2v9rqvtjidqcdbfff304.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dream.disabledtoilet_android",
-            "certificate_hash": "760a25123bd2b4bd3986f2de59b0fb27c1fac0c4"
           }
         },
         {

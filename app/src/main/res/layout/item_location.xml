@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/placeImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/placeName"
+        app:layout_constraintBottom_toBottomOf="@id/address"
+        android:src="@drawable/pos_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+    <TextView
+        android:id="@+id/placeName"
+        android:text="건대입구역 2호선"
+        android:layout_marginLeft="15dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/placeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/groupName"
+        android:text="지하철역"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintTop_toTopOf="@id/placeName"
+        app:layout_constraintBottom_toBottomOf="@id/placeName"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/address"
+        android:text="서울 광진구 아차산로 243"
+        android:textColor="@color/greyColor"
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@id/placeName"
+        app:layout_constraintStart_toStartOf="@id/placeName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/distance"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/groupName"
+        app:layout_constraintEnd_toEndOf="@id/groupName"
+        android:text="319km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

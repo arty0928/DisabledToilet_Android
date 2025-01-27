@@ -17,6 +17,7 @@ import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterDialogStatus
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.ToiletListState
+import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraPosition
@@ -63,6 +64,10 @@ class NearViewModel: ViewModel() {
     private val _filterDialogStatus = MutableLiveData(FilterDialogStatus())
     val filterDialogStatus : LiveData<FilterDialogStatus> get() = _filterDialogStatus
 
+    // 검색된 장소
+    private val _searchPlace = MutableLiveData<SearchResultDocument>()
+    val searchPlace : LiveData<SearchResultDocument> get() = _searchPlace
+
     init {
         val mapStatus = MapStatus(
             ToiletData.cachedToiletList!!,
@@ -79,6 +84,9 @@ class NearViewModel: ViewModel() {
         _uiState.value = uiStatus
 
         _filterDialogStatus.value = FilterDialogStatus()
+    }
+    fun setSearchPlace(place: SearchResultDocument){
+        _searchPlace.value = place
     }
     /**
      * 내 위치 세팅

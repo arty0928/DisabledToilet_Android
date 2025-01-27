@@ -46,10 +46,16 @@
             android:background="@color/greyColor"
             android:layout_height="match_parent" />
 
-        <EditText
+        <TextView
             android:id="@+id/searchBar"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:paddingLeft="15dp"
+            android:gravity="center_vertical"
+            android:text="장소 검색"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:textColor="@color/greyColor"
             app:layout_constraintTop_toTopOf="@id/filterButton_near"
             app:layout_constraintBottom_toBottomOf="@id/filterButton_near"
             app:layout_constraintStart_toStartOf="parent"
