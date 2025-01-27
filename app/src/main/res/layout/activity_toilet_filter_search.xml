@@ -28,7 +28,8 @@
                 android:layout_gravity="start|center_vertical"
                 android:layout_marginLeft="10dp"
                 android:background="@android:color/transparent"
-                android:contentDescription="Back Button"
+                android:contentDescription="화면 뒤로 돌아가기 버튼"
+
                 android:scaleType="fitCenter"
                 android:src="@drawable/back_button" />
 
@@ -50,6 +51,8 @@
             android:layout_height="0dp">
 
             <EditText
+                android:contentDescription="장소, 버스, 지하철, 주소 검색 칸"
+
                 android:fontFamily="@font/notosanskr_medium"
                 android:includeFontPadding="false"
                 android:id="@+id/search_bar"
@@ -58,7 +61,7 @@
                 android:paddingStart="20dp"
                 android:paddingVertical="10dp"
                 android:background="@drawable/search_bar_background"
-                android:textColorHint="@color/greyColor"
+                android:textColorHint="@color/black"
                 android:hint="장소, 버스, 지하철, 주소 검색"
                 android:textSize="16dp"
                 android:layout_width="match_parent"
@@ -79,6 +82,8 @@
                     app:layout_constraintVertical_bias="0">
 
                     <TextView
+                        android:contentDescription="장소 검색 정렬 기준 선택 버튼"
+
                         android:paddingRight="7dp"
                         android:id="@+id/filter"
                         android:layout_width="wrap_content"
@@ -95,6 +100,8 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
+                        android:contentDescription="장소 검색 정렬 기준 선택 버튼 이미지"
+
                         android:id="@+id/toggle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -105,6 +112,8 @@
                         app:layout_constraintTop_toTopOf="@id/filter" />
 
                     <Button
+                        android:contentDescription="장소 검색 조건 적용 검색 버튼"
+
                         android:id="@+id/filterButton"
                         android:layout_marginVertical="3dp"
                         android:layout_marginRight="10dp"
@@ -141,6 +150,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+
         android:id="@+id/fab_scroll_to_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -148,5 +158,5 @@
         android:layout_margin="16dp"
         android:src="@drawable/up_arrow_06"
         app:backgroundTint="@color/white"
-        android:contentDescription="Scroll to Top" />
+        android:contentDescription="화장실 리스트를 맨 위로 올리는 버튼" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

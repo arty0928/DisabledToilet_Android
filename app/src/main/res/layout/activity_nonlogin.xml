@@ -14,6 +14,8 @@
 
         <!-- ImageView -->
         <ImageView
+            android:contentDescription="로그인 로그아웃 서랍 열기 버튼"
+
             android:id="@+id/menu_icon"
             android:layout_width="70dp"
             android:layout_height="50dp"
@@ -35,6 +37,8 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
+                android:contentDescription="서비스 로고 이미지"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerInside"
@@ -57,6 +61,8 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <LinearLayout
+                android:contentDescription="내 주변 페이지 이동 버튼"
+
                 android:id="@+id/near_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -67,6 +73,8 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:contentDescription="내 주변 페이지 이동 버튼의 이미지"
+
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
@@ -85,6 +93,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:contentDescription="장소 검색 페이지 이동 버튼"
+
                 android:id="@+id/search_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -95,6 +105,8 @@
                 android:orientation="vertical">
 
                 <ImageView
+                    android:contentDescription="장소 검색 페이지 이동 버튼의 이미지"
+
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"

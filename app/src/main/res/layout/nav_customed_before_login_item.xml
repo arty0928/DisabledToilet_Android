@@ -7,13 +7,16 @@
     >
 
     <ImageView
+        android:contentDescription="화장실 등록 이미지"
+
         android:id="@+id/nav_icon1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
         android:src="@drawable/plustoilet_main"
         android:scaleType="fitCenter"
-        android:contentDescription="화장실등록" />
+
+        />
 
     <TextView
         android:id="@+id/nav_txt1"
@@ -24,5 +27,5 @@
         android:textSize="15dp"
         android:text="화장실등록"
     android:textColor="@color/black"
-    android:fontFamily="@font/notosanskr_semibold" />
+    android:fontFamily="@font/notosanskr_bold" />
 </LinearLayout>

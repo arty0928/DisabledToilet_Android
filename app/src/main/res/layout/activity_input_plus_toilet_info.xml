@@ -22,13 +22,14 @@
 
         <!-- Back button positioned on top of the text -->
         <ImageButton
+            android:contentDescription="화면 뒤로 돌아가기 버튼"
+
             android:id="@+id/back_button"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="start|center_vertical"
             android:layout_marginLeft="10dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Back Button"
             android:scaleType="fitCenter"
             android:src="@drawable/back_button" />
 
@@ -69,16 +70,20 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
+                    android:contentDescription="화장실 추가 시 화장실 이름 입력 칸"
+
                     android:id="@+id/plus_toilet_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:paddingLeft="15dp"
                     android:background="@drawable/search_bar_background"
                     android:hint="화장실 이름 (20자 이내)"
-                    android:padding="12dp"
+                    android:textColorHighlight="@color/black"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/greyColor"
-                    android:textSize="10dp"
+                    android:fontFamily="@font/notosanskr_bold"
+                    android:textSize="15dp"
+                    android:textColorHint="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/toilet_name_txt" />
 
@@ -105,16 +110,20 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
+                    android:contentDescription="화장실 추가 시 화장실 주소 입력 칸"
+
                     android:id="@+id/toilet_address_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/search_bar_background"
                     android:hint="화장실 주소"
-                    android:padding="12dp"
                     android:textColor="@color/black"
-                    android:textColorHint="@color/greyColor"
-                    android:textSize="10dp"
+                    android:textColorHighlight="@color/black"
+                    android:textSize="15dp"
+                    android:paddingLeft="15dp"
+                    android:fontFamily="@font/notosanskr_bold"
+                    android:textColorHint="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/toilet_address_txt" />
 
@@ -162,6 +171,8 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter1"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -175,6 +186,8 @@
                                 android:textSize="17dp" />
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter2"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -197,6 +210,8 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter3"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -210,6 +225,8 @@
                                 android:textSize="17dp" />
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter4"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -232,6 +249,8 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter5"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -245,6 +264,8 @@
                                 android:textSize="17dp" />
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter6"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -267,6 +288,8 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter7"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -280,6 +303,8 @@
                                 android:textSize="17dp" />
 
                             <TextView
+                                android:contentDescription="화장실 추가 시 화장실 상태 버튼"
+
                                 android:id="@+id/filter8"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -306,6 +331,8 @@
         </LinearLayout>
 
         <Button
+            android:contentDescription="화장실 추가 시 화장실 최종 등록 확인 버튼"
+
             android:id="@+id/plus_toilet_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

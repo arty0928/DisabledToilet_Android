@@ -30,7 +30,9 @@
             android:background="@android:color/transparent"
             android:src="@drawable/back_button"
             android:scaleType="fitCenter"
-            android:contentDescription="Back Button" />
+            android:contentDescription="화면 뒤로 돌아가기 버튼"
+
+            />
 
     </FrameLayout>
 
@@ -47,6 +49,8 @@
             android:layout_height="match_parent" />
 
         <EditText
+            android:contentDescription="내 주변 화장실 검색 칸"
+
             android:id="@+id/searchBar"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -59,6 +63,8 @@
             android:layout_height="0dp"/>
 
         <android.widget.Button
+            android:contentDescription="내 주변 조건 적용 버튼"
+
             android:id="@+id/filterButton_near"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -76,6 +82,8 @@
             android:layout_gravity="end|top"/>
 
         <ImageButton
+            android:contentDescription="카카오 지도 내 위치로 카메라 이동하기 버튼"
+
             android:id="@+id/map_return_cur_pos_btn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -6,13 +6,15 @@
     android:layout_marginRight="20dp">
 
     <ImageView
+        android:contentDescription="화장실 정보 보기 버튼"
+
         android:id="@+id/toilet_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/logo"
         android:background="@drawable/rounded_background"
-        android:contentDescription="Rounded Image"
+
         android:clipToOutline="true"
         />
 

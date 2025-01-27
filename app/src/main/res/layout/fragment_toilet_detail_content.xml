@@ -16,8 +16,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="대변기"
-            android:textColor="@color/darkerGrey"
-            android:textSize="15dp"
+            android:fontFamily="@font/notosanskr_bold"
+            android:textColor="@color/black"
+            android:textSize="18dp"
             />
 
         <!-- 점선 View -->
@@ -35,8 +36,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="2"
+            android:fontFamily="@font/notosanskr_bold"
             android:textColor="@color/black"
-            android:textSize="15dp"
+            android:textSize="18dp"
             android:textStyle="bold"/>
 
     </LinearLayout>

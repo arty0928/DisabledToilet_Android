@@ -16,6 +16,8 @@
     app:layout_constraintBottom_toBottomOf="parent">
 
     <TextView
+        android:contentDescription="화장실 상태"
+
         android:id="@+id/optionTextView"
         android:layout_marginRight="15dp"
         android:paddingHorizontal="15dp"

@@ -54,6 +54,8 @@
                 android:focusable="true">
 
                 <ImageView
+                    android:contentDescription="화장실 저장 이미지"
+
                     android:layout_gravity="center"
                     android:id="@+id/save_icon1"
                     android:layout_width="20dp"
@@ -148,7 +150,7 @@
                 android:gravity="center_vertical"
                 android:text="서울특별시 세진구"
 
-                android:textColor="@color/darkerGrey"
+                android:textColor="@color/black"
                 android:textSize="14dp"
                 android:fontFamily="@font/notosanskr_semibold"/>
         </LinearLayout>
@@ -178,6 +180,7 @@
             android:focusable="true">
 
             <ImageView
+                android:contentDescription="화장실 저장 버튼 이미지"
 
                 android:padding="10dp"
                 android:id="@+id/save_icon2"
@@ -207,6 +210,8 @@
             android:focusable="true">
 
             <ImageView
+                android:contentDescription="화장실 공유 버튼 이미지"
+
                 android:padding="10dp"
                 android:id="@+id/share_icon"
                 android:layout_width="match_parent"
@@ -238,6 +243,8 @@
             android:focusable="true">
 
             <ImageView
+                android:contentDescription="화장실 네비게이션 이동 버튼 이미지"
+
                 android:padding="10dp"
                 android:id="@+id/navigation_icon"
                 android:layout_width="match_parent"

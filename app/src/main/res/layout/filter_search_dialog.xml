@@ -17,6 +17,8 @@
         android:orientation="horizontal">
 
         <ImageButton
+            android:contentDescription="조건 검색 창 지우기 버튼"
+
             android:id="@+id/back_button"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -49,7 +51,8 @@
             android:id="@+id/recentCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="화장실 최근 점검"
+            android:textSize="18dp"
+            android:text="상태 점검 기준일을 몊 달 전으로 할까요?"
             android:textColor="@color/black"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/recentCheckBox"
@@ -70,6 +73,8 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.slider.Slider
+                    android:contentDescription="상태 점검 기준 날짜 선택 바"
+
                     android:id="@+id/recentCheckSlider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -84,6 +89,8 @@
                     android:id="@+id/all"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/notosanskr_bold"
                     android:gravity="center"
                     android:text="전체"
                     app:layout_constraintStart_toStartOf="parent"
@@ -95,6 +102,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="1년"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/notosanskr_bold"
                     app:layout_constraintEnd_toStartOf="@id/sixMonth"
                     app:layout_constraintStart_toEndOf="@id/all"
                     app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
@@ -105,6 +114,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="6개월"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/notosanskr_bold"
                     app:layout_constraintEnd_toStartOf="@id/oneMonth"
                     app:layout_constraintStart_toEndOf="@id/oneYear"
                     app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
@@ -116,6 +127,8 @@
                     android:gravity="center"
                     android:text="한달"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/notosanskr_bold"
                     app:layout_constraintTop_toBottomOf="@id/recentCheckSlider" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -139,8 +152,9 @@
             android:id="@+id/filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="조건 적용"
+            android:text="원하는 조건을 선택해주세요"
             android:textColor="@color/black"
+            android:textSize="18dp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -161,6 +175,8 @@
         android:paddingVertical="10dp">
 
         <TextView
+            android:contentDescription="화장실 조건 적용 초기화 버튼"
+
             android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -168,16 +184,20 @@
             android:layout_marginLeft="20dp"
             android:background="@color/white"
             android:text="초기화"
+            android:textSize="22dp"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
         <android.widget.Button
+            android:contentDescription="화장실 조건 적용 최종 확인 버튼"
+
             android:id="@+id/searchToilet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:background="@drawable/corner_up_right"
             android:text="화장실 보기"
+            android:textSize="20dp"
             android:textColor="@color/white"
             android:textStyle="bold" />
 
