@@ -1,14 +1,20 @@
+package com.dream.disabledtoilet_android.ToiletSearch.Model
+
 import android.os.Parcelable
-import androidx.lifecycle.MutableLiveData
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 import com.google.firebase.firestore.DocumentSnapshot
 
 @Parcelize
+@Entity(tableName = "toilet_table")
 data class ToiletModel(
 
     var distance : Double = -1.0,
 
+    @PrimaryKey
     val number: Int = 0,
+
     val basis: String = "",
     val restroom_name: String = "",
     val address_road: String = "",

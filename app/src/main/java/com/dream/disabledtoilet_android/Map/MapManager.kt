@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Map
 
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -182,9 +182,9 @@ class MapManager(private val context: Context) {
     private fun restoreLabelToOriginal(label : Label) {
         val originalStyles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(
-                LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
-                LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
-                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
+                LabelStyle.from(R.drawable.map_pin1).setZoomLevel(15),
+                LabelStyle.from(R.drawable.map_pin2).setZoomLevel(16),
+                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(18),
                 LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
             )
         )
@@ -196,7 +196,7 @@ class MapManager(private val context: Context) {
 
     // 화장실 위치로 카메라 이동 함수
     fun moveCameraToToilet(position : LatLng) {
-        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(position, 19), CameraAnimation.from(500, true, true))
+        kakaoMap.moveCamera(CameraUpdateFactory.newCenterPosition(position, 16), CameraAnimation.from(500, true, true))
         Log.d("test log", "화장실 위치로 이동")
     }
 
@@ -273,9 +273,7 @@ class MapManager(private val context: Context) {
     private fun addMarkerToMapToilet(position: LatLng, toilet: ToiletModel) {
         val styles = kakaoMap.labelManager?.addLabelStyles(
             LabelStyles.from(
-                LabelStyle.from(R.drawable.map_pin1).setZoomLevel(10),
-                LabelStyle.from(R.drawable.map_pin2).setZoomLevel(13),
-                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(16),
+                LabelStyle.from(R.drawable.map_pin3).setZoomLevel(15),
                 LabelStyle.from(R.drawable.map_pin4).setZoomLevel(19)
             )
         )

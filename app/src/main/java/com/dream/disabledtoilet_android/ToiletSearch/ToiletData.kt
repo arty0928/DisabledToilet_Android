@@ -1,19 +1,12 @@
 package com.dream.disabledtoilet_android.ToiletSearch
 
-import ToiletModel
-import User
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.dream.disabledtoilet_android.BuildConfig
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletData.currentUser
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.database.FirebaseDatabase
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
@@ -50,6 +43,7 @@ object ToiletData {
                                 cachedToiletList = documents.mapNotNull { doc ->
                                     ToiletModel.fromDocument(doc) // null이 아닌 경우만 포함
                                 }
+
                                 toiletListInit = true
                                 continuation.resume(true)
                             }

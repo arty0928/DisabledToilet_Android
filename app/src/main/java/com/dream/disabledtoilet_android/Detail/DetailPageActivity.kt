@@ -1,14 +1,13 @@
 package com.dream.disabledtoilet_android.Detail
 
 import com.kakao.vectormap.camera.CameraUpdateFactory
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.dream.disabledtoilet_android.BuildConfig
-import com.dream.disabledtoilet_android.Map.MapManager
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.databinding.ActivityDetailBinding
 import com.kakao.vectormap.KakaoMap

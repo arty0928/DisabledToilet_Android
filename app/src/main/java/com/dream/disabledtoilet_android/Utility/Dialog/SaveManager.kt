@@ -1,6 +1,6 @@
 //package com.dream.disabledtoilet_android.Utility.Dialog
 //
-//import ToiletModel
+//import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 //import android.content.Context
 //import android.util.Log
 //import android.view.View
@@ -23,7 +23,7 @@
 //    var loadingDialog = LoadingDialog()
 //
 //    // 아이콘 토글 함수 (BottomSheet)
-//    fun toggleIcon(view: View, toilet: ToiletModel) {
+//    fun toggleIcon(view: View, toilet: com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel) {
 //        val imageView1: ImageView = view.findViewById(R.id.save_icon1)
 //        val imageView2: ImageView = view.findViewById(R.id.save_icon2)
 //        val saveCount : TextView = view.findViewById(R.id.toilet_save_count)
@@ -55,7 +55,7 @@
 //        Log.d(TAG, "Updated save count: ${toilet.save}")
 //    }
 //
-//    fun updateSave(toilet: ToiletModel){
+//    fun updateSave(toilet: com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel){
 //        val db = FirebaseFirestore.getInstance()
 //        val currentSave = getCurrentSave(toilet)
 //
@@ -78,7 +78,7 @@
 //     * 현재 User가 해당 화장실을 좋아요 했는지 체크
 //     * 1 : 추가 , -1 : 삭제
 //     */
-//    fun getCurrentSave(toilet: ToiletModel) : Int {
+//    fun getCurrentSave(toilet: com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel) : Int {
 //        var likedToilets = ToiletData.currentUser?.likedToilets
 //
 //        if (likedToilets != null) {
@@ -95,7 +95,7 @@
 //    }
 //
 //    // 아이콘 토글 함수 (Expanded BottomSheet)
-//    fun toggleIcon2(view: View, toilet: ToiletModel){
+//    fun toggleIcon2(view: View, toilet: com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel){
 //        val imageView : ImageView = view.findViewById(R.id.icon_toggle)
 //        val saveCount : TextView = view.findViewById(R.id.toilet_save_count)
 //
@@ -116,7 +116,7 @@
 //    }
 //
 //
-//    private fun updateToiletInFirebase(toilet: ToiletModel) {
+//    private fun updateToiletInFirebase(toilet: com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel) {
 //        val toiletRef = firestore.collection("toilets").document(toilet.number.toString()) // toilet의 number를 사용하여 문서 참조
 //
 //        toiletRef.update("save", toilet.save)

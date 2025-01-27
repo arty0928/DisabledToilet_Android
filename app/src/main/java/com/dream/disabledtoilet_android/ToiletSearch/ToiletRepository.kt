@@ -1,14 +1,13 @@
 package com.dream.disabledtoilet_android.ToiletSearch
 
-import ToiletModel
 import android.location.Location
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.DataLayer.OptionStringList
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.kakao.vectormap.LatLng
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

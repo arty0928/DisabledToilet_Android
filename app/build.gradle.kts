@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
     id ("kotlin-parcelize")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -74,7 +75,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 
     packaging {
@@ -144,7 +145,7 @@ dependencies {
 
     //Glide 사진
     implementation ("com.github.bumptech.glide:glide:4.14.2")
-    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+    ksp("com.github.bumptech.glide:compiler:4.15.1")
 
     //카카오톡 공유
     implementation ("com.kakao.sdk:v2-share:2.11.2")
@@ -166,4 +167,10 @@ dependencies {
     testImplementation ("org.mockito:mockito-core:4.0.0")
 
     implementation ("com.google.android.material:material:1.12.0")
+
+    // Room
+    val room_version = "2.5.0"
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version")
 }

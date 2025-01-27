@@ -1,6 +1,5 @@
 package com.dream.disabledtoilet_android.ToiletSearch.Adapter
 
-import ToiletModel
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -14,6 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.dream.disabledtoilet_android.databinding.ToiletListItemBinding
 import com.kakao.vectormap.LatLng
 /**

@@ -1,9 +1,7 @@
 package com.dream.disabledtoilet_android.ToiletSearch
 
-import ToiletModel
 import android.Manifest
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.content.pm.PackageManager
 import kotlinx.coroutines.tasks.await
 import android.os.Build
@@ -23,6 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.SortViewModel
@@ -37,7 +36,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 

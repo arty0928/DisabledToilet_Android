@@ -19,6 +19,4 @@ class SearchDialogViewModel: ViewModel() {
     fun setSearchResult(searchResult: List<SearchResultDocument>) {
         _searchResult.value = searchResult
     }
-
-
 }

@@ -1,14 +1,13 @@
 package com.dream.disabledtoilet_android.Near.DataLayer
 
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import android.location.Location
 import android.util.Log
-import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraPosition
 
 class ToiletListGenerator {
     /**
-     *      카메라 위치 기준으로 10kM 이내의 ToiletModel 리스트 생성
+     *      카메라 위치 기준으로 10kM 이내의 com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel 리스트 생성
      */
     fun makeToiletListInCamera(cameraPosition: CameraPosition, toiletList: List<ToiletModel>): List<ToiletModel> {
         val resultList = mutableListOf<ToiletModel>()

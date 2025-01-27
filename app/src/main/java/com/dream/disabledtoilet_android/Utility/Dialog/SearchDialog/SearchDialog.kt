@@ -1,6 +1,7 @@
 package com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -40,7 +42,7 @@ class SearchDialog(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
         return dialog
     }
 
@@ -98,6 +100,12 @@ class SearchDialog(
                 // 혹시 나중에 필요하면 추가
             }
         })
+        binding.searchBar.requestFocus()
+
+        // 키보드 표시를 지연 처리
+        binding.searchBar.post {
+            showKeyboard(binding.searchBar)
+        }
     }
 
     private fun setDialogFullScreen() {
@@ -125,5 +133,11 @@ class SearchDialog(
             val resultList = result?.documents
             recyclerAdapter.updateOptionList(resultList)
         }
+    }
+
+    private fun showKeyboard(view: View) {
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED)
     }
 }

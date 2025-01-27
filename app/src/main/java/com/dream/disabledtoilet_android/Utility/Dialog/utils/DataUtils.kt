@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Utility.Dialog.utils
 
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import android.util.Log
 
 /**
@@ -10,7 +10,7 @@ object DataUtils {
 
     /**
      * 비어있는 화장실 이름을 가진 항목을 리스트에서 제거
-     * @param toiletList 필터링할 ToiletModel 객체의 리스트
+     * @param toiletList 필터링할 com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel 객체의 리스트
      * @return 비어있지 않은 화장실 이름을 가진 리스트
      */
     fun removeEmptyData(toiletList: MutableList<ToiletModel>): MutableList<ToiletModel> {

@@ -15,7 +15,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.room.Room
+import com.dream.disabledtoilet_android.ToiletSearch.ToiletData.cachedToiletList
 import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
+import com.dream.disabledtoilet_android.Utility.Database.ToiletDatabase.ToiletDatabase
 
 class StartActivity : AppCompatActivity() {
 
@@ -36,6 +39,19 @@ class StartActivity : AppCompatActivity() {
             try {
                 // 초기화 작업 (예: 데이터 로드)
                 val initResult = initializeApp()
+
+                // Room 데이터베이스에 저장
+                val db = Room.databaseBuilder(
+                    applicationContext,
+                    ToiletDatabase::class.java, "toilet_database"
+                ).build()
+                val dao = db.databaseDao() // Room 데이터베이스 인스턴스 가져오기
+                ToiletData.cachedToiletList?.let { dao.insertAll(it) } // cachedToiletList를 Room에 저장
+                // 저장된 데이터 확인
+                val savedToilets = dao.getAllToilets() // 모든 데이터를 가져오는 메소드
+                savedToilets.forEach { toilet ->
+                    Log.d("databases check", "Saved Toilet: ${toilet.toString()}")
+                }
 
                 // GoogleHelper 초기화
                 googleHelper.initializeGoogleSignIn() // 구글 로그인 초기화
@@ -63,7 +79,7 @@ class StartActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     loadingDialog.dismiss() // 로딩 다이얼로그 종료
                     // 에러 처리 (예: Toast 메시지 표시)
-                    Toast.makeText(this@StartActivity, "Initialization failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    Log.e("StartActivity", "Error during initialization: ${e.message}")
                 }
             }
         }

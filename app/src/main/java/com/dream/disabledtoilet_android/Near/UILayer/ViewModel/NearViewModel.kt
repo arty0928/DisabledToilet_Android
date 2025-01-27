@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Near.UILayer.ViewModel
 
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Build
@@ -12,18 +12,14 @@ import androidx.lifecycle.ViewModel
 import com.dream.disabledtoilet_android.Near.DataLayer.LabelBuilder
 import com.dream.disabledtoilet_android.Near.DataLayer.ToiletListGenerator
 import com.dream.disabledtoilet_android.Near.DomainLayer.NearDomain
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterDialogStatus
-import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.ToiletListState
 import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraPosition
 import com.kakao.vectormap.label.Label
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 class NearViewModel: ViewModel() {
     val nearDomain = NearDomain()
@@ -195,6 +191,14 @@ class NearViewModel: ViewModel() {
     fun makeLabel(toilet: ToiletModel, kakaoMap: KakaoMap): Label{
         val labelBuilder = LabelBuilder(kakaoMap)
         return labelBuilder.makeToiletLabel(toilet)!!
+    }
+
+    /**
+     *  장소 띄우기
+     */
+    fun makeSearchPlaceLabel(kakaoMap: KakaoMap): Label? {
+        val labelBuilder = LabelBuilder(kakaoMap)
+        return labelBuilder.makeSearchPlaceLabel(searchPlace.value!!)
     }
 
     fun setFilterDialogStatus(filterDialogStatus: FilterDialogStatus){

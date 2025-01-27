@@ -1,13 +1,13 @@
 package com.dream.disabledtoilet_android.Near.DomainLayer
 
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.dream.disabledtoilet_android.Near.DataLayer.LabelBuilder
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.label.Label
 
 class NearDomain {
     /**
-     *      ToiletModel 리스트 기반으로 Label 리스트 생성
+     *      com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel 리스트 기반으로 Label 리스트 생성
      *      KakaoMap 객체 필요
      */
     fun makeToiletLabelList(toiletList: List<ToiletModel>, kakaoMap: KakaoMap): List<Label>{

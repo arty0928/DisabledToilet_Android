@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.ToiletPlus.newToiletInfo.Domain
 
-import ToiletModel
+import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
 import com.dream.disabledtoilet_android.Utility.Firebase.FirebaseToiletService
 
 /**
