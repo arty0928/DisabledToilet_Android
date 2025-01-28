@@ -19,7 +19,7 @@
             android:layout_height="50dp"
             android:src="@drawable/logout"
             android:scaleType="centerInside"
-            android:contentDescription="로그아웃 아이콘" />
+            android:contentDescription="로그아웃 이미지" />
 
         <TextView
             android:id="@+id/logout_text"
@@ -29,6 +29,6 @@
             android:text="로그아웃"
             android:textSize="20dp"
             android:textColor="@color/black"
-            android:fontFamily="@font/notosanskr_semibold" />
+            android:fontFamily="@font/notosanskr_bold" />
     </LinearLayout>
 </LinearLayout>

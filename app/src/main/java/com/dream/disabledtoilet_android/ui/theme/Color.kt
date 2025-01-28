@@ -2,8 +2,8 @@ package com.dream.disabledtoilet_android.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val MainColor = Color(0xFF1952D5)
-val SubColor = Color(0xFF89CFF0)
+val MainColor = Color(0xFF790BBC)
+val SubColor = Color(0xFF790BBC)
 val GreenColor = Color(0xFF00D53C)
 
 

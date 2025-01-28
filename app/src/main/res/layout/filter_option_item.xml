@@ -9,14 +9,17 @@
     <TextView
         android:id="@+id/option"
         android:layout_width="100dp"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
         android:gravity="center"
         android:text="남녀구분"
+        android:fontFamily="@font/notosanskr_bold"
         android:textColor="@color/black"
-        android:textSize="13sp" />
+        android:textSize="18sp" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:contentDescription="화장실 조건 적용 상태 선택 체크바"
+
         android:id="@+id/optionSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

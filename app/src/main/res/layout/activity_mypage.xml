@@ -29,6 +29,8 @@
             android:textSize="25dp" />
 
         <ImageButton
+            android:contentDescription="화면 뒤로 돌아가기 버튼"
+
             android:layout_marginLeft="10dp"
             android:id="@+id/back_button"
             android:layout_width="45dp"
@@ -37,7 +39,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/back_button"
             android:scaleType="fitCenter"
-            android:contentDescription="Back Button" />
+            />
     </FrameLayout>
 
     <!-- 프로필 섹션 -->
@@ -63,10 +65,12 @@
 
 
             <ImageView
+                android:contentDescription="마이페이지 프로필 사진"
+
                 android:id="@+id/profile_image"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:contentDescription="Profile Image"
+
                 android:background="@drawable/profile_img"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"

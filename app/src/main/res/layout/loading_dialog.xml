@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
+        android:contentDescription="정보 받아오는 중입니다."
+
         android:id="@+id/loadingCircle"
         android:src="@drawable/wheel_1"
         android:layout_width="100dp"

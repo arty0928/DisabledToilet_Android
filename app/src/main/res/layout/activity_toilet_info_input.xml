@@ -23,7 +23,8 @@
             android:layout_gravity="start|center_vertical"
             android:layout_marginLeft="10dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Back Button"
+            android:contentDescription="화면 뒤로 돌아가기 버튼"
+
             android:scaleType="fitCenter"
             android:src="@drawable/back_button" />
 

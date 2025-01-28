@@ -6,6 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <EditText
+        android:contentDescription="내 주변 화장실 검색 칸"
+
         android:id="@+id/searchBar"
         android:imeOptions="actionSearch"
         android:gravity="center_vertical"
@@ -26,6 +28,8 @@
         android:background="@drawable/search_bar_background"/>
 
     <android.widget.Button
+        android:contentDescription="내 주변 조건 적용 버튼"
+
         android:id="@+id/searchButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

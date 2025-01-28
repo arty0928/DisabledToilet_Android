@@ -123,12 +123,12 @@ class SortDialog: DialogFragment() {
                     clearSortButton()
                     //버튼 보이게
                     binding.check1.visibility = View.VISIBLE
-                    binding.filterText1.setTextColor(ContextCompat.getColor(requireContext(), R.color.subColor))
+                    binding.filterText1.setTextColor(ContextCompat.getColor(requireContext(), R.color.mainColor))
                 }
                 viewModel.sortString.sortBySaved -> {
                     clearSortButton()
                     binding.check2.visibility = View.VISIBLE
-                    binding.filterText2.setTextColor(ContextCompat.getColor(requireContext(), R.color.subColor))
+                    binding.filterText2.setTextColor(ContextCompat.getColor(requireContext(), R.color.mainColor))
                 }
             }
         }

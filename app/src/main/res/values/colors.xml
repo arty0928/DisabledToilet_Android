@@ -4,7 +4,9 @@
     <color name="background">#F2F4F6</color>
 
     <color name="mainColor">#790BBC</color>
-    <color name="subColor">#FFE2B5FD</color>
+    <color name="subColor">#790BBC</color>
+
+<!--    <color name="subColor">#FFE2B5FD</color>-->
     <color name="greenColor">#00D53C</color>
 
     <color name="redColor">#FFFF0000</color>

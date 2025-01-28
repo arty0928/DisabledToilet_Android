@@ -16,6 +16,8 @@
         android:background="@color/background">
 
         <ImageView
+            android:contentDescription="로그인 로그아웃 서랍 열기 버튼"
+
             android:id="@+id/menu_icon_login"
             android:layout_width="70dp"
             android:layout_height="50dp"
@@ -30,6 +32,8 @@
             android:layout_height="150dp">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:contentDescription="서비스 로고 이미지"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/logo"
@@ -47,6 +51,8 @@
             android:paddingRight="15dp">
 
             <LinearLayout
+                android:contentDescription="내 주변 페이지 이동 버튼"
+
                 android:id="@+id/near_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -57,6 +63,8 @@
                 android:background="@drawable/custom_button">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:contentDescription="내 주변 페이지 이동 버튼의 이미지"
+
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
@@ -76,6 +84,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:contentDescription="장소 검색 페이지 이동 버튼"
+
                 android:id="@+id/search_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -86,6 +96,8 @@
                 android:background="@drawable/custom_button">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:contentDescription="장소 검색 페이지 이동 버튼의 이미지"
+
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
@@ -116,6 +128,8 @@
             android:paddingRight="15dp">
 
             <LinearLayout
+                android:contentDescription="화장실 등록 페이지 이동 버튼"
+
                 android:id="@+id/toiletplus_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -126,6 +140,8 @@
                 android:background="@drawable/custom_button">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:contentDescription="화장실 등록 페이지 이동 버튼의 이미지"
+
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
@@ -144,6 +160,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:contentDescription="내 장소 페이지 이동 버튼"
+
                 android:id="@+id/my_toilet_button"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -154,6 +172,7 @@
                 android:background="@drawable/custom_button">
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:contentDescription="내 장소 페이지 이동 버튼의 이미지"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="2"
@@ -199,13 +218,14 @@
             android:background="@color/white">
 
             <ImageView
+
                 android:id="@+id/nav_delete_account_icon"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.8"
                 android:src="@drawable/mypage_main"
                 android:scaleType="fitCenter"
-                android:contentDescription="회원탈퇴" />
+                android:contentDescription="회원탈퇴 버튼의 이미지" />
 
             <TextView
                 android:id="@+id/nav_delete_account_txt"
