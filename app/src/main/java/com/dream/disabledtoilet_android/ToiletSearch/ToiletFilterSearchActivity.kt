@@ -69,7 +69,7 @@ class ToiletFilterSearchActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[ToiletSearchViewModel::class.java]
 
         // 혹시 화장실 리스트가 캐시되지 않았을 경우
-        if (!ToiletData.toiletListInit) {
+        if (ToiletData.cachedToiletList.isNullOrEmpty()) {
             Log.d("test log", "ToiletData toiletList 캐시 안됨")
             // 비어있는 리스트 생성
             val toiletList = mutableListOf<ToiletModel>()

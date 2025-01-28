@@ -44,7 +44,6 @@ object ToiletData {
                                     ToiletModel.fromDocument(doc) // null이 아닌 경우만 포함
                                 }
 
-                                toiletListInit = true
                                 continuation.resume(true)
                             }
                         }
