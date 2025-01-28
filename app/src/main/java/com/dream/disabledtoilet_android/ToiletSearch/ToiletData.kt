@@ -57,6 +57,10 @@ object ToiletData {
         }
     }
 
+    fun removeNamelessToilet() {
+        cachedToiletList = cachedToiletList?.filter { it.restroom_name.isNotEmpty() }
+    }
+
     /**
      * 화장실 정보 업데이트 : Map {화장실 번호 : save 값}
      * 키가 이미 존재하면 새로운 값으로 대체

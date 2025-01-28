@@ -11,7 +11,7 @@ data class KakaoApiResponse<T>(
     val meta: Meta
 )
 
-@Entity
+@Entity(tableName = "place_database")
 data class SearchResultDocument(
     @PrimaryKey(autoGenerate = false)
     val id: String,                      // 장소 ID

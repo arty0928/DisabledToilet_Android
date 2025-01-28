@@ -13,6 +13,7 @@ data class ToiletModel(
     var distance : Double = -1.0,
 
     @PrimaryKey
+    val documentId: String = "",
     val number: Int = 0,
 
     val basis: String = "",
@@ -58,6 +59,7 @@ data class ToiletModel(
     companion object {
         fun fromDocument(document: DocumentSnapshot): ToiletModel {
             return ToiletModel(
+                documentId = document.id,
                 distance = -1.0,
                 number = document.getLong("number")?.toInt() ?: 0,
                 category = document.getString("category") ?: "",

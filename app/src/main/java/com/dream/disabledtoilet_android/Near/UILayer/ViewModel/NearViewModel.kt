@@ -81,6 +81,15 @@ class NearViewModel: ViewModel() {
 
         _filterDialogStatus.value = FilterDialogStatus()
     }
+    fun getSearchedPlace(): String{
+        var query = ""
+        searchPlace.value?.let { it ->
+            if (it != null){
+                query = it.place_name
+            }
+        }
+        return query
+    }
     fun setSearchPlace(place: SearchResultDocument){
         _searchPlace.value = place
     }

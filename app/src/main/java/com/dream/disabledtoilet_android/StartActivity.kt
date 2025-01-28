@@ -38,20 +38,27 @@ class StartActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // 초기화 작업 (예: 데이터 로드)
-                val initResult = initializeApp()
+                // 여기서 cachedToiletList 생성
+                val initResult:Boolean
 
-                // Room 데이터베이스에 저장
                 val db = Room.databaseBuilder(
                     applicationContext,
                     ToiletDatabase::class.java, "toilet_database"
                 ).build()
                 val dao = db.databaseDao() // Room 데이터베이스 인스턴스 가져오기
-                ToiletData.cachedToiletList?.let { dao.insertAll(it) } // cachedToiletList를 Room에 저장
-                // 저장된 데이터 확인
                 val savedToilets = dao.getAllToilets() // 모든 데이터를 가져오는 메소드
-                savedToilets.forEach { toilet ->
-                    Log.d("databases check", "Saved Toilet: ${toilet.toString()}")
+
+                if (savedToilets.isEmpty()) {
+                    Log.d("test", "cachedToiletList is empty")
+                    initResult = initializeApp()
+                    ToiletData.cachedToiletList?.let { dao.insertAll(it) } // cachedToiletList를 Room에 저장
+                } else {
+                    Log.d("test", "cachedToiletList is not empty")
+                    initResult = true
+                    ToiletData.cachedToiletList = savedToilets
+                    ToiletData.removeNamelessToilet()
                 }
+
 
                 // GoogleHelper 초기화
                 googleHelper.initializeGoogleSignIn() // 구글 로그인 초기화

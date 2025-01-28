@@ -430,6 +430,7 @@ class NearActivity : AppCompatActivity() {
         size.y // 디바이스 세로 길이
 
         val searchDialog = SearchDialog(
+            viewModel.getSearchedPlace(),
             viewModel.myLocation.value,
             size.x,
             size.y,

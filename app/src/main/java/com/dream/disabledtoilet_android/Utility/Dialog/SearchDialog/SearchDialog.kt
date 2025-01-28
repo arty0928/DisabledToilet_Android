@@ -25,8 +25,11 @@ import com.dream.disabledtoilet_android.databinding.DialogSearchLocationBinding
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.launch
 
-
+/**
+ * 현재 하드코딩 해놓은 부분 많음
+ */
 class SearchDialog(
+    private val query: String,
     private val userPosition: LatLng?,
     private val x: Int,
     private val y: Int,
@@ -105,6 +108,11 @@ class SearchDialog(
         // 키보드 표시를 지연 처리
         binding.searchBar.post {
             showKeyboard(binding.searchBar)
+        }
+
+        if(query != ""){
+            search(query)
+            binding.searchBar.setText(query)
         }
     }
 
