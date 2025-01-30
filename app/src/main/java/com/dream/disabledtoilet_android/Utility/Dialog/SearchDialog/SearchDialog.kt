@@ -20,7 +20,7 @@ import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.Sea
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.SearchResultSelectListener
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.ViewModel.SearchDialogViewModel
 import com.dream.disabledtoilet_android.Utility.KaKaoAPI.KakaoApiRepository
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.PlaceModel
 import com.dream.disabledtoilet_android.databinding.DialogSearchLocationBinding
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.launch
@@ -74,7 +74,7 @@ class SearchDialog(
         // 리사이클러뷰
         recyclerAdapter = SearchResultAdapter(
             object : SearchResultSelectListener {
-                override fun onSearchResultSelected(searchResult: SearchResultDocument) {
+                override fun onSearchResultSelected(searchResult: PlaceModel) {
                     searchDialogListener.addOnSearchResultListener(searchResult)
                     dismiss()
                 }

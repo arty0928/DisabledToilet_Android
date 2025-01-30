@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/notosanskr_bold"
                 android:gravity="center"
-                android:text="장소 검색"
+                android:text="화장실 검색"
                 android:textColor="@color/black"
                 android:textSize="25dp" />
         </FrameLayout>
@@ -111,7 +111,7 @@
                         app:layout_constraintStart_toEndOf="@id/filter"
                         app:layout_constraintTop_toTopOf="@id/filter" />
 
-                    <Button
+                    <android.widget.Button
                         android:contentDescription="장소 검색 조건 적용 검색 버튼"
 
                         android:id="@+id/filterButton"

@@ -5,20 +5,19 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.PlaceModel
 
 @Dao
 interface PlaceDAO {
-    @Insert
-    suspend fun insertPlace(place: SearchResultDocument)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlace(place: PlaceModel)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(placeList: List<SearchResultDocument>)
+    suspend fun insertAll(placeList: List<PlaceModel>)
 
     @Delete
-    suspend fun deletePlace(place: SearchResultDocument)
+    suspend fun deletePlace(place: PlaceModel)
 
     @Query("SELECT * FROM place_database")
-    suspend fun getAllPlaces(): List<SearchResultDocument>
+    suspend fun getAllPlaces(): List<PlaceModel>
 }

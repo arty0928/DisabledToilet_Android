@@ -86,7 +86,7 @@
             android:label="@string/title_activity_near"
             android:theme="@style/Theme.DisabledToilet_Android_Material"/>
         <activity
-            android:name="com.dream.disabledtoilet_android.User.MyPageActivity"
+            android:name="com.dream.disabledtoilet_android.MyPlace.UILayer.MyPageActivity"
             android:exported="false"
             android:label="@string/title_activity_my_page"
             android:theme="@style/Theme.DisabledToilet_Android"

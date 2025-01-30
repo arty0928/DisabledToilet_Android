@@ -1,13 +1,13 @@
 package com.dream.disabledtoilet_android.Near.DataLayer
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import User
 import androidx.lifecycle.MutableLiveData
 import com.android.tools.build.jetifier.core.utils.Log
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.User.UserRepository
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.PlaceModel
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.label.Label
@@ -26,7 +26,7 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
     /**
      *      검색한 장소 레이블 생성
      */
-    fun makeSearchPlaceLabel(place: SearchResultDocument): Label? {
+    fun makeSearchPlaceLabel(place: PlaceModel): Label? {
         val position = LatLng.from(place.y.toDouble(), place.x.toDouble())
         val options = LabelOptions.from(position)
             .setStyles(
@@ -44,7 +44,7 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
     }
 
     /**
-     *      com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel 리스트를 기반으로 Label 리스트 생성
+     *      com.dream.disabledtoilet_android.Model.ToiletModel 리스트를 기반으로 Label 리스트 생성
      */
     fun makeToiletLabelList(toiletList: List<ToiletModel>): List<Label> {
         val toiletLabelList = mutableListOf<Label>()
@@ -66,7 +66,7 @@ class LabelBuilder(val kakaoMap: KakaoMap) {
     }
 
     /**
-     *      Label, com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel 맵 반환
+     *      Label, com.dream.disabledtoilet_android.Model.ToiletModel 맵 반환
      *      반환 후, toiletLabelMap 초기화
      */
     fun getToiletLabelMap(): MutableMap<Label, ToiletModel> {

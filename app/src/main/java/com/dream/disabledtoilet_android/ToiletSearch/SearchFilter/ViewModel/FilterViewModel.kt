@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.DataLayer.OptionBuilder
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model.OptionModel
+import com.dream.disabledtoilet_android.Model.OptionModel
 
 
 /**

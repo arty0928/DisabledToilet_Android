@@ -1,19 +1,15 @@
 package com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.dream.disabledtoilet_android.ToiletSearch.Adapter.AdapterEventListener
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model.OptionModel
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.SearchResultSelectListener
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
-import com.dream.disabledtoilet_android.databinding.FilterOptionItemBinding
+import com.dream.disabledtoilet_android.Model.PlaceModel
 import com.dream.disabledtoilet_android.databinding.ItemLocationBinding
 
 class SearchResultAdapter(val listener: SearchResultSelectListener): RecyclerView.Adapter<SearchResultAdapter.ItemViewHolder>() {
-    private var searchResultList: List<SearchResultDocument> = listOf()
+    private var searchResultList: List<PlaceModel> = listOf()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -34,7 +30,7 @@ class SearchResultAdapter(val listener: SearchResultSelectListener): RecyclerVie
     inner class ItemViewHolder(
         val binding: ItemLocationBinding
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(searchResultListItem: SearchResultDocument){
+        fun bind(searchResultListItem: PlaceModel){
             binding.placeName.text = formatName(searchResultListItem.place_name)
             binding.groupName.text = extractLastCategory(searchResultListItem.category_name)
             binding.address.text = searchResultListItem.address_name
@@ -48,7 +44,7 @@ class SearchResultAdapter(val listener: SearchResultSelectListener): RecyclerVie
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateOptionList(searchResultList: List<SearchResultDocument>?){
+    fun updateOptionList(searchResultList: List<PlaceModel>?){
         if (searchResultList != null) {
             this.searchResultList = searchResultList
         } else {

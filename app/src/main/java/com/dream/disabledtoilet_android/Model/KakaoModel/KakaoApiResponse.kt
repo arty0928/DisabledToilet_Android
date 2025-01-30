@@ -1,7 +1,4 @@
-package com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model
-
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+package com.dream.disabledtoilet_android.Model.KakaoModel
 
 /**
  * Response 받는 Data Class
@@ -11,22 +8,6 @@ data class KakaoApiResponse<T>(
     val meta: Meta
 )
 
-@Entity(tableName = "place_database")
-data class SearchResultDocument(
-    @PrimaryKey(autoGenerate = false)
-    val id: String,                      // 장소 ID
-    val place_name: String,              // 장소명, 업체명
-    val category_name: String,           // 카테고리 이름
-    val category_group_code: String,     // 중요 카테고리만 그룹핑한 카테고리 그룹 코드
-    val category_group_name: String,     // 중요 카테고리만 그룹핑한 카테고리 그룹명
-    val phone: String,                   // 전화번호
-    val address_name: String,            // 전체 지번 주소
-    val road_address_name: String,       // 전체 도로명 주소
-    val x: String,                       // X 좌표값 (경도)
-    val y: String,                       // Y 좌표값 (위도)
-    val place_url: String,               // 장소 상세페이지 URL
-    val distance: String?
-)
 /**
  * 주소 내용 받는 Data Class
  */

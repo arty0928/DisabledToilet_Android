@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="내 주변"
+            android:text="위치 검색"
             android:fontFamily="@font/notosanskr_bold"
             android:textColor="@color/black"
             android:textSize="25dp" />

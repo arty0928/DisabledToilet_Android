@@ -1,7 +1,7 @@
 package com.dream.disabledtoilet_android.Detail
 
 import com.kakao.vectormap.camera.CameraUpdateFactory
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.os.Build
 import android.os.Bundle
 import android.util.Log

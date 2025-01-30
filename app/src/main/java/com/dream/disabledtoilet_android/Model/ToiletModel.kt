@@ -1,4 +1,4 @@
-package com.dream.disabledtoilet_android.ToiletSearch.Model
+package com.dream.disabledtoilet_android.Model
 
 import android.os.Parcelable
 import androidx.room.Entity
@@ -15,7 +15,6 @@ data class ToiletModel(
     @PrimaryKey
     val documentId: String = "",
     val number: Int = 0,
-
     val basis: String = "",
     val restroom_name: String = "",
     val address_road: String = "",

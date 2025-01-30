@@ -1,7 +1,8 @@
 package com.dream.disabledtoilet_android.Near.UILayer.ViewModel
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import android.os.Build
 import android.util.Log
@@ -9,17 +10,20 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dream.disabledtoilet_android.Near.DataLayer.LabelBuilder
 import com.dream.disabledtoilet_android.Near.DataLayer.ToiletListGenerator
 import com.dream.disabledtoilet_android.Near.DomainLayer.NearDomain
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterDialogStatus
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.PlaceModel
+import com.dream.disabledtoilet_android.Near.DataLayer.PlaceToiletGrouper
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraPosition
 import com.kakao.vectormap.label.Label
+import kotlinx.coroutines.launch
 
 class NearViewModel: ViewModel() {
     val nearDomain = NearDomain()
@@ -61,8 +65,8 @@ class NearViewModel: ViewModel() {
     val filterDialogStatus : LiveData<FilterDialogStatus> get() = _filterDialogStatus
 
     // 검색된 장소
-    private val _searchPlace = MutableLiveData<SearchResultDocument>()
-    val searchPlace : LiveData<SearchResultDocument> get() = _searchPlace
+    private val _searchPlace = MutableLiveData<PlaceModel>()
+    val searchPlace : LiveData<PlaceModel> get() = _searchPlace
 
     init {
         val mapStatus = MapStatus(
@@ -90,7 +94,7 @@ class NearViewModel: ViewModel() {
         }
         return query
     }
-    fun setSearchPlace(place: SearchResultDocument){
+    fun setSearchPlace(place: PlaceModel){
         _searchPlace.value = place
     }
     /**
@@ -171,8 +175,8 @@ class NearViewModel: ViewModel() {
      * 바텀 시트 UI 데이터 클래스 세팅
      */
     @SuppressLint("DefaultLocale")
-    fun setBottomSheetStatus(label: Label, toilet: ToiletModel){
-        // 내 위치와 화장실 위치 사이의 거리 구하기
+    fun setBottomSheetStatus(label: Label, toilet: ToiletModel, context: Context){
+        // 거리
         val myLocation = Location("").apply{
             latitude = myLocation.value!!.getLatitude()
             longitude = myLocation.value!!.getLongitude()
@@ -182,17 +186,34 @@ class NearViewModel: ViewModel() {
             longitude = toilet.wgs84_longitude
         }
         val distance = toiletListGenerator.calculateDistance(myLocation, toiletLocation)
-        // 구한 위치 문자열 형식 맞추기
         val distanceString = when {
             distance < 1000 -> "${distance.toInt()}m"
             else -> String.format("%.1fkm", distance / 1000)
         }
-        // status 세팅
-        _bottomSheetStatus.value = BottomSheetStatus(
-            toilet,
-            label,
-            distanceString
-        )
+        // 저장 정보
+        viewModelScope.launch {
+            var place = searchPlace.value
+            var isSave = false
+//
+//            // 현재 검색어가 없으면
+//            if (place == null){
+//                place = PlaceModel()
+//                Log.d("test DB", ": ${place.place_name}")
+//                isSave = PlaceToiletGrouper(context).isSaved(place, toilet)
+//                Log.d("test DB", "isSaved: $isSave")
+//            } else {
+//                Log.d("test DB", ": ${place.place_name}")
+//                isSave = PlaceToiletGrouper(context).isSaved(place, toilet)
+//                Log.d("test DB", "isSaved: $isSave")
+//            }
+
+            _bottomSheetStatus.value = BottomSheetStatus(
+                toilet,
+                label,
+                distanceString,
+                isSave
+            )
+        }
     }
     /**
      * ToiletModel을 받아서 label 반환
@@ -237,6 +258,28 @@ class NearViewModel: ViewModel() {
             filterStatus = _filterDialogStatus.value!!.filterStatus
         )
     }
+
+    fun saveToilet(context: Context, toilet: ToiletModel){
+        var place: PlaceModel? = searchPlace.value
+        if (place == null){
+            // 현재 검색중 아니면 기본 생성자로 "내 장소"
+            place = PlaceModel()
+        }
+        _bottomSheetStatus.value = bottomSheetStatus.value!!.copy(isSaved = true)
+        val grouper = PlaceToiletGrouper(context)
+        grouper.savePlaceAndGroup(place, toilet)
+    }
+
+    fun unSaveToilet(context: Context, toilet: ToiletModel){
+        var place: PlaceModel? = searchPlace.value
+        if (place == null){
+            // 현재 검색중 아니면 기본 생성자로 "내 장소"
+            place = PlaceModel()
+        }
+        _bottomSheetStatus.value = bottomSheetStatus.value!!.copy(isSaved = false)
+        val grouper = PlaceToiletGrouper(context)
+        grouper.unSavePlaceAndGroup(place, toilet)
+    }
 }
 
 data class MapStatus(
@@ -256,5 +299,6 @@ data class UIStatus(
 data class BottomSheetStatus(
     val toilet: ToiletModel,
     val label: Label,
-    var distanceString: String
+    var distanceString: String,
+    var isSaved: Boolean = false
 )

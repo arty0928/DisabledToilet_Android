@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.AdapterEventListener
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model.OptionModel
+import com.dream.disabledtoilet_android.Model.OptionModel
 import com.dream.disabledtoilet_android.databinding.FilterOptionItemBinding
 
 class OptionRecyclerAdapter(private val listener: AdapterEventListener): RecyclerView.Adapter<OptionRecyclerAdapter.ItemViewHolder>(){

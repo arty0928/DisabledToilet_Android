@@ -2,11 +2,9 @@ package com.dream.disabledtoilet_android.ToiletSearch.SearchFilter
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,8 +12,7 @@ import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.AdapterEventListener
 import com.dream.disabledtoilet_android.ToiletSearch.FilterApplyListener
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Apdater.OptionRecyclerAdapter
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.DataLayer.OptionBuilder
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model.OptionModel
+import com.dream.disabledtoilet_android.Model.OptionModel
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterViewModel
 import com.dream.disabledtoilet_android.databinding.FilterSearchDialogBinding

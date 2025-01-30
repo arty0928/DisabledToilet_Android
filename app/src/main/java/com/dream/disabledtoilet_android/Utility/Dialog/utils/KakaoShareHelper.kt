@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Utility.Dialog.utils
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.content.Context
 import android.content.Intent
 import android.net.Uri

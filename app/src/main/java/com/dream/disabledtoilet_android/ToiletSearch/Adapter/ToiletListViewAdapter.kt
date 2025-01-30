@@ -13,7 +13,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletRepository
 import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import com.dream.disabledtoilet_android.databinding.ToiletListItemBinding
 import com.kakao.vectormap.LatLng
 /**
@@ -105,8 +105,6 @@ class ToiletListViewAdapter(
             // 넘겨준 Activity 명시
             intent.putExtra("rootActivity", "ToiletFilterSearchActivity")
             context.startActivity(intent)
-
-
         }
     }
 

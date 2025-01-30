@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Detail
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context

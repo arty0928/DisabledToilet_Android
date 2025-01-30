@@ -1,8 +1,8 @@
 package com.dream.disabledtoilet_android.Utility.KaKaoAPI
 
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.AddressDocument
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.KakaoApiResponse
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.KakaoModel.AddressDocument
+import com.dream.disabledtoilet_android.Model.KakaoModel.KakaoApiResponse
+import com.dream.disabledtoilet_android.Model.PlaceModel
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
@@ -34,5 +34,5 @@ interface KakaoApiService {
         @Query("size") size: Int? = 15,                         // 한 페이지에 보여질 문서의 개수
         @Query("sort") sort: String? = "distance",              // 정렬
         @Header("Authorization") authorization: String           // 인증 헤더
-    ) : KakaoApiResponse<SearchResultDocument>
+    ) : KakaoApiResponse<PlaceModel>
 }

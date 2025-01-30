@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Utility.Firebase
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.util.Log
 import com.dream.disabledtoilet_android.BuildConfig
 import com.google.firebase.database.FirebaseDatabase

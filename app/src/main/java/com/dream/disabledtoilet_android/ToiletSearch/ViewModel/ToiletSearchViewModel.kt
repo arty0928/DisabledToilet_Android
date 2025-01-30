@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.ToiletSearch.ViewModel
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus

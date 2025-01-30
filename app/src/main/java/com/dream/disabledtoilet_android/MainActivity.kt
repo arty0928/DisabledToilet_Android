@@ -15,7 +15,7 @@ import android.widget.Toast
 import com.dream.disabledtoilet_android.Near.UILayer.NearActivity
 import com.dream.disabledtoilet_android.ToiletPlus.ToiletPlusActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletFilterSearchActivity
-import com.dream.disabledtoilet_android.User.MyPageActivity
+import com.dream.disabledtoilet_android.MyPlace.UILayer.MyPageActivity
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.GoogleHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.CoroutineScope

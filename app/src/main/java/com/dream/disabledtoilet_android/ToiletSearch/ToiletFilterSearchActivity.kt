@@ -21,7 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.Adapter.ToiletListViewAdapter
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.SortViewModel

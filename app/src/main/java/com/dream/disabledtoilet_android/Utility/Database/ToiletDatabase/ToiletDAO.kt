@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Utility.Database.ToiletDatabase
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert

@@ -1,9 +1,9 @@
 package com.dream.disabledtoilet_android.Utility.KaKaoAPI
 
 import com.dream.disabledtoilet_android.BuildConfig
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.AddressDocument
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.KakaoApiResponse
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.KakaoModel.AddressDocument
+import com.dream.disabledtoilet_android.Model.KakaoModel.KakaoApiResponse
+import com.dream.disabledtoilet_android.Model.PlaceModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -40,7 +40,7 @@ class KakaoApiRepository {
             x: String?,
             y: String?,
             sort: String?,
-        ): Result<KakaoApiResponse<SearchResultDocument>>{
+        ): Result<KakaoApiResponse<PlaceModel>>{
             return try {
                 val response = apiService.searchWithKeyword(
                     query = query,

@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/notosanskr_bold"
             android:gravity="center"
-            android:text="장소 검색"
+            android:text="화장실 검색"
             android:textColor="@color/black"
             android:textSize="25dp" />
 

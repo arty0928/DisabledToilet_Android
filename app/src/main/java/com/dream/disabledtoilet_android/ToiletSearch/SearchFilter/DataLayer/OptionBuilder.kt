@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.DataLayer
 
-import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model.OptionModel
+import com.dream.disabledtoilet_android.Model.OptionModel
 
 class OptionBuilder {
     fun buildOptionList(): List<OptionModel>{

@@ -13,7 +13,7 @@ import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletPlus.newToiletInfo.ViewModel.PlusToiletViewModel
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.KaKaoAPI.KakaoApiRepository
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.AddressNameModel
+import com.dream.disabledtoilet_android.Model.KakaoModel.AddressNameModel
 import com.dream.disabledtoilet_android.databinding.ActivityInputPlusToiletInfoBinding
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.Dispatchers
@@ -92,7 +92,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
     /**
      *       좌표 값으로 주소 구하기
      */
-    private suspend fun getRoadAddressFromCoordinate(location: LatLng): AddressNameModel{
+    private suspend fun getRoadAddressFromCoordinate(location: LatLng): AddressNameModel {
         val kakaoRepository = KakaoApiRepository.KakaoLocalRepository()
         val callResult = kakaoRepository.getAddressFromCoordinate(location.longitude,location.latitude)
         var roadAddressName = ""

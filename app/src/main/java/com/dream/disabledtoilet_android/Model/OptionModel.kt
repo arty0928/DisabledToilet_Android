@@ -1,4 +1,4 @@
-package com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.Model
+package com.dream.disabledtoilet_android.Model
 
 data class OptionModel(
     val option: String,

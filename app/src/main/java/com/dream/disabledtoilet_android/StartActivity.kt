@@ -2,7 +2,6 @@ package com.dream.disabledtoilet_android
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
@@ -14,11 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import android.util.Log
-import androidx.activity.viewModels
-import androidx.room.Room
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletData.cachedToiletList
-import com.dream.disabledtoilet_android.User.ViewModel.UserViewModel
-import com.dream.disabledtoilet_android.Utility.Database.ToiletDatabase.ToiletDatabase
+import com.dream.disabledtoilet_android.Utility.Database.ToiletDatabase.HyojaDatabase
 
 class StartActivity : AppCompatActivity() {
 
@@ -41,11 +36,8 @@ class StartActivity : AppCompatActivity() {
                 // 여기서 cachedToiletList 생성
                 val initResult:Boolean
 
-                val db = Room.databaseBuilder(
-                    applicationContext,
-                    ToiletDatabase::class.java, "toilet_database"
-                ).build()
-                val dao = db.databaseDao() // Room 데이터베이스 인스턴스 가져오기
+                val db = HyojaDatabase.getDatabase(this@StartActivity)
+                val dao = db.toiletDao() // Room 데이터베이스 인스턴스 가져오기
                 val savedToilets = dao.getAllToilets() // 모든 데이터를 가져오는 메소드
 
                 if (savedToilets.isEmpty()) {

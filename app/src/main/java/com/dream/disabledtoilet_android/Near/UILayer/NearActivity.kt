@@ -1,6 +1,6 @@
 package com.dream.disabledtoilet_android.Near.UILayer
 
-import com.dream.disabledtoilet_android.ToiletSearch.Model.ToiletModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.dream.disabledtoilet_android.BuildConfig
 import com.dream.disabledtoilet_android.Detail.DetailPageActivity
-import com.dream.disabledtoilet_android.Map.MapManager
+import com.dream.disabledtoilet_android.Utility.Map.MapManager
 import com.dream.disabledtoilet_android.Near.UILayer.ViewModel.NearViewModel
 import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.FilterApplyListener
@@ -30,7 +30,7 @@ import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.Sea
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.SearchDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.Dialog.utils.KakaoShareHelper
-import com.dream.disabledtoilet_android.Utility.KaKaoAPI.Model.SearchResultDocument
+import com.dream.disabledtoilet_android.Model.PlaceModel
 import com.dream.disabledtoilet_android.databinding.ActivityNearBinding
 import com.dream.disabledtoilet_android.databinding.DetailBottomsheetBinding
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -136,7 +136,7 @@ class NearActivity : AppCompatActivity() {
 
                 // 카메라 이동 시작 리스너
                 kakaoMap.setOnCameraMoveStartListener { kakaoMap, gestureType ->
-                    Log.d("test log", kakaoMap.toString() + gestureType.toString())
+
                 }
                 // 카카오맵 클릭 리스너
                 kakaoMap.setOnLabelClickListener { _, _, clickedLabel ->
@@ -144,7 +144,7 @@ class NearActivity : AppCompatActivity() {
                     // 맵을 통해서 레이블의 화장실 찾기
                     val toilet = labelToToiletMap[clickedLabel]
                     if (toilet != null) {
-                        viewModel.setBottomSheetStatus(clickedLabel, toilet)
+                        viewModel.setBottomSheetStatus(clickedLabel, toilet, this)
                         // 바텀시트 생성
                         initBottomSheet(toilet, clickedLabel)
                         true
@@ -331,7 +331,7 @@ class NearActivity : AppCompatActivity() {
         bottomBinding.toiletName.text = toilet.restroom_name
         bottomBinding.toiletAddress.text = toilet.address_road ?: "-"
         bottomBinding.toiletOpeningHours.text = toilet.opening_hours ?: "-"
-        bottomBinding.toiletSaveCount1.text = "저장 (${toilet.save})"
+        bottomBinding.toiletSaveCount1.text = "저장 (${toilet.save.size})"
         bottomBinding.toiletDistance.text = viewModel.bottomSheetStatus.value!!.distanceString
 
         // 상세 페이지로 이동
@@ -351,12 +351,25 @@ class NearActivity : AppCompatActivity() {
             KakaoShareHelper(this).shareKakaoMap(toilet)
         }
 
-        // 특정 화장실의 LiveData를 관찰
-        ToiletData.observeToilet(toilet.number).observe(this) { updatedToilet ->
-            updatedToilet?.let {
-                bottomBinding.toiletSaveCount1.text = "저장 (${it.save})"
+        // 저장 버튼
+        bottomBinding.saveBtn2.setOnClickListener {
+            if (viewModel.bottomSheetStatus.value!!.isSaved){
+                viewModel.unSaveToilet(this, toilet)
+                bottomBinding.toiletSaveCount1.text = decreaseSaveCount(bottomBinding.toiletSaveCount1.text.toString())
+            } else {
+                viewModel.saveToilet(this, toilet)
+                bottomBinding.toiletSaveCount1.text = incrementSaveCount(bottomBinding.toiletSaveCount1.text.toString())
             }
         }
+
+        viewModel.bottomSheetStatus.observe(this){ bottomSheetStatus ->
+            if (bottomSheetStatus.isSaved){
+                bottomBinding.saveIcon2.setImageResource(R.drawable.saved_star_icon)
+            } else {
+                bottomBinding.saveIcon2.setImageResource(R.drawable.save_icon)
+            }
+        }
+
     }
 
     /**
@@ -378,7 +391,7 @@ class NearActivity : AppCompatActivity() {
                     moveCamera(cameraUpdate, cameraAnimation)
                     // 화장실 데이터 기반으로 레이블 생성
                     val toiletLabel = viewModel.makeLabel(toilet, kakaoMap)
-                    viewModel.setBottomSheetStatus(toiletLabel, toilet)
+                    viewModel.setBottomSheetStatus(toiletLabel, toilet, this)
                     // 바텀시트 생성
                     initBottomSheet(toilet, toiletLabel)
                 } else {
@@ -435,8 +448,8 @@ class NearActivity : AppCompatActivity() {
             size.x,
             size.y,
             object : SearchDialogListener {
-                override fun addOnSearchResultListener(searchResultDocument: SearchResultDocument) {
-                    viewModel.setSearchPlace(searchResultDocument)
+                override fun addOnSearchResultListener(placeModel: PlaceModel) {
+                    viewModel.setSearchPlace(placeModel)
                 }
             }
         )
@@ -447,7 +460,7 @@ class NearActivity : AppCompatActivity() {
     /**
      *     장소 검색 시, 실행되는 함수
      */
-    private fun applySearchPlace(searchPlace: SearchResultDocument){
+    private fun applySearchPlace(searchPlace: PlaceModel){
         binding.searchBar.text = searchPlace.place_name
 
         val position = LatLng.from(searchPlace.y.toDouble(), searchPlace.x.toDouble())
@@ -458,6 +471,33 @@ class NearActivity : AppCompatActivity() {
         val label = viewModel.makeSearchPlaceLabel(kakaoMap)
         label?.show()
     }
+
+    private fun incrementSaveCount(input: String): String {
+        // 정규식을 사용하여 괄호 안의 숫자를 추출
+        val regex = """\((\d+)\)""".toRegex()
+        val matchResult = regex.find(input)
+
+        // 숫자를 추출하고 1 증가시킴
+        val currentCount = matchResult?.groups?.get(1)?.value?.toIntOrNull() ?: 0
+        val incrementedCount = currentCount + 1
+
+        // 새로운 문자열 반환
+        return input.replace(regex, "($incrementedCount)")
+    }
+
+    private fun decreaseSaveCount(input: String): String {
+        // 정규식을 사용하여 괄호 안의 숫자를 추출
+        val regex = """\((\d+)\)""".toRegex()
+        val matchResult = regex.find(input)
+
+        // 숫자를 추출하고 1 증가시킴
+        val currentCount = matchResult?.groups?.get(1)?.value?.toIntOrNull() ?: 0
+        val incrementedCount = currentCount - 1
+
+        // 새로운 문자열 반환
+        return input.replace(regex, "($incrementedCount)")
+    }
+
 
     override fun onResume() {
         super.onResume()
