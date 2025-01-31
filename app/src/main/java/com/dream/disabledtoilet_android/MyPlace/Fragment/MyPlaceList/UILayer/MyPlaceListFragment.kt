@@ -21,6 +21,10 @@ class MyPlaceListFragment(val placeList: List<ToiletListModel>, val listener: My
             override fun addOnPlaceClickListener(toiletListModel: ToiletListModel) {
                 listener.addOnPlaceClickListener(toiletListModel)
             }
+
+            override fun addOnBackButtonClickListener() {
+
+            }
         }
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +39,9 @@ class MyPlaceListFragment(val placeList: List<ToiletListModel>, val listener: My
         binding = FragmentMyPlaceListBinding.inflate(layoutInflater)
         binding.recycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recycler.adapter = recyclerAdapter
+        binding.backButton.setOnClickListener{
+            listener.addOnBackButtonClickListener()
+        }
         return binding.root
     }
 

@@ -89,6 +89,11 @@ class SearchDialog(
             search(viewModel.query.value)
         }
 
+        binding.searchBar.setOnEditorActionListener { textView, i, keyEvent ->
+            search(viewModel.query.value)
+            true
+        }
+
         // TextWatcher
         binding.searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

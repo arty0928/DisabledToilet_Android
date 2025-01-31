@@ -104,7 +104,7 @@ class SavedToiletRecyclerAdapter(
         private fun handleItemDataToNearPage(toiletData: ToiletModel) {
             val intent = Intent(context, NearActivity::class.java)
             intent.putExtra("toiletData", toiletData)
-            intent.putExtra("placeLocation", myPlace)
+            intent.putExtra("place", myPlace)
             // 넘겨준 Activity 명시
             intent.putExtra("rootActivity", "MyPageActivity")
             context.startActivity(intent)

@@ -13,6 +13,7 @@
     <TextView
         android:id="@+id/toiletName"
         android:layout_width="match_parent"
+        android:fontFamily="@font/notosanskr_bold"
         android:layout_height="wrap_content"
         android:layout_marginVertical="2sp"
         android:text="방곡빌딩"

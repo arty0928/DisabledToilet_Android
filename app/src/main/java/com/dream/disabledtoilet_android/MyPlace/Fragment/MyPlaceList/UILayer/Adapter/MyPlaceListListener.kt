@@ -5,4 +5,6 @@ import com.dream.disabledtoilet_android.Model.ToiletModel
 
 interface MyPlaceListListener {
     fun addOnPlaceClickListener(toiletListModel: ToiletListModel)
+
+    fun addOnBackButtonClickListener()
 }

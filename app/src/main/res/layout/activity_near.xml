@@ -50,7 +50,6 @@
 
         <TextView
             android:contentDescription="내 주변 화장실 검색 칸"
-
             android:id="@+id/searchBar"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"

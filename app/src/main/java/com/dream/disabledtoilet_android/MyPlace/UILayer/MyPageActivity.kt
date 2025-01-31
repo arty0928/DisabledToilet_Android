@@ -1,12 +1,9 @@
 package com.dream.disabledtoilet_android.MyPlace.UILayer
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dream.disabledtoilet_android.Model.ToiletListModel
-import com.dream.disabledtoilet_android.Model.ToiletModel
 import com.dream.disabledtoilet_android.MyPlace.Fragment.MyPlaceList.UILayer.Adapter.MyPlaceListListener
 import com.dream.disabledtoilet_android.MyPlace.Fragment.MyPlaceList.UILayer.MyPlaceListFragment
 import com.dream.disabledtoilet_android.MyPlace.Fragment.SavedToiletList.UILayer.Adapter.SavedToiletListListener
@@ -40,6 +37,7 @@ class MyPageActivity : AppCompatActivity() {
             val viewPager = binding.viewPager
             viewPager.adapter = adapter
             viewPager.offscreenPageLimit = 2
+            viewPager.isUserInputEnabled = false
 
             viewModel.currentFragment.observe(this) { fragment ->
                 viewPager.currentItem = when(fragment){
@@ -57,6 +55,10 @@ class MyPageActivity : AppCompatActivity() {
                 savedToiletListFragment.updateToiletList(toiletListModel.toiletList)
                 savedToiletListFragment.setPlace(toiletListModel.place)
                 viewModel.setCurrentFragment("SavedToiletListFragment")
+            }
+
+            override fun addOnBackButtonClickListener() {
+                onBackPressed()
             }
         })
 

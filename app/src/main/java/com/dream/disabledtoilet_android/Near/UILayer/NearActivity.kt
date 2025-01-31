@@ -24,7 +24,6 @@ import com.dream.disabledtoilet_android.R
 import com.dream.disabledtoilet_android.ToiletSearch.FilterApplyListener
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.FilterSearchDialog
 import com.dream.disabledtoilet_android.ToiletSearch.SearchFilter.ViewModel.FilterStatus
-import com.dream.disabledtoilet_android.ToiletSearch.ToiletData
 import com.dream.disabledtoilet_android.ToiletSearch.ViewModel.FilterDialogStatus
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.SearchDialogListener
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.SearchDialog
@@ -332,7 +331,7 @@ class NearActivity : AppCompatActivity() {
         bottomBinding.toiletAddress.text = toilet.address_road ?: "-"
         bottomBinding.toiletOpeningHours.text = toilet.opening_hours ?: "-"
         bottomBinding.toiletSaveCount1.text = "저장 (${toilet.save.size})"
-        bottomBinding.toiletDistance.text = viewModel.bottomSheetStatus.value!!.distanceString
+//        bottomBinding.toiletDistance.text = viewModel.bottomSheetStatus.value!!.distanceString
 
         // 상세 페이지로 이동
         bottomBinding.moreButton.setOnClickListener {
@@ -396,6 +395,14 @@ class NearActivity : AppCompatActivity() {
                     initBottomSheet(toilet, toiletLabel)
                 } else {
                     Log.e("test log", "parcelable data type is not matched")
+                }
+            }
+
+            "MyPageActivity" -> {
+                val place = intent.getParcelableExtra<PlaceModel>("place")
+                val toiletData = intent.getParcelableExtra<ToiletModel>("toiletData")
+                if (place != null) {
+                    viewModel.setSearchPlace(place)
                 }
             }
 
