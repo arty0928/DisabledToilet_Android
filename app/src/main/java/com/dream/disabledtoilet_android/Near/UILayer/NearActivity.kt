@@ -331,7 +331,7 @@ class NearActivity : AppCompatActivity() {
         bottomBinding.toiletAddress.text = toilet.address_road ?: "-"
         bottomBinding.toiletOpeningHours.text = toilet.opening_hours ?: "-"
         bottomBinding.toiletSaveCount1.text = "저장 (${toilet.save.size})"
-//        bottomBinding.toiletDistance.text = viewModel.bottomSheetStatus.value!!.distanceString
+        bottomBinding.toiletDistance.text = viewModel.bottomSheetStatus.value?.distanceString ?: "-"
 
         // 상세 페이지로 이동
         bottomBinding.moreButton.setOnClickListener {
@@ -364,8 +364,11 @@ class NearActivity : AppCompatActivity() {
         viewModel.bottomSheetStatus.observe(this){ bottomSheetStatus ->
             if (bottomSheetStatus.isSaved){
                 bottomBinding.saveIcon2.setImageResource(R.drawable.saved_star_icon)
+                bottomBinding.saveIcon1.setImageResource(R.drawable.saved_star_icon)
             } else {
                 bottomBinding.saveIcon2.setImageResource(R.drawable.save_icon)
+                bottomBinding.saveIcon1.setImageResource(R.drawable.save_icon)
+
             }
         }
 
@@ -402,7 +405,18 @@ class NearActivity : AppCompatActivity() {
                 val place = intent.getParcelableExtra<PlaceModel>("place")
                 val toiletData = intent.getParcelableExtra<ToiletModel>("toiletData")
                 if (place != null) {
-                    viewModel.setSearchPlace(place)
+                    if (toiletData != null) {
+                        val location = LatLng.from(toiletData.wgs84_latitude, toiletData.wgs84_longitude)
+                        val cameraUpdate = CameraUpdateFactory.newCenterPosition(location, 16)
+                        val cameraAnimation = CameraAnimation.from(100, true, true)
+                        moveCamera(cameraUpdate, cameraAnimation)
+
+                        val label = viewModel.findLabelByToiletModel(toiletData)
+                        if (label != null) {
+                            viewModel.setBottomSheetStatus(label, toiletData, this)
+                            initBottomSheet(toiletData, label)
+                        }
+                    }
                 }
             }
 

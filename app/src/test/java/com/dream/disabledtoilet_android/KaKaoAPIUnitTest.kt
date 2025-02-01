@@ -36,7 +36,6 @@ class KaKaoAPIUnitTest {
             System.out.println(resultMeta.toString())
         }
 
-
     }
 
     @Test

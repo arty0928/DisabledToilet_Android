@@ -190,30 +190,39 @@ class NearViewModel: ViewModel() {
             distance < 1000 -> "${distance.toInt()}m"
             else -> String.format("%.1fkm", distance / 1000)
         }
+        Log.d("test distance", "distanceString: $distanceString")
+
+        _bottomSheetStatus.value = BottomSheetStatus(
+            toilet,
+            label,
+            distanceString,
+            false
+        )
         // 저장 정보
         viewModelScope.launch {
             var place = searchPlace.value
             var isSave = false
-//
-//            // 현재 검색어가 없으면
-//            if (place == null){
-//                place = PlaceModel()
-//                Log.d("test DB", ": ${place.place_name}")
-//                isSave = PlaceToiletGrouper(context).isSaved(place, toilet)
-//                Log.d("test DB", "isSaved: $isSave")
-//            } else {
-//                Log.d("test DB", ": ${place.place_name}")
-//                isSave = PlaceToiletGrouper(context).isSaved(place, toilet)
-//                Log.d("test DB", "isSaved: $isSave")
-//            }
+            try {
+//                // 현재 검색어가 없으면
+//                if (place == null){
+//                    place = PlaceModel()
+//                    Log.d("test DB", ": ${place.place_name}")
+//                    isSave = PlaceToiletGrouper(context).isSaved(place, toilet)
+//                    Log.d("test DB", "isSaved: $isSave")
+//                } else {
+//                    Log.d("test DB", ": ${place.place_name}")
+//                    isSave = PlaceToiletGrouper(context).isSaved(place, toilet)
+//                    Log.d("test DB", "isSaved: $isSave")
+//                }
+            } catch (e: Exception){
+                Log.d("test DB", "isSaved: $e")
+            }
 
-            _bottomSheetStatus.value = BottomSheetStatus(
-                toilet,
-                label,
-                distanceString,
-                isSave
+            _bottomSheetStatus.value = bottomSheetStatus.value?.copy(
+                isSaved = isSave
             )
         }
+
     }
     /**
      * ToiletModel을 받아서 label 반환
@@ -279,6 +288,16 @@ class NearViewModel: ViewModel() {
         _bottomSheetStatus.value = bottomSheetStatus.value!!.copy(isSaved = false)
         val grouper = PlaceToiletGrouper(context)
         grouper.unSavePlaceAndGroup(place, toilet)
+    }
+
+    fun findLabelByToiletModel(toilet: ToiletModel): Label? {
+        val labelList = mapState.value!!.toiletLabelMap
+        for (label in labelList.keys) {
+            if (labelList[label] == toilet) {
+                return label // 일치하는 label을 반환
+            }
+        }
+        return null // 일치하는 label이 없을 경우 null 반환
     }
 }
 
