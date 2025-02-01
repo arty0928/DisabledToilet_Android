@@ -63,42 +63,75 @@ class UserRepository {
     }
 
     /**
-     * 좋아요 추가
+     * 좋아요 추가 또는 삭제
+     * @param toiletId 화장실 ID
+     * @param userEmail 사용자 이메일
+     * @return true: 좋아요 추가, false: 좋아요 삭제
      */
-    fun addLike(toiletId: Int, userId: String) {
-        val postRef = db.collection("users").document(userId)
+    fun toggleLike(toiletId: Int, userEmail: String, callback: (Boolean) -> Unit) {
+        val userRef = db.collection("users").document(userEmail)
         db.runTransaction { transaction ->
-            val snapshot = transaction.get(postRef)
+            val snapshot = transaction.get(userRef)
             val likes = snapshot.get("likedToilets") as? MutableList<String> ?: mutableListOf()
 
             // toiletId를 String으로 변환하여 contains 체크
             if (!likes.contains(toiletId.toString())) {
+                // 좋아요 추가
                 likes.add(toiletId.toString())
-                transaction.update(postRef, "likedToilets", likes)
-            }
-        }.addOnFailureListener { exception ->
-            Log.e("UserRepository", "Failed to add like: ${exception.message}")
-        }
-    }
-
-    /**
-     * 좋아요 삭제
-     */
-    fun removeLike(toiletId: Int, userId: String) {
-        val postRef = db.collection("users").document(userId)
-        db.runTransaction { transaction ->
-            val snapshot = transaction.get(postRef)
-            val likes = snapshot.get("likedToilets") as? MutableList<String> ?: mutableListOf()
-
-            // toiletId를 String으로 변환하여 contains 체크
-            if (likes.contains(toiletId.toString())) {
+                transaction.update(userRef, "likedToilets", likes)
+                return@runTransaction true // 추가했으므로 true 반환
+            } else {
+                // 좋아요 삭제
                 likes.remove(toiletId.toString())
-                transaction.update(postRef, "likedToilets", likes)
+                transaction.update(userRef, "likedToilets", likes)
+                return@runTransaction false // 삭제했으므로 false 반환
             }
+        }.addOnSuccessListener { result ->
+            callback(result) // 결과를 콜백으로 전달
         }.addOnFailureListener { exception ->
-            Log.e("UserRepository", "Failed to remove like: ${exception.message}")
+            Log.e("UserRepository", "Failed to toggle like: ${exception.message}")
+            callback(false) // 실패 시 false 반환
         }
     }
+
+
+//    /**
+//     * 좋아요 추가
+//     */
+//    fun addLike(toiletId: Int, userId: String) {
+//        val postRef = db.collection("users").document(userId)
+//        db.runTransaction { transaction ->
+//            val snapshot = transaction.get(postRef)
+//            val likes = snapshot.get("likedToilets") as? MutableList<String> ?: mutableListOf()
+//
+//            // toiletId를 String으로 변환하여 contains 체크
+//            if (!likes.contains(toiletId.toString())) {
+//                likes.add(toiletId.toString())
+//                transaction.update(postRef, "likedToilets", likes)
+//            }
+//        }.addOnFailureListener { exception ->
+//            Log.e("UserRepository", "Failed to add like: ${exception.message}")
+//        }
+//    }
+//
+//    /**
+//     * 좋아요 삭제
+//     */
+//    fun removeLike(toiletId: Int, userId: String) {
+//        val postRef = db.collection("users").document(userId)
+//        db.runTransaction { transaction ->
+//            val snapshot = transaction.get(postRef)
+//            val likes = snapshot.get("likedToilets") as? MutableList<String> ?: mutableListOf()
+//
+//            // toiletId를 String으로 변환하여 contains 체크
+//            if (likes.contains(toiletId.toString())) {
+//                likes.remove(toiletId.toString())
+//                transaction.update(postRef, "likedToilets", likes)
+//            }
+//        }.addOnFailureListener { exception ->
+//            Log.e("UserRepository", "Failed to remove like: ${exception.message}")
+//        }
+//    }
 
 
 }

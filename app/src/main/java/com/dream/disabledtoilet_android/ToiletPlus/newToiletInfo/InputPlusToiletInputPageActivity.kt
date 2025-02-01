@@ -14,7 +14,9 @@ import com.dream.disabledtoilet_android.ToiletPlus.newToiletInfo.ViewModel.PlusT
 import com.dream.disabledtoilet_android.Utility.Dialog.dialog.LoadingDialog
 import com.dream.disabledtoilet_android.Utility.KaKaoAPI.KakaoApiRepository
 import com.dream.disabledtoilet_android.Model.KakaoModel.AddressNameModel
+import com.dream.disabledtoilet_android.Model.ToiletModel
 import com.dream.disabledtoilet_android.databinding.ActivityInputPlusToiletInfoBinding
+import com.google.firebase.firestore.FirebaseFirestore
 import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,6 +32,8 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
     lateinit var viewModel: PlusToiletViewModel
     // 화장실 상태 선택 버튼 리스트
     lateinit var statusButtonList: List<TextView>
+
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,8 +82,64 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         setToiletStatusSelect(statusButtonList)
         // 화장실 등록 버튼
         binding.plusToiletButton.setOnClickListener{
-            Toast.makeText(this, "아직 지원하지 않습니다.", Toast.LENGTH_SHORT).show()
+            addToiletToFirebase()
+            Toast.makeText(this, "화장실 정보를 등록하였습니다.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun addToiletToFirebase() {
+
+        firestore = FirebaseFirestore.getInstance()
+
+        val toiletName = binding.plusToiletInput.text.toString()
+        val toiletAddress = binding.toiletAddressEdit.text.toString()
+        val coordinates = getCoordinateFromIntent()
+        val latitude = coordinates.latitude
+        val longitude = coordinates.longitude
+
+        // ToiletModel 생성
+        val toiletModel = ToiletModel(
+            documentId = "", // Firestore에서 자동 생성됨
+            restroom_name = toiletName,
+            address_road = toiletAddress,
+            wgs84_latitude = latitude,
+            wgs84_longitude = longitude,
+            male_toilet_count = 0, // 예시로 기본값 설정
+            female_toilet_count = 0, // 예시로 기본값 설정
+            male_disabled_toilet_count = 0, // 예시로 기본값 설정
+            female_disabled_toilet_count = 0, // 예시로 기본값 설정
+            management_agency_name = "", // 추가 정보 필요
+            waste_disposal_method = "", // 추가 정보 필요
+            safety_management_facility_installed = "", // 추가 정보 필요
+            emergency_bell_installed = "", // 추가 정보 필요
+            diaper_change_table_available = "", // 추가 정보 필요
+            diaper_change_table_location = "", // 추가 정보 필요
+            data_reference_date = "", // 추가 정보 필요
+            opening_hours_detail = "", // 추가 정보 필요
+            opening_hours = "", // 추가 정보 필요
+            installation_date = "", // 추가 정보 필요
+            phone_number = "", // 추가 정보 필요
+            remodeling_date = "", // 추가 정보 필요
+            number = 0, // 예시로 기본값 설정
+            distance = -1.0, // 기본값
+            category = "", // 추가 정보 필요
+            restroom_ownership_type = "", // 추가 정보 필요
+            save = 0 // 기본값
+        )
+
+        // ToiletModel 내용 로그로 출력
+        Log.d("ToiletModel", "ToiletModel: $toiletModel")
+
+        // Firestore에 데이터 추가
+        firestore.collection("dreamhyoja")
+            .add(toiletModel)
+            .addOnSuccessListener { documentReference ->
+                Toast.makeText(this, "화장실 정보가 추가되었습니다: ${documentReference.id}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Log.w("ToiletModel", "Error adding document", e)
+                Toast.makeText(this, "화장실 정보 추가 실패", Toast.LENGTH_SHORT).show()
+            }
     }
     /**
      *      intet에서 좌표값 갖고 오기

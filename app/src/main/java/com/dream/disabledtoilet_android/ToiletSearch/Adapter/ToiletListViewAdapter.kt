@@ -137,10 +137,10 @@ class ToiletListViewAdapter(
         // -1.0 거리 제외, 거리 기준으로 오름차순 정렬
         val sortedList = when (sort.value){
             0 -> {
-                validList.sortedBy { it.distance } + invalidList.sortedByDescending { it.save.size }
+                validList.sortedBy { it.distance } + invalidList.sortedByDescending { it.save }
             }
             1 -> {
-                updatedList.sortedWith(compareByDescending<ToiletModel> {it.save.size}
+                updatedList.sortedWith(compareByDescending<ToiletModel> {it.save}
                     .thenBy{it.distance}).also { sorted ->
                         sorted.forEach { toilet ->
 //                            Log.d("SortLog", "Save : ${toilet.restroom_name}, Name: ${toilet.save}")

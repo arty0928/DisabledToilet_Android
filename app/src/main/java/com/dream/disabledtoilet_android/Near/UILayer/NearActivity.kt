@@ -330,7 +330,7 @@ class NearActivity : AppCompatActivity() {
         bottomBinding.toiletName.text = toilet.restroom_name
         bottomBinding.toiletAddress.text = toilet.address_road ?: "-"
         bottomBinding.toiletOpeningHours.text = toilet.opening_hours ?: "-"
-        bottomBinding.toiletSaveCount1.text = "저장 (${toilet.save.size})"
+        bottomBinding.toiletSaveCount1.text = "저장 (${toilet.save})"
         bottomBinding.toiletDistance.text = viewModel.bottomSheetStatus.value?.distanceString ?: "-"
 
         // 상세 페이지로 이동

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.SearchResultSelectListener
 import com.dream.disabledtoilet_android.Model.PlaceModel
-import com.dream.disabledtoilet_android.databinding.ItemLocationBinding
 
 class SearchResultAdapter(val listener: SearchResultSelectListener): RecyclerView.Adapter<SearchResultAdapter.ItemViewHolder>() {
     private var searchResultList: List<PlaceModel> = listOf()
