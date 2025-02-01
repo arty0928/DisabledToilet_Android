@@ -30,6 +30,7 @@
         android:id="@+id/groupName"
         android:text="지하철역"
         android:textColor="@color/black"
+        android:fontFamily="@font/notosanskr_semibold"
         android:textSize="15sp"
         app:layout_constraintTop_toTopOf="@id/placeName"
         app:layout_constraintBottom_toBottomOf="@id/placeName"
@@ -39,7 +40,8 @@
     <TextView
         android:id="@+id/address"
         android:text="서울 광진구 아차산로 243"
-        android:textColor="@color/greyColor"
+        android:textColor="@color/black"
+        android:fontFamily="@font/notosanskr_semibold"
         android:textSize="17sp"
         app:layout_constraintTop_toBottomOf="@id/placeName"
         app:layout_constraintStart_toStartOf="@id/placeName"
@@ -47,6 +49,7 @@
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/distance"
+        android:fontFamily="@font/notosanskr_semibold"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/groupName"
         app:layout_constraintEnd_toEndOf="@id/groupName"

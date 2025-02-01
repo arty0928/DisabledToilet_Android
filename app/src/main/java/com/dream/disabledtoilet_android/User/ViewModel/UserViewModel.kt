@@ -31,11 +31,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun addLikeUser(toiletId : Int, userId : String){
-        repository.addLike(toiletId, userId)
+//        repository.addLike(toiletId, userId)
     }
 
     fun removeLikeUser(toiletId : Int, userId : String){
-        repository.removeLike(toiletId, userId)
+//        repository.removeLike(toiletId, userId)
     }
 
     override fun onCleared() {

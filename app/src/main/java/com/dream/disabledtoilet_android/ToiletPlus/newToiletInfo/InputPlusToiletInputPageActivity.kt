@@ -83,7 +83,7 @@ class InputPlusToiletInputPageActivity : AppCompatActivity() {
         // 화장실 등록 버튼
         binding.plusToiletButton.setOnClickListener{
             addToiletToFirebase()
-            Toast.makeText(this, "화장실 정보를 등록하였습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "화장실 정보를 등록하였습니다.alx", Toast.LENGTH_SHORT).show()
         }
     }
 

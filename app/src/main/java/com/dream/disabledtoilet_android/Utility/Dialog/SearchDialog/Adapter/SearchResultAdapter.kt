@@ -6,19 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dream.disabledtoilet_android.Utility.Dialog.SearchDialog.Listener.SearchResultSelectListener
 import com.dream.disabledtoilet_android.Model.PlaceModel
+import com.dream.disabledtoilet_android.databinding.ItemLocationBinding
 
 class SearchResultAdapter(val listener: SearchResultSelectListener): RecyclerView.Adapter<SearchResultAdapter.ItemViewHolder>() {
     private var searchResultList: List<PlaceModel> = listOf()
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): SearchResultAdapter.ItemViewHolder {
+    ): ItemViewHolder {
         return ItemViewHolder(
             ItemLocationBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
-    override fun onBindViewHolder(holder: SearchResultAdapter.ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         return holder.bind(searchResultList[position])
     }
 
