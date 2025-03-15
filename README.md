@@ -65,7 +65,7 @@
 `KakaoMap API`
 `FusedLocationProviderClient`
 `Google Play Services Location API`
-
+`Coroutine`
 <br>
 <div align="center" >
 <img src="./images/008.png" alt="Project" height="400px" /></div>
