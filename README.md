@@ -62,11 +62,9 @@
 </span>
 <br>
 
-<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">KakaoMap API</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">FusedLocationProviderClient</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Google Play Services Location API</span>
-</div>
+`KakaoMap API`
+`FusedLocationProviderClient`
+`Google Play Services Location API`
 
 <br>
 <div align="center" >
@@ -82,15 +80,14 @@
 </span>
 <br>
 
-<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">KakaoMap API</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">ViewModel</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">LiveData</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">ConstraintLayout</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Kotlin Serialization</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Kakao SDK</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Implicit Intent (Android)</span>
-</div>
+`KakaoMap API`
+`ViewModel`
+`LiveData`
+`ConstraintLayout`
+`Kotlin Serialization`
+`Kakao SDK`
+`Implicit Intent (Android)`
+
 <br>
 <div align="center" >
 <img src="./images/009.png" alt="Project" height="400px" /></div>
@@ -102,12 +99,10 @@
 <span>
 👉 사용자가 설정한 조건(예: 장애인 화장실 여부, 남녀 공용 여부 등)에 따라 필터링하여 원하는 화장실만 리스트에서 확인할 수 있습니다.<br></span><br>
 
-<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Firebase Firestore</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Jetpack Paging</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">RecyclerView</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">DataStore (Jetpack)</span>
-</div>
+`Firebase Firestore`
+`Jetpack Paging`
+`RecyclerView`
+`DataStore (Jetpack)`
 
 <br>
 <div align="center" >
@@ -121,9 +116,8 @@
 <h2>4️⃣ 사용자가 직접 화장실을 등록하면 Firebase에 실시간 업로드 후 지도 반영 </h2>
 <span>👉 사용자가 직접 화장실을 추가할 수 있으며, 데이터는 Firebase Firestore에 저장된 후 자동으로 지도에 반영됩니다.<br></span></br>
 
-<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Firebase Firestore</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">KakaoMap API</span>
+`Firebase Firestore`
+`KakaoMap API`
 </div>
 
 <br>
@@ -137,13 +131,11 @@
 <h2>5️⃣ 좋아요 한 화장실을 그룹별로 모아보는 그룹화 기능 </h2>
 <span>👉 사용자가 좋아요한 화장실을 그룹별로 저장하고, 필요할 때 그룹 단위로 리스트에서 확인할 수 있습니다.<br></span><br>
 
-<div style="display: flex; gap: 8px; flex-wrap: wrap;">
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">Firebase Firestore</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">RecyclerView</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">DiffUtil</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">ViewModel</span>
-    <span style="background-color:#6A0DAD; color:white; padding:3px 10px; border-radius:12px; font-size:14px; font-weight:300;">LiveData</span>
-</div>
+`Firebase Firestore`
+`RecyclerView`
+`DiffUtil`
+`ViewModel`
+`LiveData`
 
 <br><div align="center" >
 <img src="./images/012.png" alt="Project" height="400px" />
