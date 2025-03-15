@@ -17,7 +17,7 @@
 
 <br />
 
-# 📹 시현 영상
+# 📹 시연 영상
 
 <div style="text-align: center;">
   <a href="https://youtu.be/OmSAXm5M9uA?si=frCGnA06wgptgNsO">
